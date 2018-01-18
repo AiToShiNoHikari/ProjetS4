@@ -1,7 +1,11 @@
 
-#ifndef _IA
+#ifndef _Terrain
 
-#define _IA true
+#define _IA
+
+#include "Terrain.h"
+
+#endif
 
 #include <SFML/Graphics.hpp>
 
@@ -15,8 +19,6 @@
 #include <iomanip>
 
 #include <string>
-
-#endif
 
 struct Pheromone
 {
@@ -55,6 +57,7 @@ struct Pheromone
 
 class IA
 {
+
 public:
 	IA();
 	~IA();

@@ -1,2 +1,18 @@
 ﻿  Source.cpp
-  Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe
+d:\b2\s4\projet\projets4\projet ia\projet ia\source.cpp(4): warning C4326: le type de retour de 'main' doit être 'int' au lieu de 'void'
+  Génération de code en cours...
+  Compilation en cours...
+  Terrain.cpp
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(33): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(36): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(40): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(43): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(73): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(119): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(126): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(148): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projets4\projet ia\projet ia\terrain.cpp(156): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+  Génération de code en cours...
+Terrain.obj : error LNK2005: "public: __cdecl IA::IA(void)" (??0IA@@QEAA@XZ) déjà défini(e) dans Source.obj
+Terrain.obj : error LNK2005: "public: __cdecl IA::~IA(void)" (??1IA@@QEAA@XZ) déjà défini(e) dans Source.obj
+D:\B2\S4\Projet\ProjetS4\Projet IA\x64\Debug\Projet IA.exe : fatal error LNK1169: un ou plusieurs symboles définis à différentes reprises ont été rencontrés

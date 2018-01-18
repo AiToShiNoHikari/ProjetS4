@@ -1,24 +1,21 @@
 #include "IA.h"
 
-int main()
+void main()
 {
-	sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML works!");
-	sf::CircleShape shape(500.f);
-	shape.setFillColor(sf::Color::Green);
+#ifdef _DEBUG
+	std::cout << ">>>>> Debug: <<<<<" << std::endl;
+#else
+#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif
 
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+	int TailleEcranH = sf::VideoMode::getDesktopMode().width;
+	int TailleEcranV = sf::VideoMode::getDesktopMode().height;
 
-		window.clear();
-		window.draw(shape);
-		window.display();
-	}
+	sf::RenderWindow window(sf::VideoMode(TailleEcranH, TailleEcranV), "ProjetSemestre4");
+	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(60);
 
-	return 0;
+	//Menu(window);
+	Camera(window);
+
 }
