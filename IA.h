@@ -1,11 +1,10 @@
 
-#ifndef _Terrain
+#ifndef _IA
 
-#define _IA
+#define _IA 1
 
 #include "Terrain.h"
 
-#endif
 
 #include <SFML/Graphics.hpp>
 
@@ -19,6 +18,12 @@
 #include <iomanip>
 
 #include <string>
+
+#define _nb_case_w 500
+#define _nb_case_h 500
+#define _size 100
+
+struct CaseTerrain;
 
 struct Pheromone
 {
@@ -57,19 +62,13 @@ struct Pheromone
 
 class IA
 {
+	CaseTerrain** Terrain;
 
 public:
 	IA();
-	~IA();
 
 private:
 
 };
 
-IA::IA()
-{
-}
-
-IA::~IA()
-{
-}
+#endif

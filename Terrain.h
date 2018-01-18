@@ -1,11 +1,9 @@
 
-#ifndef _IA
+#ifndef _Terrain
 
-#define _Terrain
+#define _Terrain 1
 
-//#include "IA.h"
-
-#endif
+#include "IA.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -24,3 +22,5 @@ void Menu(sf::RenderWindow& window);
 void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShape& TextureCase, sf::Texture& Tsol, CaseTerrain** Terrain);
 
 void Camera(sf::RenderWindow& window);
+
+#endif

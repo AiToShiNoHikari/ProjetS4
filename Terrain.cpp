@@ -30,19 +30,19 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 
 	RTextureSol.clear();
 
-	int i_mini = (position.x - vue.getSize().x / 2) / 100;
+	int i_mini = (position.x - vue.getSize().x / 2) / _size;
 	if (i_mini < 0)
 		i_mini = 0;
-	int i_max = (position.x + vue.getSize().x / 2) / 100 + 1;
-	if (i_max > 500)
-		i_max = 500;
+	int i_max = (position.x + vue.getSize().x / 2) / _size + 1;
+	if (i_max > _nb_case_w)
+		i_max = _nb_case_w;
 
-	int j_mini = (position.y - vue.getSize().y / 2) / 100;
+	int j_mini = (position.y - vue.getSize().y / 2) / _size;
 	if (j_mini < 0)
 		j_mini = 0;
-	int j_max = (position.y + vue.getSize().y / 2) / 100 + 1;
-	if (j_max > 500)
-		j_max = 500;
+	int j_max = (position.y + vue.getSize().y / 2) / _size + 1;
+	if (j_max > _nb_case_h)
+		j_max = _nb_case_h;
 
 	for (int i = i_mini; i < i_max; i++)
 	{
@@ -70,7 +70,7 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 				break;
 			}
 
-			TextureCase.setPosition(i * 100, j * 100);
+			TextureCase.setPosition(i * _size, j * _size);
 
 			RTextureSol.draw(TextureCase);
 		}
@@ -82,18 +82,18 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 
 void Camera(sf::RenderWindow& window)
 {
-	CaseTerrain** Terrain = new CaseTerrain*[500];
-	for (int i = 0; i < 500; i++)
+	CaseTerrain** Terrain = new CaseTerrain*[_nb_case_w];
+	for (int i = 0; i < _nb_case_w; i++)
 	{
-		Terrain[i] = new CaseTerrain[500];
+		Terrain[i] = new CaseTerrain[_nb_case_h];
 
-		for (int j = 0; j < 500; j++)
+		for (int j = 0; j < _nb_case_h; j++)
 		{
 			Terrain[i][j].Type = (CaseTerrain::TypeTerrain) (rand() % 6);
 		}
 	}
 
-	sf::RectangleShape TextureCase(sf::Vector2f(100, 100));
+	sf::RectangleShape TextureCase(sf::Vector2f(_size, _size));
 	sf::RenderTexture RTextureSol;
 
 
@@ -111,7 +111,7 @@ void Camera(sf::RenderWindow& window)
 	sf::Texture Tsol;
 	sf::View vue;
 
-	vue.setCenter(100 * 500 / 2, 100 * 500 / 2);
+	vue.setCenter(_size * _nb_case_w / 2, _size * _nb_case_h / 2);
 
 	// on met à jour la vue, avec la nouvelle taille de la fenêtre
 	{
@@ -202,7 +202,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < 500 * 100)
+			if ((position.y + vue.getSize().y / 2) < _nb_case_h * _size)
 			{
 				vue.move(0, 4);
 			}
@@ -230,7 +230,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < 500 * 100)
+			if ((position.y + vue.getSize().y / 2) < _nb_case_w * _size)
 			{
 				vue.move(4, 0);
 			}

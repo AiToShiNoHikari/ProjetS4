@@ -1,4 +1,5 @@
 #include "IA.h"
+#include "Terrain.h"
 
 void main()
 {
