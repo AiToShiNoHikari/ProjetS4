@@ -133,10 +133,12 @@
   <ItemGroup>
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IA.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="Terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
