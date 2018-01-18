@@ -35,10 +35,10 @@ struct Pheromone
 		enemy,
 	};
 
-	float Home;
-	float Food;
-	float Water;
-	float Enemy;
+	float Home = 0;
+	float Food = 0;
+	float Water = 0;
+	float Enemy = 0;
 
 	float& operator[](Type T)
 	{
@@ -64,8 +64,26 @@ class IA
 {
 	CaseTerrain** Terrain;
 
+	Pheromone** Pheromone_Table;
+
+	float x = 0, y = 0;
+
+	float direction = 0;
+
 public:
-	IA();
+	enum Type_Destination
+	{
+		none,
+		search,
+		home,
+		food,
+		water,
+		enemy,
+	};
+
+	IA(CaseTerrain** Terrain);
+
+	void deplacement();
 
 private:
 
