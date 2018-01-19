@@ -7,7 +7,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#ifdef _DEBUG
 #include <iostream>
+#endif
 
 
 struct CaseTerrain 
