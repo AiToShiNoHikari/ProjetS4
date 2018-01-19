@@ -21,7 +21,7 @@
 
 #define _nb_case_w 500
 #define _nb_case_h 500
-#define _size 100
+#define _size 32
 
 struct CaseTerrain;
 
