@@ -9,10 +9,7 @@ void main()
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
-	int TailleEcranH = sf::VideoMode::getDesktopMode().width;
-	int TailleEcranV = sf::VideoMode::getDesktopMode().height;
-
-	sf::RenderWindow window(sf::VideoMode(TailleEcranH, TailleEcranV), "ProjetSemestre4");
+	sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "ProjetSemestre4");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
