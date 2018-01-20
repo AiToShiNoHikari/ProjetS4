@@ -14,8 +14,6 @@
 #include <iomanip>
 
 #include <string>
-	
-#endif
 
 namespace Interface
 {
@@ -129,3 +127,5 @@ namespace Interface
 	};
 };
 
+
+#endif

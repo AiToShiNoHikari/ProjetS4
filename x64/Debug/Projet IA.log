@@ -1,4 +1,8 @@
-﻿  Terrain.cpp
+﻿  Source.cpp
+d:\b2\s4\projet\projet ia\projet ia\source.cpp(12): warning C4326: le type de retour de 'main' doit être 'int' au lieu de 'void'
+  Génération de code en cours...
+  Compilation en cours...
+  Terrain.cpp
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(33): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(36): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(40): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
@@ -8,16 +12,6 @@ d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(119): warning C4244: 'argument'�
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(126): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(148): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
 d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(156): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-  Source.cpp
-d:\b2\s4\projet\projet ia\projet ia\source.cpp(5): warning C4326: le type de retour de 'main' doit être 'int' au lieu de 'void'
-  Interface.cpp
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(424): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(442): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(473): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(534): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(535): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(550): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\interface.cpp(551): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
   IA.cpp
   Génération de code en cours...
   Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe

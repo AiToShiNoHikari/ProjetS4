@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="IA.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="Ressource.h" />
     <ClInclude Include="Terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

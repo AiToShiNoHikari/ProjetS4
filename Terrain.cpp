@@ -245,3 +245,179 @@ void Camera(sf::RenderWindow& window)
 		window.display();
 	}
 }
+
+
+/***** cette fonction te donnera l'image de la texture de la case *****/
+sf::Image Texture(int x, int y, CaseTerrain** Terrain)
+{
+	sf::Image ImageTexture;
+
+	ImageTexture.create(32, 32);
+
+	CaseTerrain::TypeTerrain test = Terrain[x][y].Type;
+
+	sf::Image* PointeurTileMap = NULL;
+
+	switch (test)
+	{
+	case CaseTerrain::Base:
+		PointeurTileMap = &Ressource::TileMapBase;
+		break;
+	case CaseTerrain::Terre:
+		PointeurTileMap = &Ressource::TileMapTerre;
+		break;
+	case CaseTerrain::Eau:
+		PointeurTileMap = &Ressource::TileMapEau;
+		break;
+	case CaseTerrain::Roche:
+		PointeurTileMap = &Ressource::TileMapRoche;
+		break;
+	case CaseTerrain::Sable:
+		PointeurTileMap = &Ressource::TileMapSable;
+		break;
+	case CaseTerrain::Nourriture:
+		PointeurTileMap = &Ressource::TileMapNourriture;
+		break;
+	}
+
+	sf::Image& TileMap = *PointeurTileMap;
+	
+
+	char continu_texture_test = 0;
+
+	if (x + 1 < _nb_case_w)
+	{
+		if (Terrain[x + 1][y - 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 0);
+
+		if (Terrain[x + 1][y].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 1);
+	}
+	if (x + 1 < _nb_case_w && y + 1 < _nb_case_h)
+	{
+		if (Terrain[x + 1][y + 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 2);
+	}
+	if (y + 1 < _nb_case_h)
+	{
+		if (Terrain[x][y + 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 3);
+
+		if (Terrain[x - 1][y + 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 4);
+	}
+
+	if (Terrain[x - 1][y].Type == test)
+		continu_texture_test = continu_texture_test | (1 << 5);
+
+	if (Terrain[x - 1][y - 1].Type == test)
+		continu_texture_test = continu_texture_test | (1 << 6);
+
+	if (Terrain[x][y - 1].Type == test)
+		continu_texture_test = continu_texture_test | (1 << 7);
+
+	if (!(continu_texture_test & 0b10101010))
+	{
+		ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 0, 32, 32));
+	}
+	else
+	{
+		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 80, 16, 16));
+		}
+		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
+		{
+			if (continu_texture_test & 0b00000100)
+			{
+				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(16, 48, 16, 16));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 16, 16, 16));
+			}
+		}
+		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(16, 80, 16, 16));
+		}
+		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 48, 16, 16));
+		}
+
+		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 80, 16, 16));
+		}
+		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
+		{
+			if (continu_texture_test & 0b00010000)
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 48, 16, 16));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 16, 16, 16));
+			}
+		}
+		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 80, 16, 16));
+		}
+		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 48, 16, 16));
+		}
+
+		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 32, 16, 16));
+		}
+		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
+		{
+			if (continu_texture_test & 0b01000000)
+			{
+				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 64, 16, 16));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 0, 16, 16));
+			}
+		}
+		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 32, 16, 16));
+		}
+		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 64, 16, 16));
+		}
+
+		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 32, 16, 16));
+		}
+		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
+		{
+			if (continu_texture_test & 0b00000001)
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(16, 64, 16, 16));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 0, 16, 16));
+			}
+		}
+		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(16, 32, 16, 16));
+		}
+		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 64, 16, 16));
+		}
+	}
+
+	return ImageTexture;
+};
