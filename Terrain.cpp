@@ -84,18 +84,17 @@ void Camera(sf::RenderWindow& window)
 {
 	bool HaveChange = true;
 
-	sf::RectangleShape TextureCase(sf::Vector2f(_size, _size));
 	sf::RenderTexture RTextureSol;
 
 	RTextureSol.create(window.getSize().x, window.getSize().y);
 
-	ClassTerrain ObjTerrain(100, 100, RTextureSol);
+	ClassTerrain ObjTerrain(250, 250, RTextureSol);
 
 	sf::Sprite Ssol;
 	sf::Texture Tsol;
 	sf::View vue;
 
-	vue.setCenter(_size * _nb_case_w / 2, _size * _nb_case_h / 2);
+	vue.setCenter(_size * ObjTerrain.TX / 2, _size * ObjTerrain.TY / 2);
 
 	// on met à jour la vue, avec la nouvelle taille de la fenêtre
 	{
@@ -158,7 +157,8 @@ void Camera(sf::RenderWindow& window)
 				if (event.mouseWheel.delta == -1)
 				{					
 					//vue.setCenter(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-					vue.zoom(1.1f);
+					//vue.zoom(1.1f); //ct pas le meme coef
+					vue.zoom(1.0/0.9f);
 				}
 				HaveChange = true;
 			}
@@ -184,7 +184,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < _nb_case_h * _size)
+			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size)
 			{
 				vue.move(0, 4);
 			}
@@ -210,7 +210,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < _nb_case_w * _size)
+			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size)
 			{
 				vue.move(4, 0);
 			}
@@ -250,6 +250,195 @@ ClassTerrain::ClassTerrain(int x, int y, sf::RenderTarget& Render) : Render(Rend
 	Redimension(x, y);
 };
 
+/***** cette fonction te donnera l'image de la texture de la case *****//*
+sf::Image ClassTerrain::Texture(int x, int y)
+{
+	sf::Image ImageTexture;
+
+	ImageTexture.create(32, 32);
+
+	CaseTerrain::TypeTerrain test = Terrain[x][y].Type;
+
+	sf::Image* PointeurTileMap = NULL;
+
+	switch (test)
+	{
+	case CaseTerrain::Base:
+		PointeurTileMap = &Ressource::TileMapBase;
+		break;
+	case CaseTerrain::Terre:
+		PointeurTileMap = &Ressource::TileMapTerre;
+		break;
+	case CaseTerrain::Eau:
+		PointeurTileMap = &Ressource::TileMapEau;
+		break;
+	case CaseTerrain::Roche:
+		PointeurTileMap = &Ressource::TileMapRoche;
+		break;
+	case CaseTerrain::Sable:
+		PointeurTileMap = &Ressource::TileMapSable;
+		break;
+	case CaseTerrain::Nourriture:
+		PointeurTileMap = &Ressource::TileMapNourriture;
+		break;
+	}
+
+	sf::Image& TileMap = *PointeurTileMap;
+
+	enum dir
+	{
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		UP_RIGHT,
+		UP_LEFT,
+		DOWN_RIGHT,
+		DOWN_LEFT,
+	};
+
+	bool continu_texture_test[8] = { false, false, false, false, false, false, false, false };
+
+	if (x + 1 < TX && y > 0)
+	{
+		continu_texture_test[UP_RIGHT] = (Terrain[x + 1][y - 1].Type == test);
+	}
+	if (x + 1 < TX)
+	{
+		continu_texture_test[RIGHT] = (Terrain[x + 1][y].Type == test);
+	}
+	if (x + 1 < TX && y + 1 < TY)
+	{
+		continu_texture_test[DOWN_RIGHT] = (Terrain[x + 1][y + 1].Type == test);
+	}
+	if (y + 1 < TY)
+	{
+		continu_texture_test[DOWN] = (Terrain[x][y + 1].Type == test);
+	}
+	if (y + 1 < TY && x > 0)
+	{
+		continu_texture_test[DOWN_LEFT] = (Terrain[x - 1][y + 1].Type == test);
+	}
+	if (x > 0)
+	{
+		continu_texture_test[LEFT] = (Terrain[x - 1][y].Type == test);
+	}
+	if (x > 0 && y > 0)
+	{
+		continu_texture_test[UP_LEFT] = (Terrain[x - 1][y - 1].Type == test);
+	}
+	if (y > 0)
+	{
+		continu_texture_test[UP] = (Terrain[x][y - 1].Type == test);
+	}
+
+	if (!(continu_texture_test[UP] || continu_texture_test[DOWN] || continu_texture_test[RIGHT] || continu_texture_test[LEFT]))
+	{
+		ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 0, 32, 32));
+	}
+	else
+	{
+		sf::Vector2i size(16, 16);
+
+		if (!(continu_texture_test[DOWN] || continu_texture_test[RIGHT]))
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(sf::Vector2i(48, 80), size));
+		}
+		else if (continu_texture_test[DOWN] && continu_texture_test[RIGHT])
+		{
+			if (continu_texture_test[DOWN_RIGHT])
+			{
+				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(sf::Vector2i(16, 48), size));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(sf::Vector2i(48, 16), size));
+			}
+		}
+		else if (continu_texture_test[DOWN] && !continu_texture_test[RIGHT])
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(sf::Vector2i(16, 80), size));
+		}
+		else if (!continu_texture_test[DOWN] && continu_texture_test[RIGHT])
+		{
+			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(sf::Vector2i(48, 48), size));
+		}
+
+		if (!(continu_texture_test[DOWN] || continu_texture_test[LEFT]))
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(sf::Vector2i(0, 80), size));
+		}
+		else if (continu_texture_test[DOWN] && continu_texture_test[LEFT])
+		{
+			if (continu_texture_test[DOWN_LEFT])
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(sf::Vector2i(32, 48), size));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(sf::Vector2i(32, 16), size));
+			}
+		}
+		else if (continu_texture_test[DOWN] && !continu_texture_test[LEFT])
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(sf::Vector2i(32, 80), size));
+		}
+		else if (!continu_texture_test[DOWN] && continu_texture_test[LEFT])
+		{
+			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(sf::Vector2i(0, 48), size));
+		}
+
+		if (!(continu_texture_test[UP] || continu_texture_test[LEFT]))
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(sf::Vector2i(0, 32), size));
+		}
+		else if (continu_texture_test[UP] && continu_texture_test[LEFT])
+		{
+			if (continu_texture_test[UP_LEFT])
+			{
+				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(sf::Vector2i(32, 64), size));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(sf::Vector2i(32, 0), size));
+			}
+		}
+		else if (continu_texture_test[UP] && !continu_texture_test[LEFT])
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(sf::Vector2i(32, 32), size));
+		}
+		else if (!continu_texture_test[UP] && continu_texture_test[LEFT])
+		{
+			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(sf::Vector2i(0, 64), size));
+		}
+
+		if (!(continu_texture_test[UP] || continu_texture_test[RIGHT]))
+		{
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(sf::Vector2i(48, 32), size));
+		}
+		else if (continu_texture_test[UP] && continu_texture_test[RIGHT])
+		{
+			if (continu_texture_test[UP_RIGHT])
+			{
+				ImageTexture.copy(TileMap, 16, 0, sf::IntRect(sf::Vector2i(16, 64), size));
+			}
+			else
+			{
+				ImageTexture.copy(TileMap, 16, 0, sf::IntRect(sf::Vector2i(48, 0), size));
+			}
+		}
+		else if (continu_texture_test[UP] && !continu_texture_test[RIGHT])
+		{
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(sf::Vector2i(16, 32), size));
+		}
+		else if (!continu_texture_test[UP] && continu_texture_test[RIGHT])
+		{
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(sf::Vector2i(48, 64), size));
+		}
+	}
+
+	return ImageTexture;
+};//*/
 /***** cette fonction te donnera l'image de la texture de la case *****/
 sf::Image ClassTerrain::Texture(int x, int y)
 {
@@ -284,7 +473,7 @@ sf::Image ClassTerrain::Texture(int x, int y)
 	}
 
 	sf::Image& TileMap = *PointeurTileMap;
-	
+
 	char continu_texture_test = 0;
 
 	if (x + 1 < TX && y > 0)
@@ -319,13 +508,13 @@ sf::Image ClassTerrain::Texture(int x, int y)
 	}
 	if (x > 0 && y > 0)
 	{
-	if (Terrain[x - 1][y - 1].Type == test)
-		continu_texture_test = continu_texture_test | (1 << 6);
+		if (Terrain[x - 1][y - 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 6);
 	}
 	if (y > 0)
 	{
-	if (Terrain[x][y - 1].Type == test)
-		continu_texture_test = continu_texture_test | (1 << 7);
+		if (Terrain[x][y - 1].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 7);
 	}
 
 	if (!(continu_texture_test & 0b10101010))
@@ -334,11 +523,11 @@ sf::Image ClassTerrain::Texture(int x, int y)
 	}
 	else
 	{
-		if (!(continu_texture_test & (1 << 1)) && !(continu_texture_test & 0b00001000))
+		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 80, 16, 16));
 		}
-		else if ((continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 3)))
+		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
 		{
 			if (continu_texture_test & 0b00000100)
 			{
@@ -349,20 +538,20 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 16, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 3)))
+		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(16, 80, 16, 16));
 		}
-		else if (!(continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 3)))
+		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 48, 16, 16));
 		}
 
-		if (!(continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 3)))
+		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 80, 16, 16));
 		}
-		else if ((continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 3)))
+		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
 		{
 			if (continu_texture_test & 0b00010000)
 			{
@@ -373,20 +562,20 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 16, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 3)))
+		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 80, 16, 16));
 		}
-		else if (!(continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 3)))
+		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 48, 16, 16));
 		}
 
-		if (!(continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 7)))
+		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 32, 16, 16));
 		}
-		else if ((continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 7)))
+		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
 		{
 			if (continu_texture_test & 0b01000000)
 			{
@@ -397,37 +586,37 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 0, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 7)))
+		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 32, 16, 16));
 		}
-		else if (!(continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 7)))
+		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 64, 16, 16));
 		}
 
-		if (!(continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 7)))
+		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
 		{
-			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 32, 16, 16));
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(48, 32, 16, 16));
 		}
-		else if ((continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 7)))
+		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
 		{
 			if (continu_texture_test & 0b00000001)
 			{
-				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(16, 64, 16, 16));
+				ImageTexture.copy(TileMap, 16, 0, sf::IntRect(16, 64, 16, 16));
 			}
 			else
 			{
-				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 0, 16, 16));
+				ImageTexture.copy(TileMap, 16, 0, sf::IntRect(48, 0, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 7)))
+		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
 		{
-			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(16, 32, 16, 16));
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(16, 32, 16, 16));
 		}
-		else if (!(continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 7)))
+		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
 		{
-			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 64, 16, 16));
+			ImageTexture.copy(TileMap, 16, 0, sf::IntRect(48, 64, 16, 16));
 		}
 	}
 
@@ -450,9 +639,11 @@ void ClassTerrain::MAJTexture(int i_mini, int j_mini, int i_max, int j_max)
 	{
 		for (int j = j_mini; j < j_max; j++)
 		{
-			ImgTerrain.copy(Texture(i, j), i*_size, j*_size, sf::IntRect(0, 0, _size, _size));
+			ImgTerrain.copy(Texture(i, j), i*_size, j*_size);
 		}
 	}
+
+	ImgTerrain.flipVertically();
 
 	TextTerrain.loadFromImage(ImgTerrain);
 
