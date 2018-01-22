@@ -285,11 +285,13 @@ sf::Image Texture(int x, int y, CaseTerrain** Terrain)
 
 	char continu_texture_test = 0;
 
-	if (x + 1 < _nb_case_w)
+	if (x + 1 < _nb_case_w && y > 0)
 	{
 		if (Terrain[x + 1][y - 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 0);
-
+	}
+	if (x + 1 < _nb_case_w)
+	{
 		if (Terrain[x + 1][y].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 1);
 	}
@@ -302,19 +304,27 @@ sf::Image Texture(int x, int y, CaseTerrain** Terrain)
 	{
 		if (Terrain[x][y + 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 3);
-
+	}
+	if (y + 1 < _nb_case_w && x > 0)
+	{
 		if (Terrain[x - 1][y + 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 4);
 	}
-
-	if (Terrain[x - 1][y].Type == test)
-		continu_texture_test = continu_texture_test | (1 << 5);
-
+	if (x > 0)
+	{
+		if (Terrain[x - 1][y].Type == test)
+			continu_texture_test = continu_texture_test | (1 << 5);
+	}
+	if (x > 0 && y > 0)
+	{
 	if (Terrain[x - 1][y - 1].Type == test)
 		continu_texture_test = continu_texture_test | (1 << 6);
-
+	}
+	if (y > 0)
+	{
 	if (Terrain[x][y - 1].Type == test)
 		continu_texture_test = continu_texture_test | (1 << 7);
+	}
 
 	if (!(continu_texture_test & 0b10101010))
 	{
