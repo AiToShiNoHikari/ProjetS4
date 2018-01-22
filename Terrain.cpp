@@ -82,30 +82,14 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 
 void Camera(sf::RenderWindow& window)
 {
-	CaseTerrain** Terrain = new CaseTerrain*[_nb_case_w];
-	for (int i = 0; i < _nb_case_w; i++)
-	{
-		Terrain[i] = new CaseTerrain[_nb_case_h];
-
-		for (int j = 0; j < _nb_case_h; j++)
-		{
-			Terrain[i][j].Type = (CaseTerrain::TypeTerrain) (rand() % 6);
-		}
-	}
+	bool HaveChange = true;
 
 	sf::RectangleShape TextureCase(sf::Vector2f(_size, _size));
 	sf::RenderTexture RTextureSol;
 
-
-	/*sf::Texture T;
-	if (!T.loadFromFile("images/sol.jpg"))
-	{
-		std::cout << "Erreur !" << std::endl;
-	}
-
-	TextureCase.setTexture(&T);*/
-
 	RTextureSol.create(window.getSize().x, window.getSize().y);
+
+	ClassTerrain ObjTerrain(100, 100, RTextureSol);
 
 	sf::Sprite Ssol;
 	sf::Texture Tsol;
@@ -126,7 +110,8 @@ void Camera(sf::RenderWindow& window)
 		vue.setSize(window.getSize().x, window.getSize().y);
 		vue.zoom(zoom);
 
-		MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+		ObjTerrain.Affiche();
+		Tsol = RTextureSol.getTexture();
 
 		Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 	}
@@ -155,8 +140,7 @@ void Camera(sf::RenderWindow& window)
 
 				vue.setSize(window.getSize().x, window.getSize().y);
 				vue.zoom(zoom);
-
-				MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+				HaveChange = true;
 
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
@@ -176,8 +160,7 @@ void Camera(sf::RenderWindow& window)
 					//vue.setCenter(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 					vue.zoom(1.1f);
 				}
-
-				MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+				HaveChange = true;
 			}
 		}
 
@@ -192,8 +175,7 @@ void Camera(sf::RenderWindow& window)
 			{
 				vue.move(0, -4);
 			}
-
-			MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
@@ -206,8 +188,7 @@ void Camera(sf::RenderWindow& window)
 			{
 				vue.move(0, 4);
 			}
-
-			MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
@@ -220,8 +201,7 @@ void Camera(sf::RenderWindow& window)
 			{
 				vue.move(-4, 0);
 			}
-
-			MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
@@ -234,8 +214,27 @@ void Camera(sf::RenderWindow& window)
 			{
 				vue.move(4, 0);
 			}
+			HaveChange = true;
+		}
 
-			MAJTexture(vue, RTextureSol, TextureCase, Tsol, Terrain);
+		if (HaveChange)
+		{
+			sf::Vector2f position;
+
+			position.x = vue.getCenter().x;
+			position.y = vue.getCenter().y;
+
+			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
+
+
+			RTextureSol.setView(vue);
+
+			RTextureSol.clear();
+
+			ObjTerrain.Affiche();
+			Tsol = RTextureSol.getTexture();
+
+			HaveChange = false;
 		}
 
 		Ssol.setTexture(Tsol);
@@ -246,9 +245,13 @@ void Camera(sf::RenderWindow& window)
 	}
 }
 
+ClassTerrain::ClassTerrain(int x, int y, sf::RenderTarget& Render) : Render(Render)
+{
+	Redimension(x, y);
+};
 
 /***** cette fonction te donnera l'image de la texture de la case *****/
-sf::Image Texture(int x, int y, CaseTerrain** Terrain)
+sf::Image ClassTerrain::Texture(int x, int y)
 {
 	sf::Image ImageTexture;
 
@@ -282,30 +285,29 @@ sf::Image Texture(int x, int y, CaseTerrain** Terrain)
 
 	sf::Image& TileMap = *PointeurTileMap;
 	
-
 	char continu_texture_test = 0;
 
-	if (x + 1 < _nb_case_w && y > 0)
+	if (x + 1 < TX && y > 0)
 	{
 		if (Terrain[x + 1][y - 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 0);
 	}
-	if (x + 1 < _nb_case_w)
+	if (x + 1 < TX)
 	{
 		if (Terrain[x + 1][y].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 1);
 	}
-	if (x + 1 < _nb_case_w && y + 1 < _nb_case_h)
+	if (x + 1 < TX && y + 1 < TY)
 	{
 		if (Terrain[x + 1][y + 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 2);
 	}
-	if (y + 1 < _nb_case_h)
+	if (y + 1 < TY)
 	{
 		if (Terrain[x][y + 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 3);
 	}
-	if (y + 1 < _nb_case_w && x > 0)
+	if (y + 1 < TY && x > 0)
 	{
 		if (Terrain[x - 1][y + 1].Type == test)
 			continu_texture_test = continu_texture_test | (1 << 4);
@@ -431,3 +433,63 @@ sf::Image Texture(int x, int y, CaseTerrain** Terrain)
 
 	return ImageTexture;
 };
+
+void ClassTerrain::MAJTexture(int i_mini, int j_mini, int i_max, int j_max)
+{
+	if (i_mini < 0)
+	{
+		ImgTerrain.create(TX*_size, TY*_size);
+		i_mini = 0;
+		j_mini = 0;
+		i_max = TX;
+		j_max = TY;
+	}
+
+
+	for (int i = i_mini; i < i_max; i++)
+	{
+		for (int j = j_mini; j < j_max; j++)
+		{
+			ImgTerrain.copy(Texture(i, j), i*_size, j*_size, sf::IntRect(0, 0, _size, _size));
+		}
+	}
+
+	TextTerrain.loadFromImage(ImgTerrain);
+
+	SprtTerrain.setTexture(TextTerrain);
+
+	SprtTerrain.setTextureRect(sf::IntRect(0, 0, TextTerrain.getSize().x, TextTerrain.getSize().y));
+}
+
+void ClassTerrain::Redimension(int x, int y)
+{
+	if (Terrain != NULL)
+	{
+		for (int i = 0; i < TX; i++)
+		{
+			delete(Terrain[i]);
+		}
+		delete(Terrain);
+	}
+
+	TX = x;
+	TY = y;
+
+	Terrain = new CaseTerrain*[TX];
+	for (int i = 0; i < TX; i++)
+	{
+		Terrain[i] = new CaseTerrain[TY];
+
+		for (int j = 0; j < TY; j++)
+		{
+			Terrain[i][j].Type = (CaseTerrain::TypeTerrain) (rand() % 6);
+		}
+	}
+
+	MAJTexture();
+}
+
+void ClassTerrain::Affiche()
+{
+	Render.draw(SprtTerrain);
+}
