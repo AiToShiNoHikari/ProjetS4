@@ -125,7 +125,45 @@ namespace Interface
 	private:
 
 	};
+
+	class Texte_Entry_Zone : public Bouton
+	{
+
+		sf::RenderTexture RenderText;
+		sf::Texture texture;
+		sf::Sprite SpriteText;
+
+		float mx = 0, my = 0;
+		bool monol = false;
+
+		int max_char = 0;
+
+	public:
+		enum entry_result { standard = 0, enter = 1, tab = 2, bad_event = -1 };
+
+		Texte_Entry_Zone(sf::FloatRect rect, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Texte_Entry_Zone(sf::Vector2f position, sf::Vector2f size, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Texte_Entry_Zone(float x, float y, float w, float h, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Texte_Entry_Zone(sf::FloatRect rect, sf::RenderWindow& window, bool is_selected = false);
+		Texte_Entry_Zone(sf::Vector2f position, sf::Vector2f size, sf::RenderWindow& window, bool is_selected = false);
+		Texte_Entry_Zone(float x, float y, float w, float h, sf::RenderWindow& window, bool is_selected = false);
+
+		void update_state(sf::Event event);
+
+		std::string get_text();
+
+		entry_result entry(sf::Event event);
+
+		void select();
+		void unselect();
+
+		void generation_text();
+
+		void affiche();
+
+		void set_marge(float x = 0, float y = 0);
+		void set_monol(bool is = true);
+		void set_max_char(int nmx = 0);
+	};
 };
-
-
 #endif

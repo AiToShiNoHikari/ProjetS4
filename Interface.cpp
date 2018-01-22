@@ -582,4 +582,327 @@ namespace Interface
 
 		render.draw(text);
 	};
+
+	/** Texte_Entry_Zone **/
+
+	Texte_Entry_Zone::Texte_Entry_Zone(sf::FloatRect rect, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Bouton(rect, render, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+	Texte_Entry_Zone::Texte_Entry_Zone(sf::Vector2f position, sf::Vector2f size, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Bouton(position, size, render, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+	Texte_Entry_Zone::Texte_Entry_Zone(float x, float y, float w, float h, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Bouton(x, y, w, h, render, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+	Texte_Entry_Zone::Texte_Entry_Zone(sf::FloatRect rect, sf::RenderWindow& window, bool is_selected) : Bouton(rect, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+	Texte_Entry_Zone::Texte_Entry_Zone(sf::Vector2f position, sf::Vector2f size, sf::RenderWindow& window, bool is_selected) : Bouton(position, size, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+	Texte_Entry_Zone::Texte_Entry_Zone(float x, float y, float w, float h, sf::RenderWindow& window, bool is_selected) : Bouton(x, y, w, h, window)
+	{
+		if (is_selected)
+		{
+			current_state = selected;
+		}
+		else
+		{
+			current_state = Interface::Bouton::standard;
+		}
+	};
+
+	void Texte_Entry_Zone::update_state(sf::Event event)
+	{
+		if (event.type != sf::Event::MouseButtonPressed && event.type != sf::Event::MouseButtonReleased && event.type != sf::Event::MouseMoved)
+			return;
+
+		sf::Vector2i window_pos = sf::Mouse::getPosition(window);
+
+		sf::Vector2f render_pos = render.mapPixelToCoords(window_pos);
+
+		state new_state;
+
+		if (rect.contains(render_pos))
+		{
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				new_state = selected;
+			}
+			else
+			{
+				if (current_state == selected)
+				{
+					new_state = selected;
+				}
+				else
+				{
+					new_state = overlay;
+				}
+			}
+		}
+		else
+		{
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				new_state = Interface::Bouton::standard;
+			}
+			else
+			{
+				if (current_state == selected)
+				{
+					new_state = selected;
+				}
+				else
+				{
+					new_state = Interface::Bouton::standard;
+				}
+			}
+		}
+
+		if (new_state != current_state)
+		{
+			current_state = new_state;
+			set_bg();
+			generation_text();
+		}
+	};
+
+	std::string Texte_Entry_Zone::get_text()
+	{
+		return text.getString();
+	};
+
+	Texte_Entry_Zone::entry_result Texte_Entry_Zone::entry(sf::Event event)
+	{
+		std::string msg = text.getString();
+
+		if (current_state == selected)
+		{
+			if (sf::Event::TextEntered == event.type)
+			{
+				switch (event.text.unicode)
+				{
+				case 0x0A:
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+					{
+						if (!monol)
+							msg += "\n";
+						else
+							return enter;
+					}
+					else
+					{
+						return enter;
+					}
+					break;
+				case 0x0D:
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+					{
+						if (!monol)
+							msg += "\n";
+						else
+							return enter;
+					}
+					else
+					{
+						return enter;
+					}
+					break;
+				case 0x0A0D:
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+					{
+						if (!monol)
+							msg += "\n";
+						else
+							return enter;
+					}
+					else
+					{
+						return enter;
+					}
+					break;
+				case 0x09:
+					return tab;
+					break;
+				case 0x08:
+					if (msg.size())
+						msg.pop_back();
+					break;
+				case 0x7F:
+					msg.clear();
+					break;
+				case 0x20:
+					if (msg.size())
+						msg += event.text.unicode;
+					break;
+				default:
+					if (!((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) ^ (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt))))
+						msg += event.text.unicode;
+					break;
+				}
+
+				while (max_char > 0 && msg.size() > max_char)
+				{
+					msg.pop_back();
+				}
+
+				text.setString(msg);
+
+				generation_text();
+
+				return standard;
+			}
+
+			return bad_event;
+		}
+
+		return standard;
+
+	};
+
+	void Texte_Entry_Zone::select()
+	{
+		current_state = selected;
+		generation_text();
+		generation_bg();
+	};
+	void Texte_Entry_Zone::unselect()
+	{
+		current_state = Interface::Bouton::standard;
+		generation_text();
+		generation_bg();
+	};
+
+	void Texte_Entry_Zone::generation_text()
+	{
+		set_text();
+
+		float px = 0, py = 0, w = (rect.width - (2 * mx)), h = (rect.height - (2 * my));
+
+		SpriteText.setTextureRect(sf::IntRect(0, 0, w, h));
+
+		RenderText.create(w, h);
+		RenderText.clear(sf::Color::Transparent);
+
+		sf::FloatRect textr = text.getGlobalBounds();
+
+		if (aligne_text & Center_Horizontal)
+		{
+			px = (textr.width < rect.width) ? (textr.width / 2.0) : (textr.width - ((rect.width / 2.0) - mx));
+		}
+		else if (aligne_text & Droite)
+		{
+			px = textr.width - ((rect.width / 2.0) - mx);
+		}
+		else
+		{
+			px = (textr.width < rect.width) ? ((rect.width / 2.0) - mx) : (textr.width - ((rect.width / 2.0) - mx));
+		}
+
+		if (aligne_text & Center_Vertical)
+		{
+			py = (textr.height < rect.height) ? (textr.height / 2.0) : (textr.height - ((rect.height / 2.0) - my));
+		}
+		else if (aligne_text & Bas)
+		{
+			py = textr.height - ((rect.height / 2.0) - my);
+		}
+		else
+		{
+			py = (textr.height < rect.height) ? ((rect.height / 2.0) - my) : (textr.height - ((rect.height / 2.0) - my));
+		}
+
+		SpriteText.setPosition(rect.left + mx, rect.top + my);
+
+		px -= ((text_pos_correction_x != NULL) ? text_pos_correction_x[current_state] : 0);
+		py -= ((text_pos_correction_y != NULL) ? text_pos_correction_y[current_state] : 0);
+
+		sf::View view(sf::Vector2f(px, py), sf::Vector2f((rect.width - (2 * mx)), (rect.height - (2 * my))));
+
+		RenderText.setView(view);
+
+		text.setPosition(0, 0);
+		text.setOrigin(0, 0);
+
+		RenderText.draw(text);
+		RenderText.display();
+
+		texture = RenderText.getTexture();
+
+		SpriteText.setTexture(texture);
+
+	};
+
+	void Texte_Entry_Zone::affiche()
+	{
+		switch (bg_type)
+		{
+		case Interface::Bouton::Rect:
+			render.draw(*((sf::RectangleShape*)background));
+			break;
+		case Interface::Bouton::Circle:
+			render.draw(*((sf::CircleShape*)background));
+			break;
+		case Interface::Bouton::Sprite:
+			render.draw(*((sf::Sprite*)background));
+			break;
+		}
+
+		render.draw(SpriteText);
+	};
+
+	void Texte_Entry_Zone::set_marge(float x, float y)
+	{
+		mx = x;
+		my = y;
+	};
+	void Texte_Entry_Zone::set_monol(bool is)
+	{
+		monol = is;
+	};
+	void Texte_Entry_Zone::set_max_char(int nmx)
+	{
+		max_char = nmx;
+	};
 };
