@@ -334,11 +334,11 @@ sf::Image ClassTerrain::Texture(int x, int y)
 	}
 	else
 	{
-		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
+		if (!(continu_texture_test & (1 << 1)) && !(continu_texture_test & 0b00001000))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 80, 16, 16));
 		}
-		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
+		else if ((continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 3)))
 		{
 			if (continu_texture_test & 0b00000100)
 			{
@@ -349,20 +349,20 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 16, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b00001000))
+		else if ((continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 3)))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(16, 80, 16, 16));
 		}
-		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b00001000))
+		else if (!(continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 3)))
 		{
 			ImageTexture.copy(TileMap, 16, 16, sf::IntRect(48, 48, 16, 16));
 		}
 
-		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
+		if (!(continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 3)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 80, 16, 16));
 		}
-		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
+		else if ((continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 3)))
 		{
 			if (continu_texture_test & 0b00010000)
 			{
@@ -373,20 +373,20 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 16, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b00001000))
+		else if ((continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 3)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(32, 80, 16, 16));
 		}
-		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b00001000))
+		else if (!(continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 3)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(0, 48, 16, 16));
 		}
 
-		if (!(continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
+		if (!(continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 32, 16, 16));
 		}
-		else if ((continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
+		else if ((continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 7)))
 		{
 			if (continu_texture_test & 0b01000000)
 			{
@@ -397,20 +397,20 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 0, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & 0b00100000) && !(continu_texture_test & 0b10000000))
+		else if ((continu_texture_test & (1 << 5)) && !(continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(32, 32, 16, 16));
 		}
-		else if (!(continu_texture_test & 0b00100000) && (continu_texture_test & 0b10000000))
+		else if (!(continu_texture_test & (1 << 5)) && (continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 0, sf::IntRect(0, 64, 16, 16));
 		}
 
-		if (!(continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
+		if (!(continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 32, 16, 16));
 		}
-		else if ((continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
+		else if ((continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 7)))
 		{
 			if (continu_texture_test & 0b00000001)
 			{
@@ -421,11 +421,11 @@ sf::Image ClassTerrain::Texture(int x, int y)
 				ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 0, 16, 16));
 			}
 		}
-		else if ((continu_texture_test & 0b00000010) && !(continu_texture_test & 0b10000000))
+		else if ((continu_texture_test & (1 << 1)) && !(continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(16, 32, 16, 16));
 		}
-		else if (!(continu_texture_test & 0b00000010) && (continu_texture_test & 0b10000000))
+		else if (!(continu_texture_test & (1 << 1)) && (continu_texture_test & (1 << 7)))
 		{
 			ImageTexture.copy(TileMap, 0, 16, sf::IntRect(48, 64, 16, 16));
 		}
