@@ -84,18 +84,17 @@ void Camera(sf::RenderWindow& window)
 {
 	bool HaveChange = true;
 
-	sf::RectangleShape TextureCase(sf::Vector2f(_size, _size));
 	sf::RenderTexture RTextureSol;
 
 	RTextureSol.create(window.getSize().x, window.getSize().y);
 
-	ClassTerrain ObjTerrain(100, 100, RTextureSol);
+	ClassTerrain ObjTerrain(250, 250, RTextureSol);
 
 	sf::Sprite Ssol;
 	sf::Texture Tsol;
 	sf::View vue;
 
-	vue.setCenter(_size * _nb_case_w / 2, _size * _nb_case_h / 2);
+	vue.setCenter(_size * ObjTerrain.TX / 2, _size * ObjTerrain.TY / 2);
 
 	// on met à jour la vue, avec la nouvelle taille de la fenêtre
 	{
@@ -184,7 +183,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < _nb_case_h * _size)
+			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size)
 			{
 				vue.move(0, 4);
 			}
@@ -210,7 +209,7 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < _nb_case_w * _size)
+			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size)
 			{
 				vue.move(4, 0);
 			}
