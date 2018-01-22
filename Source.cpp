@@ -16,7 +16,7 @@ void main()
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
-	if (Ressource::TileMapBase.loadFromFile("./Ressource/Image/TileBase.jpg"))
+	if (Ressource::TileMapBase.loadFromFile("./Ressource/Image/TileMapBase.jpg"))
 	{
 		//Non Error
 	}
@@ -69,6 +69,8 @@ void main()
 	{
 		//Error
 	}
+
+	srand(time(NULL));
 
 	sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "ProjetSemestre4");
 	window.setVerticalSyncEnabled(true);

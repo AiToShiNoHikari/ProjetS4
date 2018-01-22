@@ -1,17 +1,10 @@
-﻿  Source.cpp
-d:\b2\s4\projet\projet ia\projet ia\source.cpp(12): warning C4326: le type de retour de 'main' doit être 'int' au lieu de 'void'
+﻿  IA.cpp
+d:\b2\s4\projet\projet ia\projet ia\ia.h(98): warning C4240: extension non standard utilisée : accès à 'IA::Type_Destination' défini maintenant comme 'public', était précédemment défini comme 'private'
+  d:\b2\s4\projet\projet ia\projet ia\ia.h(69): note: voir la déclaration de 'IA::Type_Destination'
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(200): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
   Génération de code en cours...
-  Compilation en cours...
+d:\b2\s4\projet\projet ia\projet ia\ia.h(64): warning C4715: 'Pheromone::operator[]' : les chemins de contrôle ne retournent pas tous une valeur
+  Ignoré... (aucune modification pertinente détectée)
   Terrain.cpp
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(33): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(36): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(40): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(43): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(73): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(119): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(126): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(148): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(156): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-  IA.cpp
-  Génération de code en cours...
+  Source.cpp
   Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe
