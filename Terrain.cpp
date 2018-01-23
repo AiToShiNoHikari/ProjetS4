@@ -163,7 +163,7 @@ void Camera(sf::RenderWindow& window)
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			sf::Vector2f position;
 
@@ -176,7 +176,7 @@ void Camera(sf::RenderWindow& window)
 			}
 			HaveChange = true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			sf::Vector2f position;
 
