@@ -178,11 +178,12 @@ void IA::analyse()
 
 		if (searched != Pheromone::Type::none)
 		{
+			float value = 0;
+
 			for (int i = min_x; i < max_x; i++)
 			{
 				for (int j = min_y; j < max_y; j++)
 				{
-					float value = 0;
 					float& valuec = Pheromone_Table[i][j][searched];
 					
 					if (valuec > 0)
@@ -191,6 +192,7 @@ void IA::analyse()
 						{
 							cx = i;
 							cy = j;
+							value = valuec;
 						}
 						else if (value = valuec)
 						{
@@ -198,6 +200,7 @@ void IA::analyse()
 							{
 								cx = i;
 								cy = j;
+								value = valuec;
 							}
 						}
 					}
@@ -238,6 +241,74 @@ void IA::change_dest()
 {
 	if (destination != home)
 	{
+		switch (Terrain.Terrain[case_x][case_y].Type)
+		{
+		case CaseTerrain::Base:
+			contenue = enemy;
+			break;
+		case CaseTerrain::Eau:
+			contenue = water;
+			break;
+		case CaseTerrain::Nourriture:
+			contenue = food;
+			break;
+		default:
+			contenue = none;
+			break;
+		}
 
+		destination = home;
+	}
+	else if (destination == home)
+	{
+		contenue = home;
+
+		destination = food;
+	}
+
+	Pheromone_current = Pheromone_max;
+};
+
+void IA::palce_pheromone()
+{
+	Pheromone::Type place;
+	switch (contenue)
+	{
+	case IA::home:
+		place = Pheromone::Type::home;
+		break;
+	case IA::food:
+		place = Pheromone::Type::food;
+		break;
+	case IA::water:
+		place = Pheromone::Type::water;
+		break;
+	case IA::enemy:
+		place = Pheromone::Type::enemy;
+		break;
+	default:
+		place = Pheromone::Type::none;
+		break;
+	}
+	
+	if (place != Pheromone::Type::none)
+	{
+		float& valuec = Pheromone_Table[case_x][case_y][place];
+
+		if (valuec < Pheromone_current)
+		{
+			valuec = Pheromone_current;
+		}
+		else if (valuec > Pheromone_current)
+		{
+			Pheromone_current = (int)valuec;
+		}
+
+		Pheromone_current--;
+
+		if (Pheromone_current <= 0)
+		{
+			change_dest();
+		}
 	}
 };

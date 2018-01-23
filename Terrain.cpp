@@ -15,6 +15,7 @@ void Menu(sf::RenderWindow& window)
 		window.display();
 	}
 }
+
 /*
 void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShape& TextureCase, sf::Texture& Tsol, CaseTerrain** Terrain)
 {
@@ -166,7 +167,7 @@ void Camera(sf::RenderWindow& window)
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			sf::Vector2f position;
 
@@ -179,7 +180,7 @@ void Camera(sf::RenderWindow& window)
 			}
 			HaveChange = true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			sf::Vector2f position;
 
@@ -226,19 +227,22 @@ void Camera(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
-
-
 			RTextureSol.setView(vue);
 
 			RTextureSol.clear();
 
 			ObjTerrain.Affiche();
+
+			RTextureSol.display();
+
 			Tsol = RTextureSol.getTexture();
 
 			HaveChange = false;
 
 			Ssol.setTexture(Tsol);
+
+			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
+
 		}
 
 
@@ -645,8 +649,6 @@ void ClassTerrain::MAJTexture(int i_mini, int j_mini, int i_max, int j_max)
 			ImgTerrain.copy(Texture(i, j), i*_size, j*_size);
 		}
 	}
-
-	//ImgTerrain.flipVertically();
 
 	TextTerrain.loadFromImage(ImgTerrain);
 

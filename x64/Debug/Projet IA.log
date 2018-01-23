@@ -1,8 +1,8 @@
 ﻿  Terrain.cpp
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(98): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(103): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(110): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(133): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(141): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(163): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(99): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(104): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(111): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(134): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(142): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(164): warning C4305: 'argument' : troncation de 'double' à 'float'
   Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe

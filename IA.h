@@ -107,6 +107,7 @@ public:
 	void deplacement();
 	void analyse();
 	void change_dest();
+	void palce_pheromone();
 	void action();
 
 private:
