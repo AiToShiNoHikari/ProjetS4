@@ -20,11 +20,11 @@
 
 #include <string>
 
-#define _nb_case_w 500
-#define _nb_case_h 500
 #define _size 32
 
 #define PI 3.14159265
+
+class ClassTerrain;
 
 struct CaseTerrain;
 
@@ -66,9 +66,7 @@ struct Pheromone
 
 class IA
 {
-	enum Type_Destination;
-
-	CaseTerrain** Terrain;
+	ClassTerrain& Terrain;
 
 	Pheromone** Pheromone_Table;
 
@@ -104,7 +102,7 @@ public:
 
 	int Pheromone_current = 0;
 
-	IA(CaseTerrain** Terrain);
+	IA(ClassTerrain& Terrain);
 
 	void deplacement();
 	void analyse();

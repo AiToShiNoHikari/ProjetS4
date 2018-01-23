@@ -1,13 +1,11 @@
 #include "IA.h"
 
-IA::IA(CaseTerrain** Terrain)
+IA::IA(ClassTerrain& Terrain) : Terrain(Terrain)
 {
-	this->Terrain = Terrain;
-
-	Pheromone_Table = new Pheromone*[_nb_case_w];
-	for (int i = 0; i < _nb_case_w; i++)
+	Pheromone_Table = new Pheromone*[Terrain.TX];
+	for (int i = 0; i < Terrain.TX; i++)
 	{
-		Pheromone_Table[i] = new Pheromone[_nb_case_h];
+		Pheromone_Table[i] = new Pheromone[Terrain.TY];
 	}
 
 };
@@ -25,9 +23,9 @@ void IA::analyse()
 	case_x = (int)x, case_y = (int)y;
 
 	int min_x = ((int)(x - detection_range))<0 ? 0 : ((int)(x - detection_range));
-	int max_x = ((int)(x + detection_range)) >= _nb_case_w ? _nb_case_w : ((int)(x + detection_range));
+	int max_x = ((int)(x + detection_range)) >= Terrain.TX ? Terrain.TX : ((int)(x + detection_range));
 	int min_y = ((int)(y - detection_range))<0 ? 0 : ((int)(y - detection_range));
-	int max_y = ((int)(y + detection_range)) >= _nb_case_h ? _nb_case_h : ((int)(y + detection_range));
+	int max_y = ((int)(y + detection_range)) >= Terrain.TY ? Terrain.TY : ((int)(y + detection_range));
 	
 	//analise du terrain et change la direction ou la destination en fonction du resulta
 	for (int i = min_x; i < max_x; i++)
@@ -37,7 +35,7 @@ void IA::analyse()
 			switch (destination)
 			{
 			case IA::home:
-				if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
 				{
 					if (case_x == cx && case_y == cy)
 					{
@@ -53,7 +51,7 @@ void IA::analyse()
 				}
 				break;
 			case IA::food:
-				if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture)
+				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture)
 				{
 					if (case_x == cx && case_y == cy)
 					{
@@ -69,7 +67,7 @@ void IA::analyse()
 				}
 				break;
 			case IA::water:
-				if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
+				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
 				{
 					if (case_x == cx && case_y == cy)
 					{
@@ -85,7 +83,7 @@ void IA::analyse()
 				}
 				break;
 			case IA::enemy:
-				if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
 				{
 					if (case_x == cx && case_y == cy)
 					{
@@ -101,7 +99,7 @@ void IA::analyse()
 				}
 				break;
 			case IA::search:
-				if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture || Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
+				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture || Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
 				{
 					if (case_x == cx && case_y == cy)
 					{
