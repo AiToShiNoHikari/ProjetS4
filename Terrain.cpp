@@ -15,7 +15,7 @@ void Menu(sf::RenderWindow& window)
 		window.display();
 	}
 }
-
+/*
 void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShape& TextureCase, sf::Texture& Tsol, CaseTerrain** Terrain)
 {
 	sf::Vector2f position;
@@ -79,6 +79,7 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 
 	Tsol = RTextureSol.getTexture();
 }
+//*/
 
 void Camera(sf::RenderWindow& window)
 {
@@ -149,22 +150,23 @@ void Camera(sf::RenderWindow& window)
 			}
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
+				sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
+
 				if (event.mouseWheel.delta == 1)
 				{
-					//vue.setCenter(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+					vue.setCenter(mousepos.x, mousepos.y);
 					vue.zoom(0.9f);
 				}
 				if (event.mouseWheel.delta == -1)
 				{					
-					//vue.setCenter(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-					//vue.zoom(1.1f); //ct pas le meme coef
+					vue.setCenter(mousepos.x, mousepos.y);
 					vue.zoom(1.0/0.9f);
 				}
 				HaveChange = true;
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			sf::Vector2f position;
 
@@ -177,7 +179,7 @@ void Camera(sf::RenderWindow& window)
 			}
 			HaveChange = true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			sf::Vector2f position;
 
@@ -235,9 +237,10 @@ void Camera(sf::RenderWindow& window)
 			Tsol = RTextureSol.getTexture();
 
 			HaveChange = false;
+
+			Ssol.setTexture(Tsol);
 		}
 
-		Ssol.setTexture(Tsol);
 
 		window.clear();
 		window.draw(Ssol);
@@ -643,7 +646,7 @@ void ClassTerrain::MAJTexture(int i_mini, int j_mini, int i_max, int j_max)
 		}
 	}
 
-	ImgTerrain.flipVertically();
+	//ImgTerrain.flipVertically();
 
 	TextTerrain.loadFromImage(ImgTerrain);
 
