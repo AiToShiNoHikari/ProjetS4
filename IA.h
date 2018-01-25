@@ -66,6 +66,12 @@ struct Pheromone
 
 class IA
 {
+	sf::RenderTarget& render;
+
+	sf::Texture& texture;
+
+	sf::RectangleShape Sprite;
+
 	ClassTerrain& Terrain;
 
 	Pheromone** Pheromone_Table;
@@ -80,11 +86,11 @@ class IA
 
 	//parametre de l'IA
 
-	float speed = 1;
+	float speed = 0.1;
 
-	float detection_range = 1;
+	float detection_range = 3;
 
-	int Pheromone_max = 2000;
+	int Pheromone_max = 10;
 
 public:
 	enum Type_Destination
@@ -102,7 +108,7 @@ public:
 
 	int Pheromone_current = 0;
 
-	IA(ClassTerrain& Terrain);
+	IA(int x, int y, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, Pheromone**Pheromone_Table);
 
 	void deplacement();
 	void analyse();
@@ -110,8 +116,12 @@ public:
 	void palce_pheromone();
 	void action();
 
+	void affiche();
+
 private:
 
 };
+
+void Simulation(sf::RenderWindow& window);
 
 #endif

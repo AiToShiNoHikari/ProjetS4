@@ -12,6 +12,8 @@ struct Ressource
 	static sf::Image TileMapRoche;
 	static sf::Image TileMapSable;
 	static sf::Image TileMapNourriture;
+
+	static sf::Texture Fourmie;
 };
 
 #endif

@@ -143,6 +143,8 @@ void Camera(sf::RenderWindow& window)
 				vue.zoom(zoom);
 				HaveChange = true;
 
+				Tsol = RTextureSol.getTexture();
+
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
 			if (event.type == sf::Event::Closed)
@@ -675,11 +677,6 @@ void ClassTerrain::Redimension(int x, int y)
 	for (int i = 0; i < TX; i++)
 	{
 		Terrain[i] = new CaseTerrain[TY];
-
-		for (int j = 0; j < TY; j++)
-		{
-			Terrain[i][j].Type = (CaseTerrain::TypeTerrain) (rand() % 6);
-		}
 	}
 
 	MAJTexture();

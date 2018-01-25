@@ -1,8 +1,14 @@
-﻿  Terrain.cpp
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(99): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(104): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(111): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(134): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(142): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\terrain.cpp(164): warning C4305: 'argument' : troncation de 'double' à 'float'
+﻿  IA.cpp
+d:\b2\s4\projet\projet ia\projet ia\ia.h(89): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(5): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(6): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(231): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(304): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(381): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(386): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(394): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(419): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(428): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(454): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.h(64): warning C4715: 'Pheromone::operator[]' : les chemins de contrôle ne retournent pas tous une valeur
   Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe

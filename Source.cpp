@@ -8,6 +8,8 @@ sf::Image Ressource::TileMapRoche;
 sf::Image Ressource::TileMapSable;
 sf::Image Ressource::TileMapNourriture;
 
+sf::Texture Ressource::Fourmie;
+
 void main()
 {
 #ifdef _DEBUG
@@ -70,6 +72,15 @@ void main()
 		//Error
 	}
 
+	if (Ressource::Fourmie.loadFromFile("./Ressource/Image/Fourmi.png"))
+	{
+		//Non Error
+	}
+	else
+	{
+		//Error
+	}
+
 	srand(time(NULL));
 
 	sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "ProjetSemestre4");
@@ -77,6 +88,6 @@ void main()
 	window.setFramerateLimit(60);
 
 	//Menu(window);
-	Camera(window);
+	Simulation(window);
 
 }
