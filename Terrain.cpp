@@ -29,7 +29,7 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 	RTextureSol.setView(vue);
 
 	RTextureSol.clear();
-
+	
 	int i_mini = (position.x - vue.getSize().x / 2) / _size;
 	if (i_mini < 0)
 		i_mini = 0;
@@ -43,7 +43,7 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 	int j_max = (position.y + vue.getSize().y / 2) / _size + 1;
 	if (j_max > _nb_case_h)
 		j_max = _nb_case_h;
-
+		
 	for (int i = i_mini; i < i_max; i++)
 	{
 		for (int j = j_mini; j < j_max; j++)
@@ -78,8 +78,7 @@ void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShap
 	RTextureSol.display();
 
 	Tsol = RTextureSol.getTexture();
-}
-//*/
+}*/
 
 void Camera(sf::RenderWindow& window)
 {
@@ -94,7 +93,6 @@ void Camera(sf::RenderWindow& window)
 	sf::Sprite Ssol;
 	sf::Texture Tsol;
 	sf::View vue;
-
 	vue.setCenter(_size * ObjTerrain.TX / 2, _size * ObjTerrain.TY / 2);
 
 	// on met à jour la vue, avec la nouvelle taille de la fenêtre
@@ -166,7 +164,7 @@ void Camera(sf::RenderWindow& window)
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			sf::Vector2f position;
 
@@ -179,7 +177,7 @@ void Camera(sf::RenderWindow& window)
 			}
 			HaveChange = true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			sf::Vector2f position;
 
@@ -219,6 +217,7 @@ void Camera(sf::RenderWindow& window)
 			HaveChange = true;
 		}
 
+
 		if (HaveChange)
 		{
 			sf::Vector2f position;
@@ -237,6 +236,7 @@ void Camera(sf::RenderWindow& window)
 			Tsol = RTextureSol.getTexture();
 
 			HaveChange = false;
+
 
 			Ssol.setTexture(Tsol);
 		}
