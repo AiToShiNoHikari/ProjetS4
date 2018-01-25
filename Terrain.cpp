@@ -16,71 +16,6 @@ void Menu(sf::RenderWindow& window)
 	}
 }
 
-/*
-void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShape& TextureCase, sf::Texture& Tsol, CaseTerrain** Terrain)
-{
-	sf::Vector2f position;
-
-	position.x = vue.getCenter().x;
-	position.y = vue.getCenter().y;
-
-	std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
-
-
-	RTextureSol.setView(vue);
-
-	RTextureSol.clear();
-	
-	int i_mini = (position.x - vue.getSize().x / 2) / _size;
-	if (i_mini < 0)
-		i_mini = 0;
-	int i_max = (position.x + vue.getSize().x / 2) / _size + 1;
-	if (i_max > _nb_case_w)
-		i_max = _nb_case_w;
-
-	int j_mini = (position.y - vue.getSize().y / 2) / _size;
-	if (j_mini < 0)
-		j_mini = 0;
-	int j_max = (position.y + vue.getSize().y / 2) / _size + 1;
-	if (j_max > _nb_case_h)
-		j_max = _nb_case_h;
-		
-	for (int i = i_mini; i < i_max; i++)
-	{
-		for (int j = j_mini; j < j_max; j++)
-		{
-			switch (Terrain[i][j].Type)
-			{
-			case CaseTerrain::Base:
-				TextureCase.setFillColor(sf::Color::Cyan);
-				break;
-			case CaseTerrain::Terre:
-				TextureCase.setFillColor(sf::Color::Green);
-				break;
-			case CaseTerrain::Eau:
-				TextureCase.setFillColor(sf::Color::Blue);
-				break;
-			case CaseTerrain::Roche:
-				TextureCase.setFillColor(sf::Color::Red);
-				break;
-			case CaseTerrain::Sable:
-				TextureCase.setFillColor(sf::Color::Yellow);
-				break;
-			case CaseTerrain::Nourriture:
-				TextureCase.setFillColor(sf::Color::White);
-				break;
-			}
-
-			TextureCase.setPosition(i * _size, j * _size);
-
-			RTextureSol.draw(TextureCase);
-		}
-	}
-	RTextureSol.display();
-
-	Tsol = RTextureSol.getTexture();
-}*/
-
 void Camera(sf::RenderWindow& window)
 {
 	bool HaveChange = true;
@@ -114,6 +49,8 @@ void Camera(sf::RenderWindow& window)
 
 		Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 	}
+
+	int ValZoom = 5;
 
 	while (window.isOpen())
 	{
@@ -150,17 +87,26 @@ void Camera(sf::RenderWindow& window)
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
 				sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
-
+				
 				if (event.mouseWheel.delta == 1)
 				{
 					vue.setCenter(mousepos.x, mousepos.y);
-					vue.zoom(0.9f);
+					if (ValZoom < 10)
+					{
+						ValZoom++;
+						vue.zoom(0.9f);
+					}
 				}
 				if (event.mouseWheel.delta == -1)
-				{					
+				{
 					vue.setCenter(mousepos.x, mousepos.y);
-					vue.zoom(1.0/0.9f);
+					if (ValZoom > 2)
+					{
+						ValZoom--;
+						vue.zoom(1.0 / 0.9f);
+					}
 				}
+
 				HaveChange = true;
 			}
 		}
@@ -174,7 +120,7 @@ void Camera(sf::RenderWindow& window)
 
 			if ((position.y - vue.getSize().y / 2) > 0)
 			{
-				vue.move(0, -4);
+				vue.move(0, -ValZoom);
 			}
 			HaveChange = true;
 		}
@@ -187,7 +133,7 @@ void Camera(sf::RenderWindow& window)
 
 			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size)
 			{
-				vue.move(0, 4);
+				vue.move(0, ValZoom);
 			}
 			HaveChange = true;
 		}
@@ -200,7 +146,7 @@ void Camera(sf::RenderWindow& window)
 
 			if ((position.x - vue.getSize().x / 2) > 0)
 			{
-				vue.move(-4, 0);
+				vue.move(-ValZoom, 0);
 			}
 			HaveChange = true;
 		}
@@ -213,7 +159,7 @@ void Camera(sf::RenderWindow& window)
 
 			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size)
 			{
-				vue.move(4, 0);
+				vue.move(ValZoom, 0);
 			}
 			HaveChange = true;
 		}

@@ -1,9 +1,13 @@
 ﻿  Terrain.cpp
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(96): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(101): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(108): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(131): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(139): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(161): warning C4305: 'argument' : troncation de 'double' à 'float'
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(32): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(37): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(44): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(69): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(77): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(106): warning C4305: 'argument' : troncation de 'double' à 'float'
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(123): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(136): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(149): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4\projet ia\projet ia\terrain.cpp(162): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
   Projet IA.vcxproj -> C:\Users\Thibault\Desktop\ProjetS4\Projet IA\x64\Debug\Projet IA.exe
   Projet IA.vcxproj -> C:\Users\Thibault\Desktop\ProjetS4\Projet IA\x64\Debug\Projet IA.pdb (Partial PDB)
