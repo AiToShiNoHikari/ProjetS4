@@ -1,9 +1,13 @@
 #include "IA.h"
 
-IA::IA(int x, int y, ClassTerrain& Terrain,sf::RenderTarget& render, sf::Texture& texture, Pheromone** Pheromone_Table) : Terrain(Terrain), render(render), texture(texture)
+IA::IA(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain,sf::RenderTarget& render, sf::Texture& texture, Pheromone** Pheromone_Table) : Terrain(Terrain), render(render), texture(texture)
 {
 	this->x = x + 0.5;
 	this->y = y + 0.5;
+
+	this->speed = speed;
+	this->detection_range = detection_range;
+	this->Pheromone_max = Pheromone_max;
 
 	this->Pheromone_Table = Pheromone_Table;
 
@@ -222,8 +226,8 @@ void IA::analyse()
 		} while (cx == 0 && cy == 0);
 	}
 
-	float delta_dest_x = cx - x;
-	float delta_dest_y = cy - y;
+	float delta_dest_x = (cx + 0.5) - x;
+	float delta_dest_y = (cy + 0.5) - y;
 
 	float hypo = hypotf(delta_dest_x, delta_dest_y);
 	float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
@@ -263,7 +267,7 @@ void IA::change_dest()
 
 		destination = home;
 	}
-	else if (Terrain.Terrain[case_x][case_y].Type == CaseTerrain::Base)
+	else //if (Terrain.Terrain[case_x][case_y].Type == CaseTerrain::Base)
 	{
 		contenue = home;
 
@@ -333,7 +337,7 @@ void IA::affiche()
 
 	render.draw(Sprite);
 
-	std::cout << "x: " << x << " y: " << y << " dest: " << destination << std::endl;
+	std::cout << "x: " << x << " y: " << y << " dest: " << destination << " cont: " << contenue << std::endl;
 
 };
 
@@ -370,7 +374,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 	// fin table de pheromone de test
 
-	IA test(10,13, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie, Pheromone_Table);
+	IA test(10, 13, 0.1, 1.5, 10, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie, Pheromone_Table);
 
 	sf::Sprite Sprite_AI_Calque_Simulation;
 	sf::Texture Texture_AI_Calque_Simulation;

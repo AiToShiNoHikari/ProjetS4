@@ -43,6 +43,7 @@ struct Pheromone
 	float Food = 0;
 	float Water = 0;
 	float Enemy = 0;
+	float None = 0;
 
 	float& operator[](Type T)
 	{
@@ -59,6 +60,9 @@ struct Pheromone
 			break;
 		case Pheromone::enemy:
 			return Enemy;
+			break;
+		default:
+			return None;
 			break;
 		}
 	};
@@ -88,7 +92,7 @@ class IA
 
 	float speed = 0.1;
 
-	float detection_range = 3;
+	float detection_range = 1.5;
 
 	int Pheromone_max = 10;
 
@@ -108,7 +112,7 @@ public:
 
 	int Pheromone_current = 0;
 
-	IA(int x, int y, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, Pheromone**Pheromone_Table);
+	IA(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, Pheromone**Pheromone_Table);
 
 	void deplacement();
 	void analyse();
