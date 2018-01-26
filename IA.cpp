@@ -436,7 +436,7 @@ void Simulation(sf::RenderWindow& window)
 
 	Fourmiliere test(pos_base_x, pos_base_y, 0.1, 1.5, 20, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		test.add_fourmie();
 	};
