@@ -1,14 +1,25 @@
 ﻿  IA.cpp
-d:\b2\s4\projet\projet ia\projet ia\ia.h(89): warning C4305: 'initialisation' : troncation de 'double' à 'float'
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(5): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(6): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(231): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(304): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(381): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(386): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(394): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(419): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(428): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-d:\b2\s4\projet\projet ia\projet ia\ia.cpp(454): warning C4305: 'argument' : troncation de 'double' à 'float'
-d:\b2\s4\projet\projet ia\projet ia\ia.h(64): warning C4715: 'Pheromone::operator[]' : les chemins de contrôle ne retournent pas tous une valeur
+d:\b2\s4\projet\projet ia\projet ia\ia.h(96): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.h(148): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(7): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(8): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(233): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(234): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(239): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(328): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(379): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(380): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(389): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(437): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(450): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(455): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(463): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(490): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(499): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(532): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(549): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(563): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(577): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\ia.cpp(591): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+cl : Ligne de commande warning D9028: échec de la régénération minimale, passage à la génération normale
   Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe

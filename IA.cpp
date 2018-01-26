@@ -1,5 +1,7 @@
 #include "IA.h"
 
+//IA
+
 IA::IA(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain,sf::RenderTarget& render, sf::Texture& texture, Pheromone** Pheromone_Table) : Terrain(Terrain), render(render), texture(texture)
 {
 	this->x = x + 0.5;
@@ -23,6 +25,8 @@ void IA::deplacement()
 {
 	x += (speed * dx);
 	y += (speed * dy);
+
+	Sprite.setPosition(x*_size, y*_size);
 };
 
 void IA::analyse()
@@ -36,7 +40,7 @@ void IA::analyse()
 	int min_y = ((int)(y - detection_range))<0 ? 0 : ((int)(y - detection_range));
 	int max_y = ((int)(y + detection_range)) >= Terrain.TY ? Terrain.TY : ((int)(y + detection_range));
 	
-	//analise du terrain et change la direction ou la destination en fonction du resulta
+	//analyse du terrain et change la direction ou la destination en fonction du resulta
 	for (int i = min_x; i < max_x; i++)
 	{
 		for (int j = min_y; j < max_y; j++)
@@ -159,7 +163,6 @@ void IA::analyse()
 	}
 
 	//suit les pheromones si aucune direction n'est prise
-
 	if (cx < 0)
 	{
 		Pheromone::Type searched;
@@ -216,14 +219,15 @@ void IA::analyse()
 	}
 
 	//si aucune direction n'a été prise
-
 	if (cx < 0)
 	{
 		do
 		{
 			cx = ((int)x + (rand() % 3) - 1);
 			cy = ((int)y + (rand() % 3) - 1);
-		} while (cx == 0 && cy == 0);
+
+			anti_hors_map(cx, cy);
+		} while ((cx == (int)x && cy == (int)y) || cx < 0);
 	}
 
 	float delta_dest_x = (cx + 0.5) - x;
@@ -238,6 +242,8 @@ void IA::analyse()
 		rotation = 360 - rotation;
 
 	rotation += 90;
+
+	Sprite.setRotation(rotation);
 	
 	dx = ndx;
 	dy = ndy;
@@ -271,6 +277,18 @@ void IA::change_dest()
 	{
 		contenue = home;
 
+		switch (rand() % 3)
+		{
+		case 0:
+			destination = food;
+			break;
+		case 1:
+			destination = water;
+			break;
+		case 2:
+			destination = search;
+			break;
+		}
 		destination = food;
 	}
 
@@ -301,22 +319,25 @@ void IA::palce_pheromone()
 	
 	if (place != Pheromone::Type::none)
 	{
-		float& valuec = Pheromone_Table[case_x][case_y][place];
-
-		if (valuec < Pheromone_current)
+		if (case_x >= 0 && case_x < Terrain.TX && case_y >= 0 && case_y < Terrain.TY)
 		{
-			valuec = Pheromone_current;
-		}
-		else if (valuec > Pheromone_current)
-		{
-			Pheromone_current = (int)valuec;
-		}
+			float& valuec = Pheromone_Table[case_x][case_y][place];
 
-		Pheromone_current--;
+			if (valuec < Pheromone_current)
+			{
+				valuec = Pheromone_current;
+			}
+			else if (valuec > Pheromone_current)
+			{
+				Pheromone_current = (int)valuec;
+			}
 
-		if (Pheromone_current <= 0)
-		{
-			change_dest();
+			Pheromone_current--;
+
+			if (Pheromone_current <= 0)
+			{
+				change_dest();
+			}
 		}
 	}
 };
@@ -331,16 +352,64 @@ void IA::action()
 
 void IA::affiche()
 {
-	Sprite.setRotation(rotation);
-
-	Sprite.setPosition(x*_size, y*_size);
-
 	render.draw(Sprite);
 
-	std::cout << "x: " << x << " y: " << y << " dest: " << destination << " cont: " << contenue << std::endl;
-
+	//std::cout << "x: " << x << " y: " << y << " dest: " << destination << " cont: " << contenue << std::endl;
 };
 
+void IA::anti_hors_map(int& cx, int& cy)
+{
+	if (cx < 0 || cy < 0 || cx >= Terrain.TX || cy >= Terrain.TY)
+	{
+		cx = -1;
+		cy = -1;
+	};
+};
+
+//Fourmiliere
+
+Fourmiliere::Fourmiliere(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture)
+{
+	Pheromone_Table = new Pheromone*[Terrain.TX];
+	for (int i = 0; i < Terrain.TX; i++)
+	{
+		Pheromone_Table[i] = new Pheromone[Terrain.TY];
+	};
+
+	this->x = x;
+	this->y = y;
+
+	this->speed = speed;
+	this->detection_range = detection_range;
+	this->Pheromone_max = Pheromone_max;
+};
+
+void Fourmiliere::add_fourmie()
+{
+	Fourmies.push_back(new IA(x, y, speed, detection_range, Pheromone_max, Terrain, render, texture, Pheromone_Table));
+};
+
+void Fourmiliere::action()
+{
+	for (std::list<IA*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
+	{
+		(*iterator)->action();
+	}
+};
+
+void Fourmiliere::affiche()
+{
+	int i = 0;
+
+	for (std::list<IA*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
+	{
+		//std::cout << "Fourmie " << i << ": ";
+		i++;
+
+		(*iterator)->affiche();
+	}
+	std::cout << std::endl;
+};
 
 
 void Simulation(sf::RenderWindow& window)
@@ -356,25 +425,21 @@ void Simulation(sf::RenderWindow& window)
 	ClassTerrain ObjTerrain(25, 25, RenderTexture_BG_Simulation);
 
 	//terrain de test
-	ObjTerrain.Terrain[10][13].Type = CaseTerrain::Base;
-	ObjTerrain.Terrain[15][12].Type = CaseTerrain::Nourriture;
+	int pos_base_x = rand() % ObjTerrain.TX, pos_base_y = rand() % ObjTerrain.TY;
 
-	ObjTerrain.MAJTexture(5, 12, 15, 14);
-	ObjTerrain.MAJTexture(10, 11, 20, 13);
+	ObjTerrain.Terrain[pos_base_x][pos_base_y].Type = CaseTerrain::Base;
+	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Nourriture;
+	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Eau;
+
+	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
 	//fin terrain de test
 
-	//table de pheromone de test
+	Fourmiliere test(pos_base_x, pos_base_y, 0.1, 1.5, 20, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
-	Pheromone** Pheromone_Table;
-
-	Pheromone_Table = new Pheromone*[ObjTerrain.TX];
-	for (int i = 0; i < ObjTerrain.TX; i++)
+	for (int i = 0; i < 5000; i++)
 	{
-		Pheromone_Table[i] = new Pheromone[ObjTerrain.TY];
-	}
-	// fin table de pheromone de test
-
-	IA test(10, 13, 0.1, 1.5, 10, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie, Pheromone_Table);
+		test.add_fourmie();
+	};
 
 	sf::Sprite Sprite_AI_Calque_Simulation;
 	sf::Texture Texture_AI_Calque_Simulation;
@@ -405,6 +470,8 @@ void Simulation(sf::RenderWindow& window)
 		Sprite_BG_Simulation.setTextureRect(sf::IntRect(0, 0, Texture_BG_Simulation.getSize().x, Texture_BG_Simulation.getSize().y));
 		Sprite_AI_Calque_Simulation.setTextureRect(sf::IntRect(0, 0, Texture_AI_Calque_Simulation.getSize().x, Texture_AI_Calque_Simulation.getSize().y));
 	}
+
+	int ValZoom = 5;
 
 	while (window.isOpen())
 	{
@@ -450,13 +517,22 @@ void Simulation(sf::RenderWindow& window)
 				if (event.mouseWheel.delta == 1)
 				{
 					vue.setCenter(mousepos.x, mousepos.y);
-					vue.zoom(0.9f);
+					if (ValZoom < 10)
+					{
+						ValZoom++;
+						vue.zoom(0.9f);
+					}
 				}
 				if (event.mouseWheel.delta == -1)
 				{
 					vue.setCenter(mousepos.x, mousepos.y);
-					vue.zoom(1.0 / 0.9f);
+					if (ValZoom > 2)
+					{
+						ValZoom--;
+						vue.zoom(1.0 / 0.9f);
+					}
 				}
+
 				HaveChange = true;
 			}
 		}
@@ -470,9 +546,10 @@ void Simulation(sf::RenderWindow& window)
 
 			if ((position.y - vue.getSize().y / 2) > 0)
 			{
-				vue.move(0, -4);
+				vue.move(0, -ValZoom);
+
+				HaveChange = true;
 			}
-			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
@@ -483,9 +560,10 @@ void Simulation(sf::RenderWindow& window)
 
 			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size)
 			{
-				vue.move(0, 4);
+				vue.move(0, ValZoom);
+
+				HaveChange = true;
 			}
-			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
@@ -496,9 +574,10 @@ void Simulation(sf::RenderWindow& window)
 
 			if ((position.x - vue.getSize().x / 2) > 0)
 			{
-				vue.move(-4, 0);
+				vue.move(-ValZoom, 0);
+
+				HaveChange = true;
 			}
-			HaveChange = true;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
@@ -509,9 +588,10 @@ void Simulation(sf::RenderWindow& window)
 
 			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size)
 			{
-				vue.move(4, 0);
+				vue.move(ValZoom, 0);
+
+				HaveChange = true;
 			}
-			HaveChange = true;
 		}
 
 		if (HaveChange)

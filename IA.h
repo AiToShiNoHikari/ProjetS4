@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <vector>
+#include <list>
 
 #ifdef _DEBUG
 #include <iostream>
@@ -27,6 +28,8 @@
 class ClassTerrain;
 
 struct CaseTerrain;
+
+class Fourmiliere;
 
 struct Pheromone
 {
@@ -123,7 +126,42 @@ public:
 	void affiche();
 
 private:
+	void anti_hors_map(int& cx, int& cy);
+};
 
+class Fourmiliere
+{
+	sf::RenderTarget& render;
+
+	sf::Texture& texture;
+
+	ClassTerrain& Terrain;
+
+	Pheromone** Pheromone_Table;
+
+	float x = 0, y = 0;
+
+	
+
+	//parametre des IA
+
+	float speed = 0.1;
+
+	float detection_range = 1.5;
+
+	int Pheromone_max = 10;
+
+	std::list<IA*> Fourmies;
+
+public:
+
+	Fourmiliere(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+
+	void add_fourmie();
+
+	void action();
+
+	void affiche();
 };
 
 void Simulation(sf::RenderWindow& window);
