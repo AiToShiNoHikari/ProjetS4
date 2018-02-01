@@ -1,44 +1,48 @@
 #include "IA.h"
 
 //IA
-
-IA::IA(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain,sf::RenderTarget& render, sf::Texture& texture, Pheromone** Pheromone_Table) : Terrain(Terrain), render(render), texture(texture)
+Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,sf::RenderTarget& render, sf::Texture& texture, CasePheromones** Pheromone_Table, Fourmiliere& fourmiliere) : Terrain(Terrain), render(render), texture(texture), fourmiliere(fourmiliere)
 {
 	this->x = x + 0.5;
 	this->y = y + 0.5;
 
-	this->speed = speed;
-	this->detection_range = detection_range;
-	this->Pheromone_max = Pheromone_max;
+	this->parametre_IA = parametre_IA;
 
 	this->Pheromone_Table = Pheromone_Table;
 
-	Sprite.setSize(sf::Vector2f(_size, _size));
+	Sprite.setSize(sf::Vector2f(_size / 2, _size));
 
 	Sprite.setTexture(&texture);
-	Sprite.setOrigin(16, 16);
+
+	Sprite.setFillColor(sf::Color(rand() % 256, rand() % 256, rand() % 256, 1+rand() % 255));
+
+	Sprite.setOrigin(_size / 4, _size / 2);
 
 	change_dest();
 };
 
-void IA::deplacement()
+void Fourmie::deplacement()
 {
-	x += (speed * dx);
-	y += (speed * dy);
+	float dtime = speed_clock.restart().asSeconds();
+
+	x += (parametre_IA.speed * dx * dtime);
+	y += (parametre_IA.speed * dy* dtime);
+
+	Pheromone_current -= dtime;
 
 	Sprite.setPosition(x*_size, y*_size);
 };
 
-void IA::analyse()
+void Fourmie::analyse()
 {
 	int cx = -1, cy = -1;
 
 	case_x = (int)x, case_y = (int)y;
 
-	int min_x = ((int)(x - detection_range))<0 ? 0 : ((int)(x - detection_range));
-	int max_x = ((int)(x + detection_range)) >= Terrain.TX ? Terrain.TX : ((int)(x + detection_range));
-	int min_y = ((int)(y - detection_range))<0 ? 0 : ((int)(y - detection_range));
-	int max_y = ((int)(y + detection_range)) >= Terrain.TY ? Terrain.TY : ((int)(y + detection_range));
+	int min_x = ((int)(x - parametre_IA.detection_range))<0 ? 0 : ((int)(x - parametre_IA.detection_range));
+	int max_x = ((int)(x + parametre_IA.detection_range)) >= Terrain.TX ? Terrain.TX : ((int)(x + parametre_IA.detection_range));
+	int min_y = ((int)(y - parametre_IA.detection_range))<0 ? 0 : ((int)(y - parametre_IA.detection_range));
+	int max_y = ((int)(y + parametre_IA.detection_range)) >= Terrain.TY ? Terrain.TY : ((int)(y + parametre_IA.detection_range));
 	
 	//analyse du terrain et change la direction ou la destination en fonction du resulta
 	for (int i = min_x; i < max_x; i++)
@@ -47,7 +51,7 @@ void IA::analyse()
 		{
 			switch (destination)
 			{
-			case IA::home:
+			case Fourmie::home:
 				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
 				{
 					if (case_x == i && case_y == j)
@@ -62,7 +66,7 @@ void IA::analyse()
 					}
 				}
 				break;
-			case IA::food:
+			case Fourmie::food:
 				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture)
 				{
 					if (case_x == i && case_y == j)
@@ -77,7 +81,7 @@ void IA::analyse()
 					}
 				}
 				break;
-			case IA::water:
+			case Fourmie::water:
 				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
 				{
 					if (case_x == i && case_y == j)
@@ -93,7 +97,7 @@ void IA::analyse()
 					}
 				}
 				break;
-			case IA::enemy:
+			case Fourmie::enemy:
 				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
 				{
 					if (case_x == i && case_y == j)
@@ -108,7 +112,7 @@ void IA::analyse()
 					}
 				}
 				break;
-			case IA::search:
+			case Fourmie::search:
 				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture || Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
 				{
 					if (case_x == i && case_y == j)
@@ -165,27 +169,27 @@ void IA::analyse()
 	//suit les pheromones si aucune direction n'est prise
 	if (cx < 0)
 	{
-		Pheromone::Type searched;
+		CasePheromones::Type searched;
 		switch (destination)
 		{
-		case IA::home:
-			searched = Pheromone::Type::home;
+		case Fourmie::home:
+			searched = CasePheromones::Type::home;
 			break;
-		case IA::food:
-			searched = Pheromone::Type::food;
+		case Fourmie::food:
+			searched = CasePheromones::Type::food;
 			break;
-		case IA::water:
-			searched = Pheromone::Type::water;
+		case Fourmie::water:
+			searched = CasePheromones::Type::water;
 			break;
-		case IA::enemy:
-			searched = Pheromone::Type::enemy;
+		case Fourmie::enemy:
+			searched = CasePheromones::Type::enemy;
 			break;
 		default:
-			searched = Pheromone::Type::none;
+			searched = CasePheromones::Type::none;
 			break;
 		}
 
-		if (searched != Pheromone::Type::none)
+		if (searched != CasePheromones::Type::none)
 		{
 			float value = 0;
 
@@ -193,7 +197,7 @@ void IA::analyse()
 			{
 				for (int j = min_y; j < max_y; j++)
 				{
-					float& valuec = Pheromone_Table[i][j][searched];
+					Pheromone& valuec = Pheromone_Table[i][j][searched];
 					
 					if (valuec > 0)
 					{
@@ -251,7 +255,7 @@ void IA::analyse()
 	palce_pheromone();
 };
 
-void IA::change_dest()
+void Fourmie::change_dest()
 {
 	if (destination != home)
 	{
@@ -275,53 +279,41 @@ void IA::change_dest()
 	}
 	else //if (Terrain.Terrain[case_x][case_y].Type == CaseTerrain::Base)
 	{
-		contenue = home;
+		fourmiliere.select_dest(destination, contenue);
 
-		switch (rand() % 3)
-		{
-		case 0:
-			destination = food;
-			break;
-		case 1:
-			destination = water;
-			break;
-		case 2:
-			destination = search;
-			break;
-		}
-		destination = food;
+		contenue = home;
 	}
 
-	Pheromone_current = Pheromone_max;
+	Pheromone_current = parametre_IA.Pheromone_max;
 };
 
-void IA::palce_pheromone()
+void Fourmie::palce_pheromone()
 {
-	Pheromone::Type place;
+	CasePheromones::Type place;
 	switch (contenue)
 	{
-	case IA::home:
-		place = Pheromone::Type::home;
+	case Fourmie::home:
+		place = CasePheromones::Type::home;
 		break;
-	case IA::food:
-		place = Pheromone::Type::food;
+	case Fourmie::food:
+		place = CasePheromones::Type::food;
 		break;
-	case IA::water:
-		place = Pheromone::Type::water;
+	case Fourmie::water:
+		place = CasePheromones::Type::water;
 		break;
-	case IA::enemy:
-		place = Pheromone::Type::enemy;
+	case Fourmie::enemy:
+		place = CasePheromones::Type::enemy;
 		break;
 	default:
-		place = Pheromone::Type::none;
+		place = CasePheromones::Type::none;
 		break;
 	}
 	
-	if (place != Pheromone::Type::none)
+	if (place != CasePheromones::Type::none)
 	{
 		if (case_x >= 0 && case_x < Terrain.TX && case_y >= 0 && case_y < Terrain.TY)
 		{
-			float& valuec = Pheromone_Table[case_x][case_y][place];
+			Pheromone& valuec = Pheromone_Table[case_x][case_y][place];
 
 			if (valuec < Pheromone_current)
 			{
@@ -332,7 +324,7 @@ void IA::palce_pheromone()
 				Pheromone_current = (int)valuec;
 			}
 
-			Pheromone_current--;
+			//Pheromone_current--;
 
 			if (Pheromone_current <= 0)
 			{
@@ -342,7 +334,7 @@ void IA::palce_pheromone()
 	}
 };
 
-void IA::action()
+void Fourmie::action()
 {
 	if (case_x != (int)x || case_y != (int)y)
 		analyse();
@@ -350,14 +342,14 @@ void IA::action()
 	deplacement();
 };
 
-void IA::affiche()
+void Fourmie::affiche()
 {
 	render.draw(Sprite);
 
 	//std::cout << "x: " << x << " y: " << y << " dest: " << destination << " cont: " << contenue << std::endl;
 };
 
-void IA::anti_hors_map(int& cx, int& cy)
+void Fourmie::anti_hors_map(int& cx, int& cy)
 {
 	if (cx < 0 || cy < 0 || cx >= Terrain.TX || cy >= Terrain.TY)
 	{
@@ -368,30 +360,33 @@ void IA::anti_hors_map(int& cx, int& cy)
 
 //Fourmiliere
 
-Fourmiliere::Fourmiliere(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture)
+Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture)
 {
-	Pheromone_Table = new Pheromone*[Terrain.TX];
+	Pheromone_Table = new CasePheromones*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
 	{
-		Pheromone_Table[i] = new Pheromone[Terrain.TY];
+		Pheromone_Table[i] = new CasePheromones[Terrain.TY];
+
+		for (int j = 0; j < Terrain.TY; j++)
+		{
+			Pheromone_Table[i][j].set_disipation_speed(Pheromone_disipation_speed);
+		};
 	};
 
 	this->x = x;
 	this->y = y;
 
-	this->speed = speed;
-	this->detection_range = detection_range;
-	this->Pheromone_max = Pheromone_max;
+	this->parametre_IA = parametre_IA;
 };
 
 void Fourmiliere::add_fourmie()
 {
-	Fourmies.push_back(new IA(x, y, speed, detection_range, Pheromone_max, Terrain, render, texture, Pheromone_Table));
+	Fourmies.push_back(new Fourmie(x, y, parametre_IA, Terrain, render, texture, Pheromone_Table, *this));
 };
 
 void Fourmiliere::action()
 {
-	for (std::list<IA*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
+	for (std::list<Fourmie*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
 	{
 		(*iterator)->action();
 	}
@@ -401,7 +396,7 @@ void Fourmiliere::affiche()
 {
 	int i = 0;
 
-	for (std::list<IA*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
+	for (std::list<Fourmie*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
 	{
 		//std::cout << "Fourmie " << i << ": ";
 		i++;
@@ -409,6 +404,62 @@ void Fourmiliere::affiche()
 		(*iterator)->affiche();
 	}
 	std::cout << std::endl;
+};
+
+void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue)
+{
+	switch (contenue)
+	{
+	case Fourmie::Type_Destination::food:
+		Food_found = true;
+		break;
+	case Fourmie::Type_Destination::water:
+		Water_found = true;
+		break;
+	default:
+		break;
+	}
+
+	if (!Food_found && !Water_found)
+	{
+		destination = Fourmie::Type_Destination::search;
+	}
+	else if (Food_found && Water_found)
+	{
+		switch (rand() % 2)
+		{
+		case 0:
+			destination = Fourmie::Type_Destination::food;
+			break;
+		case 1:
+			destination = Fourmie::Type_Destination::water;
+			break;
+		}
+	}
+	else if (Food_found && !Water_found)
+	{
+		switch (rand() % 2)
+		{
+		case 0:
+			destination = Fourmie::Type_Destination::food;
+			break;
+		case 1:
+			destination = Fourmie::Type_Destination::water;
+			break;
+		}
+	}
+	else if (!Food_found && Water_found)
+	{
+		switch (rand() % 2)
+		{
+		case 0:
+			destination = Fourmie::Type_Destination::food;
+			break;
+		case 1:
+			destination = Fourmie::Type_Destination::water;
+			break;
+		}
+	}
 };
 
 
@@ -434,9 +485,15 @@ void Simulation(sf::RenderWindow& window)
 	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
 	//fin terrain de test
 
-	Fourmiliere test(pos_base_x, pos_base_y, 0.1, 1.5, 20, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
-	for (int i = 0; i < 100; i++)
+	Parametre_IA parametre_IA;
+	parametre_IA.detection_range = 2;
+	parametre_IA.Pheromone_max = 40;
+	parametre_IA.speed = 2.5;
+
+	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
+
+	for (int i = 0; i < 1000; i++)
 	{
 		test.add_fourmie();
 	};

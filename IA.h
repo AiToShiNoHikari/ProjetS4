@@ -31,7 +31,55 @@ struct CaseTerrain;
 
 class Fourmiliere;
 
+struct Parametre_IA
+{
+	float speed;
+
+	float detection_range;
+
+	float Pheromone_max;
+
+	int qantity_max;
+
+	void operator=(Parametre_IA& in)
+	{
+		speed = in.speed;
+		detection_range = in.detection_range;
+		Pheromone_max = in.Pheromone_max;
+		qantity_max = in.qantity_max;
+	};
+};
+
 struct Pheromone
+{
+	Pheromone(float disipation_speed) : disipation_speed(disipation_speed) {};
+
+	void operator=(float i)
+	{
+		value = i;
+		clock.restart();
+	};
+
+	operator int ()
+	{
+		value -= clock.restart().asSeconds() * disipation_speed;
+
+		if (value < 0)
+			value = 0;
+
+		return (int)value;
+	};
+
+	void set_disipation_speed(float disipation_speed) { this->disipation_speed = disipation_speed; };
+
+private:
+	float disipation_speed;
+
+	sf::Clock clock;
+	float value;
+};
+
+struct CasePheromones
 {
 	enum Type
 	{
@@ -42,26 +90,26 @@ struct Pheromone
 		enemy,
 	};
 
-	float Home = 0;
-	float Food = 0;
-	float Water = 0;
-	float Enemy = 0;
-	float None = 0;
+	Pheromone Home = 0;
+	Pheromone Food = 0;
+	Pheromone Water = 0;
+	Pheromone Enemy = 0;
+	Pheromone None = 0;
 
-	float& operator[](Type T)
+	Pheromone& operator[](Type T)
 	{
 		switch (T)
 		{
-		case Pheromone::home:
+		case CasePheromones::home:
 			return Home;
 			break;
-		case Pheromone::food:
+		case CasePheromones::food:
 			return Food;
 			break;
-		case Pheromone::water:
+		case CasePheromones::water:
 			return Water;
 			break;
-		case Pheromone::enemy:
+		case CasePheromones::enemy:
 			return Enemy;
 			break;
 		default:
@@ -69,19 +117,25 @@ struct Pheromone
 			break;
 		}
 	};
+
+	void set_disipation_speed(float disipation_speed) { Home.set_disipation_speed(disipation_speed); Food.set_disipation_speed(disipation_speed); Water.set_disipation_speed(disipation_speed); Enemy.set_disipation_speed(disipation_speed); };
 };
 
-class IA
+class Fourmie
 {
+	sf::Clock speed_clock;
+
 	sf::RenderTarget& render;
 
 	sf::Texture& texture;
 
 	sf::RectangleShape Sprite;
 
+	Fourmiliere& fourmiliere;
+
 	ClassTerrain& Terrain;
 
-	Pheromone** Pheromone_Table;
+	CasePheromones** Pheromone_Table;
 
 	float x = 0, y = 0;
 
@@ -91,13 +145,11 @@ class IA
 
 	float rotation = 0;
 
+	int qantity = 0;
+
 	//parametre de l'IA
 
-	float speed = 0.1;
-
-	float detection_range = 1.5;
-
-	int Pheromone_max = 10;
+	Parametre_IA parametre_IA;
 
 public:
 	enum Type_Destination
@@ -113,9 +165,9 @@ public:
 	Type_Destination destination = none;
 	Type_Destination contenue = none;
 
-	int Pheromone_current = 0;
+	float Pheromone_current = 0;
 
-	IA(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, Pheromone**Pheromone_Table);
+	Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, CasePheromones**Pheromone_Table, Fourmiliere& fourmiliere);
 
 	void deplacement();
 	void analyse();
@@ -127,6 +179,8 @@ public:
 
 private:
 	void anti_hors_map(int& cx, int& cy);
+
+	bool anti_wrong_case(int& cx, int& cy);
 };
 
 class Fourmiliere
@@ -137,31 +191,31 @@ class Fourmiliere
 
 	ClassTerrain& Terrain;
 
-	Pheromone** Pheromone_Table;
+	CasePheromones** Pheromone_Table;
 
 	float x = 0, y = 0;
 
-	
-
 	//parametre des IA
+	Parametre_IA parametre_IA;
 
-	float speed = 0.1;
+	std::list<Fourmie*> Fourmies;
 
-	float detection_range = 1.5;
+	bool Food_found = false;
+	bool Water_found = false;
 
-	int Pheromone_max = 10;
-
-	std::list<IA*> Fourmies;
+	float Pheromone_disipation_speed;
 
 public:
 
-	Fourmiliere(int x, int y, float speed, float detection_range, int Pheromone_max, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+	Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
 	void add_fourmie();
 
 	void action();
 
 	void affiche();
+
+	void select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue);
 };
 
 void Simulation(sf::RenderWindow& window);
