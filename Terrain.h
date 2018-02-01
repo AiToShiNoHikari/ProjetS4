@@ -3,6 +3,7 @@
 
 #define _Terrain 1
 
+#include "Interface.h"
 #include "IA.h"
 #include "Ressource.h"
 
@@ -12,16 +13,16 @@
 #include <iostream>
 #endif
 
+void Edition(sf::RenderWindow& window);
+
 struct CaseTerrain 
 {
-	enum TypeTerrain { Base, Terre, Eau, Roche, Sable, Nourriture };
+	enum TypeTerrain { None = -1, Base, Terre, Eau, Roche, Sable, Nourriture };
 
 	TypeTerrain Type = Terre;
 };
 
 void Menu(sf::RenderWindow& window);
-
-void MAJTexture(sf::View& vue, sf::RenderTexture& RTextureSol, sf::RectangleShape& TextureCase, sf::Texture& Tsol, CaseTerrain** Terrain);
 
 void Camera(sf::RenderWindow& window);
 

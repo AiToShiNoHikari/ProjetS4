@@ -1,5 +1,167 @@
 #include "Terrain.h"
 
+
+void Edition(sf::RenderWindow& window)
+{
+	sf::Image ImageTexture;
+	ImageTexture.create(32, 32);
+
+	int PX = 30, 
+		PY = 30;
+
+	ImageTexture.copy(Ressource::TileMapTerre, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBTerre;
+	TBTerre.loadFromImage(ImageTexture);
+
+	Interface::Bouton BTerre(PX, PY, 50, 50, window);
+	BTerre.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BTerre.set_background_texture(&TBTerre);
+	BTerre.set_background_outline_thickness(2, 2, 2);
+	BTerre.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BTerre.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapEau, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBEau;
+	TBEau.loadFromImage(ImageTexture);
+
+	Interface::Bouton BEau(PX + 80, PY, 50, 50, window);
+	BEau.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BEau.set_background_texture(&TBEau);
+	BEau.set_background_outline_thickness(2, 2, 2);
+	BEau.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BEau.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapRoche, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBRoche;
+	TBRoche.loadFromImage(ImageTexture);
+
+	Interface::Bouton BRoche(PX + 160, PY, 50, 50, window);
+	BRoche.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BRoche.set_background_texture(&TBRoche);
+	BRoche.set_background_outline_thickness(2, 2, 2);
+	BRoche.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BRoche.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapSable, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBSable;
+	TBSable.loadFromImage(ImageTexture);
+
+	Interface::Bouton BSable(PX + 240, PY, 50, 50, window);
+	BSable.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BSable.set_background_texture(&TBSable);
+	BSable.set_background_outline_thickness(2, 2, 2);
+	BSable.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BSable.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapBase, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBBase;
+	TBBase.loadFromImage(ImageTexture);
+
+	Interface::Bouton BBase(PX + 320, PY, 50, 50, window);
+	BBase.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BBase.set_background_texture(&TBBase);
+	BBase.set_background_outline_thickness(2, 2, 2);
+	BBase.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BBase.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapNourriture, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBNourriture;
+	TBNourriture.loadFromImage(ImageTexture);
+
+	Interface::Bouton BNourriture(PX + 400, PY, 50, 50, window);
+	BNourriture.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BNourriture.set_background_texture(&TBNourriture);
+	BNourriture.set_background_outline_thickness(2, 2, 2);
+	BNourriture.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BNourriture.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				BTerre.get_state(event);
+				BEau.get_state(event);
+				BRoche.get_state(event);
+				BSable.get_state(event);
+				BBase.get_state(event);
+				BNourriture.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+				if (BTerre.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				if (BEau.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				if (BRoche.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				if (BSable.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				if (BBase.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				if (BNourriture.get_state(event) == Interface::Bouton::cliking)
+				{
+
+				}
+				break;
+			case sf::Event::MouseButtonReleased:
+				BTerre.update_state(event);
+				BEau.update_state(event);
+				BRoche.update_state(event);
+				BSable.update_state(event);
+				BBase.update_state(event);
+				BNourriture.update_state(event);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		BTerre.affiche();
+		BEau.affiche();
+		BRoche.affiche();
+		BSable.affiche();
+		BBase.affiche();
+		BNourriture.affiche();
+		window.display();
+	}
+
+
+}
+
 void Menu(sf::RenderWindow& window)
 {
 	while (window.isOpen())
