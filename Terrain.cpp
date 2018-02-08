@@ -3,183 +3,8 @@
 
 void Edition(sf::RenderWindow& window)
 {
-	sf::Image ImageTexture;
-	ImageTexture.create(32, 32);
-
-	int PX = 30, 
-		PY = 30;
-
-	ImageTexture.copy(Ressource::TileMapTerre, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBTerre;
-	TBTerre.loadFromImage(ImageTexture);
-
-	Interface::Bouton BTerre(PX, PY, 50, 50, window);
-	BTerre.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BTerre.set_background_texture(&TBTerre);
-	BTerre.set_background_outline_thickness(2, 2, 2);
-	BTerre.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BTerre.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
 
 
-
-	ImageTexture.copy(Ressource::TileMapEau, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBEau;
-	TBEau.loadFromImage(ImageTexture);
-
-	Interface::Bouton BEau(PX + 80, PY, 50, 50, window);
-	BEau.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BEau.set_background_texture(&TBEau);
-	BEau.set_background_outline_thickness(2, 2, 2);
-	BEau.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BEau.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
-
-
-
-	ImageTexture.copy(Ressource::TileMapRoche, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBRoche;
-	TBRoche.loadFromImage(ImageTexture);
-
-	Interface::Bouton BRoche(PX + 160, PY, 50, 50, window);
-	BRoche.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BRoche.set_background_texture(&TBRoche);
-	BRoche.set_background_outline_thickness(2, 2, 2);
-	BRoche.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BRoche.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
-
-
-
-	ImageTexture.copy(Ressource::TileMapSable, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBSable;
-	TBSable.loadFromImage(ImageTexture);
-
-	Interface::Bouton BSable(PX + 240, PY, 50, 50, window);
-	BSable.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BSable.set_background_texture(&TBSable);
-	BSable.set_background_outline_thickness(2, 2, 2);
-	BSable.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BSable.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
-
-
-
-	ImageTexture.copy(Ressource::TileMapBase, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBBase;
-	TBBase.loadFromImage(ImageTexture);
-
-	Interface::Bouton BBase(PX + 320, PY, 50, 50, window);
-	BBase.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BBase.set_background_texture(&TBBase);
-	BBase.set_background_outline_thickness(2, 2, 2);
-	BBase.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BBase.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
-
-
-
-	ImageTexture.copy(Ressource::TileMapNourriture, 0, 0, sf::IntRect(0, 0, 32, 32));
-	sf::Texture TBNourriture;
-	TBNourriture.loadFromImage(ImageTexture);
-
-	Interface::Bouton BNourriture(PX + 400, PY, 50, 50, window);
-	BNourriture.set_bg_type(Interface::Bouton::BG_type::Rect);
-	BNourriture.set_background_texture(&TBNourriture);
-	BNourriture.set_background_outline_thickness(2, 2, 2);
-	BNourriture.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-
-	BNourriture.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
-
-	while (window.isOpen())
-	{
-		window.clear();
-
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case sf::Event::Closed:
-				window.close();
-				break;
-			case sf::Event::MouseMoved:
-				BTerre.get_state(event);
-				BEau.get_state(event);
-				BRoche.get_state(event);
-				BSable.get_state(event);
-				BBase.get_state(event);
-				BNourriture.get_state(event);
-				break;
-			case sf::Event::MouseButtonPressed:
-				if (BTerre.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				if (BEau.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				if (BRoche.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				if (BSable.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				if (BBase.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				if (BNourriture.get_state(event) == Interface::Bouton::cliking)
-				{
-
-				}
-				break;
-			case sf::Event::MouseButtonReleased:
-				BTerre.update_state(event);
-				BEau.update_state(event);
-				BRoche.update_state(event);
-				BSable.update_state(event);
-				BBase.update_state(event);
-				BNourriture.update_state(event);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		BTerre.affiche();
-		BEau.affiche();
-		BRoche.affiche();
-		BSable.affiche();
-		BBase.affiche();
-		BNourriture.affiche();
-		window.display();
-	}
-
-
-}
-
-void Menu(sf::RenderWindow& window)
-{
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		window.clear();
-		window.display();
-	}
-}
-
-void Camera(sf::RenderWindow& window)
-{
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -214,12 +39,199 @@ void Camera(sf::RenderWindow& window)
 
 	int ValZoom = 5;
 
+
+	int Change = 1;
+
+
+	sf::Image ImageTexture;
+	ImageTexture.create(32, 32);
+
+	int PX = 30, 
+		PY = 30;
+
+	ImageTexture.copy(Ressource::TileMapTerre, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBTerre;
+	TBTerre.loadFromImage(ImageTexture);
+
+	Interface::Bouton BTerre(PX + 80, PY, 50, 50, window);
+	BTerre.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BTerre.set_background_texture(&TBTerre);
+	BTerre.set_background_outline_thickness(2, 2, 2);
+	BTerre.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BTerre.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapEau, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBEau;
+	TBEau.loadFromImage(ImageTexture);
+
+	Interface::Bouton BEau(PX + 160, PY, 50, 50, window);
+	BEau.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BEau.set_background_texture(&TBEau);
+	BEau.set_background_outline_thickness(2, 2, 2);
+	BEau.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BEau.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapRoche, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBRoche;
+	TBRoche.loadFromImage(ImageTexture);
+
+	Interface::Bouton BRoche(PX + 240, PY, 50, 50, window);
+	BRoche.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BRoche.set_background_texture(&TBRoche);
+	BRoche.set_background_outline_thickness(2, 2, 2);
+	BRoche.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BRoche.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapSable, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBSable;
+	TBSable.loadFromImage(ImageTexture);
+
+	Interface::Bouton BSable(PX + 320, PY, 50, 50, window);
+	BSable.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BSable.set_background_texture(&TBSable);
+	BSable.set_background_outline_thickness(2, 2, 2);
+	BSable.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BSable.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapBase, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBBase;
+	TBBase.loadFromImage(ImageTexture);
+
+	Interface::Bouton BBase(PX + 400, PY, 50, 50, window);
+	BBase.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BBase.set_background_texture(&TBBase);
+	BBase.set_background_outline_thickness(2, 2, 2);
+	BBase.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BBase.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
+	ImageTexture.copy(Ressource::TileMapNourriture, 0, 0, sf::IntRect(0, 0, 32, 32));
+	sf::Texture TBNourriture;
+	TBNourriture.loadFromImage(ImageTexture);
+
+	Interface::Bouton BNourriture(PX + 480, PY, 50, 50, window);
+	BNourriture.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BNourriture.set_background_texture(&TBNourriture);
+	BNourriture.set_background_outline_thickness(2, 2, 2);
+	BNourriture.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BNourriture.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+	
+	Interface::Bouton BSave(PX, PY, 50, 50, window);
+	BSave.set_bg_type(Interface::Bouton::BG_type::Rect);
+	BSave.set_background_texture(&Ressource::Save);
+	BSave.set_background_outline_thickness(2, 2, 2);
+	BSave.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	BSave.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+
+
+
 	while (window.isOpen())
 	{
+		window.clear();
 
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
+			sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				BTerre.get_state(event);
+				BEau.get_state(event);
+				BRoche.get_state(event);
+				BSable.get_state(event);
+				BBase.get_state(event);
+				BNourriture.get_state(event);
+				BSave.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				int MX = mousepos.x / _size;
+				int MY = mousepos.y / _size;
+
+				bool ChangeSave = true;
+
+				if (BTerre.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 1;
+					ChangeSave = false;
+				}
+				if (BEau.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 2;
+					ChangeSave = false;
+				}
+				if (BRoche.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 3;
+					ChangeSave = false;
+				}
+				if (BSable.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 4;
+					ChangeSave = false;
+				}
+				if (BBase.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 0;
+					ChangeSave = false;
+				}
+				if (BNourriture.get_state(event) == Interface::Bouton::cliking)
+				{
+					Change = 5;
+					ChangeSave = false;
+				}
+				if (BSave.get_state(event) == Interface::Bouton::cliking)
+				{
+					std::cout << "Save" << std::endl;
+					ChangeSave = false;
+				}
+
+
+				if (ChangeSave)
+				{
+					ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
+					ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
+					HaveChange = true;
+				}
+
+					std::cout << Change << std::endl;
+
+			}
+				break;
+			case sf::Event::MouseButtonReleased:
+				BTerre.update_state(event);
+				BEau.update_state(event);
+				BRoche.update_state(event);
+				BSable.update_state(event);
+				BBase.update_state(event);
+				BNourriture.update_state(event);
+				BSave.update_state(event);
+				break;
+			default:
+				break;
+			}
+		
 			if (event.type == sf::Event::Resized)
 			{
 
@@ -244,14 +256,8 @@ void Camera(sf::RenderWindow& window)
 
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
-			if (event.type == sf::Event::Closed)
-			{
-				window.close();
-			}
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
-				sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
-				
 				if (event.mouseWheel.delta == 1)
 				{
 					vue.setCenter(mousepos.x, mousepos.y);
@@ -270,7 +276,6 @@ void Camera(sf::RenderWindow& window)
 						vue.zoom(1.0 / 0.9f);
 					}
 				}
-
 				HaveChange = true;
 			}
 		}
@@ -354,13 +359,21 @@ void Camera(sf::RenderWindow& window)
 			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
 
 		}
-
-
-		window.clear();
+		
 		window.draw(Ssol);
+		BTerre.affiche();
+		BEau.affiche();
+		BRoche.affiche();
+		BSable.affiche();
+		BBase.affiche();
+		BNourriture.affiche();
+		BSave.affiche();
 		window.display();
 	}
+
+
 }
+
 
 ClassTerrain::ClassTerrain(int x, int y, sf::RenderTarget& Render) : Render(Render)
 {

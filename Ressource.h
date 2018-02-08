@@ -13,6 +13,8 @@ struct Ressource
 	static sf::Image TileMapSable;
 	static sf::Image TileMapNourriture;
 
+	static sf::Texture Save;
+
 	static sf::Texture Fourmie;
 };
 

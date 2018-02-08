@@ -1,19 +1,21 @@
 ﻿  Terrain.cpp
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(16): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(30): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(44): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(58): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(72): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(86): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(194): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(199): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(206): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(231): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(239): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(270): warning C4305: 'argument' : troncation de 'double' à 'float'
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(287): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(300): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(313): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(326): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(19): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(24): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(31): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(56): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(70): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(84): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(98): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(112): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(126): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(135): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(169): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(170): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(243): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(251): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(276): warning C4305: 'argument' : troncation de 'double' à 'float'
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(292): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(305): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(318): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(331): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
   Projet IA.vcxproj -> C:\Users\Thibault\Desktop\ProjetS4 - Copie\Projet IA\x64\Debug\Projet IA.exe
-  Projet IA.vcxproj -> C:\Users\Thibault\Desktop\ProjetS4 - Copie\Projet IA\x64\Debug\Projet IA.pdb (Partial PDB)

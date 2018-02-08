@@ -8,6 +8,8 @@ sf::Image Ressource::TileMapRoche;
 sf::Image Ressource::TileMapSable;
 sf::Image Ressource::TileMapNourriture;
 
+sf::Texture Ressource::Save;
+
 sf::Texture Ressource::Fourmie;
 
 void main()
@@ -73,6 +75,16 @@ void main()
 	}
 
 	if (Ressource::Fourmie.loadFromFile("./Ressource/Image/Fourmi.png"))
+	{
+		//Non Error
+	}
+	else
+	{
+		//Error
+	}
+
+
+	if (Ressource::Save.loadFromFile("./Ressource/Image/Save.png"))
 	{
 		//Non Error
 	}
