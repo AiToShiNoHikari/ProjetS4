@@ -6,6 +6,7 @@
 #include "Terrain.h"
 
 #include <cmath>
+#include <random>
 
 #include <SFML/Graphics.hpp>
 
@@ -34,6 +35,8 @@ class Fourmiliere;
 struct Parametre_IA
 {
 	float speed;
+	float sand_speed;
+	float water_speed;
 
 	float detection_range;
 
@@ -44,6 +47,8 @@ struct Parametre_IA
 	void operator=(Parametre_IA& in)
 	{
 		speed = in.speed;
+		sand_speed = in.sand_speed;
+		water_speed = in.water_speed;
 		detection_range = in.detection_range;
 		Pheromone_max = in.Pheromone_max;
 		qantity_max = in.qantity_max;
@@ -60,14 +65,14 @@ struct Pheromone
 		clock.restart();
 	};
 
-	operator int ()
+	operator float()
 	{
 		value -= clock.restart().asSeconds() * disipation_speed;
 
 		if (value < 0)
 			value = 0;
 
-		return (int)value;
+		return value;
 	};
 
 	void set_disipation_speed(float disipation_speed) { this->disipation_speed = disipation_speed; };
@@ -95,6 +100,8 @@ struct CasePheromones
 	Pheromone Water = 0;
 	Pheromone Enemy = 0;
 	Pheromone None = 0;
+
+	bool organised_search;
 
 	Pheromone& operator[](Type T)
 	{
@@ -143,7 +150,7 @@ class Fourmie
 
 	float dx = 0, dy = 0;
 
-	float rotation = 0;
+	float rotation = 90;
 
 	int qantity = 0;
 
@@ -181,6 +188,8 @@ private:
 	void anti_hors_map(int& cx, int& cy);
 
 	bool anti_wrong_case(int& cx, int& cy);
+
+	void organised_search(int& cx, int& cy);
 };
 
 class Fourmiliere
