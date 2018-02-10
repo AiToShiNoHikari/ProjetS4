@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <random>
+#include <chrono>
 
 #include <SFML/Graphics.hpp>
 
@@ -44,6 +45,8 @@ struct Parametre_IA
 
 	int qantity_max;
 
+	float max_angle_deviation;
+
 	void operator=(Parametre_IA& in)
 	{
 		speed = in.speed;
@@ -52,6 +55,7 @@ struct Parametre_IA
 		detection_range = in.detection_range;
 		Pheromone_max = in.Pheromone_max;
 		qantity_max = in.qantity_max;
+		max_angle_deviation = in.max_angle_deviation;
 	};
 };
 
@@ -190,6 +194,8 @@ private:
 	bool anti_wrong_case(int& cx, int& cy);
 
 	void organised_search(int& cx, int& cy);
+
+	void deviation(int& cx, int& cy, float& ndx, float& ndy);
 };
 
 class Fourmiliere
@@ -215,6 +221,9 @@ class Fourmiliere
 	float Pheromone_disipation_speed;
 
 public:
+
+	std::default_random_engine generator;
+	std::normal_distribution<float> distribution;
 
 	Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 

@@ -6,6 +6,8 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 	this->x = x + 0.5;
 	this->y = y + 0.5;
 
+	rotation = (rand() % 4) * 90;
+
 	this->parametre_IA = parametre_IA;
 
 	this->Pheromone_Table = Pheromone_Table;
@@ -23,6 +25,24 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 
 void Fourmie::deplacement()
 {
+	float speed;
+
+	if (case_x < 0 || case_y < 0 || case_x >= Terrain.TX || case_y >= Terrain.TY)
+		speed = parametre_IA.speed;
+	else
+		switch (Terrain.Terrain[case_x][case_y].Type)
+		{
+		case CaseTerrain::Sable:
+			speed = parametre_IA.sand_speed;
+			break;
+		case CaseTerrain::Eau:
+			speed = parametre_IA.water_speed;
+			break;
+		default:
+			speed = parametre_IA.speed;
+			break;
+		}
+
 	float dtime = speed_clock.restart().asSeconds();
 
 	x += (parametre_IA.speed * dx * dtime);
@@ -302,11 +322,9 @@ void Fourmie::analyse()
 		} while ((cx == (int)x && cy == (int)y) || cx < 0);
 	}
 
-	float delta_dest_x = (cx + 0.5) - x;
-	float delta_dest_y = (cy + 0.5) - y;
+	float ndx, ndy;
 
-	float hypo = hypotf(delta_dest_x, delta_dest_y);
-	float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+	deviation(cx, cy, ndx, ndy);
 
 	rotation = acos(ndx) * 180 / PI;
 
@@ -518,9 +536,58 @@ void Fourmie::organised_search(int& cx, int& cy)
 		Pheromone_Table[case_x][case_y].organised_search = !test;
 };
 
+void Fourmie::deviation(int& cx, int& cy, float& ndx, float& ndy)
+{
+	float delta_dest_x = (cx + 0.5) - x;
+	float delta_dest_y = (cy + 0.5) - y;
+
+	float hypo = hypotf(delta_dest_x, delta_dest_y);
+	ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+	float r = acos(ndx) * 180 / PI;
+
+	if (ndy<0)
+		r = 360 - r;
+
+	float rf;
+
+	while (true)
+	{
+		float nx = x, ny = y;
+
+		rf = r;
+
+		rf += (fourmiliere.distribution(fourmiliere.generator) * parametre_IA.max_angle_deviation);
+
+		float rfr = rf * PI / 180;
+
+		ndx = cos(rfr), ndy = sin(rfr);
+
+		while (case_x == (int)nx && case_y == (int)ny)
+		{
+			nx += ndx;
+			ny += ndy;
+		}
+
+		if (!(nx < 0 || ny < 0 || nx >= Terrain.TX || ny >= Terrain.TY))
+			switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+			{
+			case CaseTerrain::Roche:
+				break;
+			case CaseTerrain::Sable:
+				if (parametre_IA.sand_speed > 0)
+					return;
+				break;
+			default:
+				return;
+				break;
+			}
+	}
+};
+
 //Fourmiliere
 
-Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture)
+Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture), distribution(0.0, (1.0 / 3.0)), generator(std::chrono::system_clock::now().time_since_epoch().count())
 {
 	Pheromone_Table = new CasePheromones*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
@@ -653,6 +720,7 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.speed = 2.5;
 	parametre_IA.sand_speed = 1.5;
 	parametre_IA.water_speed = 1;
+	parametre_IA.max_angle_deviation = 22.5;
 
 	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
