@@ -347,7 +347,7 @@ void Fourmie::change_dest()
 {
 	if (destination != home)
 	{
-		ex_destination = destination;
+		//ex_destination = destination;
 
 		switch (Terrain.Terrain[case_x][case_y].Type)
 		{
@@ -374,6 +374,8 @@ void Fourmie::change_dest()
 		fourmiliere.select_dest(destination, contenue, qantity, ex_destination);
 
 		contenue = home;
+
+		ex_destination = destination;
 	}
 
 	Pheromone_current = parametre_IA.Pheromone_max;
