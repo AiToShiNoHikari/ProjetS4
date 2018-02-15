@@ -37,7 +37,7 @@ class ClassTerrain {
 
 	sf::Image ImgTerrain;
 	sf::Texture TextTerrain;
-	sf::Sprite** SprtTerrain = NULL;
+	sf::RectangleShape** SprtTerrain = NULL;
 
 public:
 	CaseTerrain** Terrain = NULL;

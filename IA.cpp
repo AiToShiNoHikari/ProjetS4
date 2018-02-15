@@ -921,7 +921,7 @@ void Simulation(sf::RenderWindow& window)
 		size.x = vue.getSize().x;
 		size.y = vue.getSize().y;
 
-		ObjTerrain.Affiche((((position.x - (size.x / 2)) / _size) / 10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10), (((position.y + (size.y / 2)) / _size) / 10));
+		ObjTerrain.Affiche((((position.x - (size.x / 2)) / _size) / 10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10) + 1, (((position.y + (size.y / 2)) / _size) / 10) + 1);
 		Texture_BG_Simulation = RenderTexture_BG_Simulation.getTexture();
 		Texture_AI_Calque_Simulation = RenderTexture_AI_Calque_Simulation.getTexture();
 
@@ -1070,7 +1070,7 @@ void Simulation(sf::RenderWindow& window)
 			RenderTexture_BG_Simulation.clear();
 
 
-			ObjTerrain.Affiche((((position.x - (size.x / 2)) / _size) / 10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10), (((position.y + (size.y / 2)) / _size) / 10));
+			ObjTerrain.Affiche((((position.x - (size.x / 2)) / _size) / 10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10) + 1, (((position.y + (size.y / 2)) / _size) / 10) + 1);
 
 			RenderTexture_BG_Simulation.display();
 
