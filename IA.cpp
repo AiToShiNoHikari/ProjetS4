@@ -836,9 +836,9 @@ void Simulation(sf::RenderWindow& window)
 
 	int pos_base_x = 0, pos_base_y = 0;
 
-	for (int i = 0; i < ObjTerrain.TX; i++)
+	for (int i = 0; i < (ObjTerrain.TX/2); i++)
 	{
-		for (int j = 0; j < ObjTerrain.TY; j++)
+		for (int j = 0; j < (ObjTerrain.TY/2); j++)
 		{
 			int val;
 
@@ -847,7 +847,7 @@ void Simulation(sf::RenderWindow& window)
 			if (val != 1)
 			{
 				ObjTerrain.Terrain[i][j].Type = (CaseTerrain::TypeTerrain)val;
-				//std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << ObjTerrain.Terrain[i][j].Type << std::endl;
+				std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << ObjTerrain.Terrain[i][j].Type << std::endl;
 			}
 
 			if (ObjTerrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
