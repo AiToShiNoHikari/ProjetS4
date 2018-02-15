@@ -6,6 +6,8 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 	this->x = x + 0.5;
 	this->y = y + 0.5;
 
+	rotation = (rand() % 4) * 90;
+
 	this->parametre_IA = parametre_IA;
 
 	this->Pheromone_Table = Pheromone_Table;
@@ -23,6 +25,24 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 
 void Fourmie::deplacement()
 {
+	float speed;
+
+	if (case_x < 0 || case_y < 0 || case_x >= Terrain.TX || case_y >= Terrain.TY)
+		speed = parametre_IA.speed;
+	else
+		switch (Terrain.Terrain[case_x][case_y].Type)
+		{
+		case CaseTerrain::Sable:
+			speed = parametre_IA.sand_speed;
+			break;
+		case CaseTerrain::Eau:
+			speed = parametre_IA.water_speed;
+			break;
+		default:
+			speed = parametre_IA.speed;
+			break;
+		}
+
 	float dtime = speed_clock.restart().asSeconds();
 
 	x += (parametre_IA.speed * dx * dtime);
@@ -39,129 +59,179 @@ void Fourmie::analyse()
 
 	case_x = (int)x, case_y = (int)y;
 
+	if (case_x < 0 || case_y < 0 || case_x >= Terrain.TX || case_y >= Terrain.TY)
+	{
+		if (case_x < 0)
+		{
+			cx = 0;
+		}
+		else if (case_x >= Terrain.TX)
+		{
+			cx = Terrain.TX;
+		}
+		else 
+		{
+			cx = case_x;
+		}
+
+		if (case_y < 0)
+		{
+			cy = 0;
+		}
+		else if (case_y >= Terrain.TY)
+		{
+			cy = Terrain.TY;
+		}
+		else
+		{
+			cy = case_y;
+		}
+	};
+
 	int min_x = ((int)(x - parametre_IA.detection_range))<0 ? 0 : ((int)(x - parametre_IA.detection_range));
 	int max_x = ((int)(x + parametre_IA.detection_range)) >= Terrain.TX ? Terrain.TX : ((int)(x + parametre_IA.detection_range));
 	int min_y = ((int)(y - parametre_IA.detection_range))<0 ? 0 : ((int)(y - parametre_IA.detection_range));
 	int max_y = ((int)(y + parametre_IA.detection_range)) >= Terrain.TY ? Terrain.TY : ((int)(y + parametre_IA.detection_range));
 	
 	//analyse du terrain et change la direction ou la destination en fonction du resulta
-	for (int i = min_x; i < max_x; i++)
+	if (cx < 0)
 	{
-		for (int j = min_y; j < max_y; j++)
+		for (int i = min_x; i < max_x; i++)
 		{
-			switch (destination)
+			for (int j = min_y; j < max_y; j++)
 			{
-			case Fourmie::home:
-				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+				switch (destination)
 				{
-					if (case_x == i && case_y == j)
+				case Fourmie::home:
+					if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
 					{
-						change_dest();
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						cx = i;
-						cy = j;
-					}
-				}
-				break;
-			case Fourmie::food:
-				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture)
-				{
-					if (case_x == i && case_y == j)
-					{
-						change_dest();
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						cx = i;
-						cy = j;
-					}
-				}
-				break;
-			case Fourmie::water:
-				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
-				{
-					if (case_x == i && case_y == j)
-					{
-						change_dest();
-						contenue = water;
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						cx = i;
-						cy = j;
-					}
-				}
-				break;
-			case Fourmie::enemy:
-				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
-				{
-					if (case_x == i && case_y == j)
-					{
-						change_dest();
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						cx = i;
-						cy = j;
-					}
-				}
-				break;
-			case Fourmie::search:
-				if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture || Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
-				{
-					if (case_x == i && case_y == j)
-					{
-						change_dest();
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						if (cx < 0)
+						if (case_x == i && case_y == j)
 						{
-							cx = i;
-							cy = j;
+							change_dest();
+							cx = -1, cy = -1;
 						}
 						else
 						{
-							if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - i) + abs(y - j)) / 2.0)
+							if (!anti_wrong_case(i, j))
 							{
 								cx = i;
 								cy = j;
 							}
 						}
 					}
-				}
-				/*if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
-				{
-					if (case_x == cx && case_y == cy)
+					break;
+				case Fourmie::food:
+					if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture)
 					{
-						change_dest();
-						cx = -1, cy = -1;
-					}
-					else
-					{
-						if (cx < 0)
+						if (case_x == i && case_y == j)
 						{
-							cx = i;
-							cy = j;
+							change_dest();
+							cx = -1, cy = -1;
 						}
 						else
 						{
-							if ((abs(x - cx) + abs(y - cy)) / 2.0 >(abs(x - i) + abs(y - j)) / 2.0)
+							if (!anti_wrong_case(i, j))
 							{
 								cx = i;
 								cy = j;
 							}
 						}
 					}
-				}//*/
-				break;
+					break;
+				case Fourmie::water:
+					if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
+					{
+						if (case_x == i && case_y == j)
+						{
+							change_dest();
+							contenue = water;
+							cx = -1, cy = -1;
+						}
+						else
+						{
+							if (!anti_wrong_case(i, j))
+							{
+								cx = i;
+								cy = j;
+							}
+						}
+					}
+					break;
+				case Fourmie::enemy:
+					if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+					{
+						if (case_x == i && case_y == j)
+						{
+							change_dest();
+							cx = -1, cy = -1;
+						}
+						else
+						{
+							if (!anti_wrong_case(i, j))
+							{
+								cx = i;
+								cy = j;
+							}
+						}
+					}
+					break;
+				case Fourmie::search:
+					if (Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Nourriture || Terrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Eau)
+					{
+						if (case_x == i && case_y == j)
+						{
+							change_dest();
+							cx = -1, cy = -1;
+						}
+						else
+						{
+							if (cx < 0)
+							{
+								if (!anti_wrong_case(i, j))
+								{
+									cx = i;
+									cy = j;
+								}
+							}
+							else
+							{
+								if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - i) + abs(y - j)) / 2.0)
+								{
+									if (!anti_wrong_case(i, j))
+									{
+										cx = i;
+										cy = j;
+									}
+								}
+							}
+						}
+					}
+					/*if (Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+					{
+						if (case_x == cx && case_y == cy)
+						{
+							change_dest();
+							cx = -1, cy = -1;
+						}
+						else
+						{
+							if (cx < 0)
+							{
+								cx = i;
+								cy = j;
+							}
+							else
+							{
+								if ((abs(x - cx) + abs(y - cy)) / 2.0 >(abs(x - i) + abs(y - j)) / 2.0)
+								{
+									cx = i;
+									cy = j;
+								}
+							}
+						}
+					}//*/
+					break;
+				}
 			}
 		}
 	}
@@ -203,17 +273,23 @@ void Fourmie::analyse()
 					{
 						if (value < valuec)
 						{
-							cx = i;
-							cy = j;
-							value = valuec;
+							if (!anti_wrong_case(i, j))
+							{
+								cx = i;
+								cy = j;
+								value = valuec;
+							}
 						}
 						else if (value == valuec)
 						{
 							if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - i) + abs(y - j)) / 2.0)
 							{
-								cx = i;
-								cy = j;
-								value = valuec;
+								if (!anti_wrong_case(i, j))
+								{
+									cx = i;
+									cy = j;
+									value = valuec;
+								}
 							}
 						}
 					}
@@ -227,18 +303,28 @@ void Fourmie::analyse()
 	{
 		do
 		{
-			cx = ((int)x + (rand() % 3) - 1);
-			cy = ((int)y + (rand() % 3) - 1);
+			//cx = ((int)x + (rand() % 3) - 1);
+			//cy = ((int)y + (rand() % 3) - 1);
+
+			organised_search(cx, cy);
 
 			anti_hors_map(cx, cy);
+
+			if (cx >= 0)
+			{
+				if (anti_wrong_case(cx, cy))
+				{
+					cx = -1;
+					cy = -1;
+				}
+			}
+
 		} while ((cx == (int)x && cy == (int)y) || cx < 0);
 	}
 
-	float delta_dest_x = (cx + 0.5) - x;
-	float delta_dest_y = (cy + 0.5) - y;
+	float ndx, ndy;
 
-	float hypo = hypotf(delta_dest_x, delta_dest_y);
-	float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+	deviation(cx, cy, ndx, ndy);
 
 	rotation = acos(ndx) * 180 / PI;
 
@@ -358,9 +444,150 @@ void Fourmie::anti_hors_map(int& cx, int& cy)
 	};
 };
 
+bool Fourmie::anti_wrong_case(int& cx, int& cy)
+{
+	if (cx < 0 || cy < 0 || cx >= Terrain.TX || cy >= Terrain.TY)
+		return true;
+
+	float delta_dest_x = (cx + 0.5) - x;
+	float delta_dest_y = (cy + 0.5) - y;
+
+	if (delta_dest_y == 0 && delta_dest_x == 0)
+		return false;
+
+	float hypo = hypotf(delta_dest_x, delta_dest_y);
+	float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+	float nx = x, ny = y;
+	int enx = nx, eny = ny;
+
+	while (true)
+	{
+		enx = (int)nx, eny = (int)ny;
+
+		while (enx == (int)nx && eny == (int)ny)
+		{
+			nx += ndx;
+			ny += ndy;
+		}
+
+		if (nx < 0 || ny < 0 || nx >= Terrain.TX || ny >= Terrain.TY)
+			return true;
+
+		switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+		{
+		case CaseTerrain::Roche:
+			return true;
+			break;
+		case CaseTerrain::Sable:
+			if (parametre_IA.sand_speed <= 0)
+				return true;
+			break;
+		default:
+			break;
+		}
+
+		if (cx == (int)nx && cy == (int)ny)
+			break;
+	}
+
+	return false;
+};
+
+void Fourmie::organised_search(int& cx, int& cy)
+{
+	cx = case_x;
+	cy = case_y;
+
+	bool test = Pheromone_Table[case_x][case_y].organised_search;
+
+	int r = ((int)((rotation + 360 - 90 + (test ? 90 : -90) - 45) / 90.0)) % 4;
+
+	switch (r)
+	{
+	case 0:
+		cy--;
+		break;
+	case 1:
+		cx++;
+		break;
+	case 2:
+		cy++;
+		break;
+	case 3:
+		cx--;
+		break;
+	}
+
+	float delta_dest_x = (cx + 0.5) - x;
+	float delta_dest_y = (cy + 0.5) - y;
+
+	float hypo = hypotf(delta_dest_x, delta_dest_y);
+	float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+	rotation = acos(ndx) * 180 / PI;
+
+	if (ndy<0)
+		rotation = 360 - rotation;
+
+	rotation += 90;
+
+	if (!(cx < 0 || cy < 0 || cx >= Terrain.TX || cy >= Terrain.TY))
+		Pheromone_Table[case_x][case_y].organised_search = !test;
+};
+
+void Fourmie::deviation(int& cx, int& cy, float& ndx, float& ndy)
+{
+	float delta_dest_x = (cx + 0.5) - x;
+	float delta_dest_y = (cy + 0.5) - y;
+
+	float hypo = hypotf(delta_dest_x, delta_dest_y);
+	ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+	float r = acos(ndx) * 180 / PI;
+
+	if (ndy<0)
+		r = 360 - r;
+
+	float rf;
+
+	while (true)
+	{
+		float nx = x, ny = y;
+
+		rf = r;
+
+		rf += (fourmiliere.distribution(fourmiliere.generator) * parametre_IA.max_angle_deviation);
+
+		float rfr = rf * PI / 180;
+
+		ndx = cos(rfr), ndy = sin(rfr);
+
+		while (case_x == (int)nx && case_y == (int)ny)
+		{
+			nx += ndx;
+			ny += ndy;
+		}
+
+		if (!(nx < 0 || ny < 0 || nx >= Terrain.TX || ny >= Terrain.TY))
+			switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+			{
+			case CaseTerrain::Roche:
+				break;
+			case CaseTerrain::Sable:
+				if (parametre_IA.sand_speed > 0)
+					return;
+				break;
+			default:
+				return;
+				break;
+			}
+	}
+};
+
 //Fourmiliere
 
-Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture)
+Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture), distribution(0.0, (1.0 / 3.0)), generator(std::chrono::system_clock::now().time_since_epoch().count())
 {
 	Pheromone_Table = new CasePheromones*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
@@ -369,6 +596,7 @@ Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromon
 
 		for (int j = 0; j < Terrain.TY; j++)
 		{
+			Pheromone_Table[i][j].organised_search = ((rand() % 1) == 1);
 			Pheromone_Table[i][j].set_disipation_speed(Pheromone_disipation_speed);
 		};
 	};
@@ -490,6 +718,9 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.detection_range = 2;
 	parametre_IA.Pheromone_max = 40;
 	parametre_IA.speed = 2.5;
+	parametre_IA.sand_speed = 1.5;
+	parametre_IA.water_speed = 1;
+	parametre_IA.max_angle_deviation = 22.5;
 
 	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 

@@ -112,6 +112,6 @@ void main()
 	window.setFramerateLimit(60);
 
 	//Menu(window);
-	Edition(window);
+	Simulation(window);
 
 }
