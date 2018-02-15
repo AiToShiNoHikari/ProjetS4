@@ -9,7 +9,7 @@ void Edition(sf::RenderWindow& window)
 
 	RTextureSol.create(window.getSize().x, window.getSize().y);
 
-	ClassTerrain ObjTerrain(250, 250, RTextureSol);
+	ClassTerrain ObjTerrain(50, 50, RTextureSol);
 
 	sf::Sprite Ssol;
 	sf::Texture Tsol;

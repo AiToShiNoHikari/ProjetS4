@@ -806,7 +806,7 @@ void Fourmiliere::affiche_info()
 	{
 		std::cout.seekp(0);
 
-		std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
+		//std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
 	}
 };
 
@@ -826,9 +826,42 @@ void Simulation(sf::RenderWindow& window)
 	sf::RenderTexture RenderTexture_AI_Calque_Simulation;
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
 
-	ClassTerrain ObjTerrain(25, 25, RenderTexture_BG_Simulation);
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test.save.st");
 
-	//terrain de test
+	int TX, TY;
+
+	NewTerrain >> TX >> TY;
+
+	ClassTerrain ObjTerrain(TX, TY, RenderTexture_BG_Simulation);
+
+	int pos_base_x = 0, pos_base_y = 0;
+
+	for (int i = 0; i < ObjTerrain.TX; i++)
+	{
+		for (int j = 0; j < ObjTerrain.TY; j++)
+		{
+			int val;
+
+			NewTerrain >> val;
+			
+			if (val != 1)
+			{
+				ObjTerrain.Terrain[i][j].Type = (CaseTerrain::TypeTerrain)val;
+				//std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << ObjTerrain.Terrain[i][j].Type << std::endl;
+			}
+
+			if (ObjTerrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+			{
+				pos_base_x = i, pos_base_y = j;
+			}
+		}
+	}
+
+	NewTerrain.close();
+
+	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
+
+	/*terrain de test
 	int pos_base_x = rand() % ObjTerrain.TX, pos_base_y = rand() % ObjTerrain.TY;
 
 	ObjTerrain.Terrain[pos_base_x][pos_base_y].Type = CaseTerrain::Base;
@@ -836,7 +869,7 @@ void Simulation(sf::RenderWindow& window)
 	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Eau;
 
 	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
-	//fin terrain de test
+	//fin terrain de test*/
 
 	Parametre_IA parametre_IA;
 	parametre_IA.detection_range = 2;
