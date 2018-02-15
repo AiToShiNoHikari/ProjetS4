@@ -15,6 +15,9 @@
 #include <list>
 
 #ifdef _DEBUG
+#include <thread>
+#include <mutex>
+
 #include <iostream>
 #endif
 #include <fstream>
@@ -47,6 +50,8 @@ struct Parametre_IA
 
 	float max_angle_deviation;
 
+	float life_time;
+
 	void operator=(Parametre_IA& in)
 	{
 		speed = in.speed;
@@ -56,6 +61,7 @@ struct Parametre_IA
 		Pheromone_max = in.Pheromone_max;
 		qantity_max = in.qantity_max;
 		max_angle_deviation = in.max_angle_deviation;
+		life_time = in.life_time;
 	};
 };
 
@@ -136,6 +142,8 @@ class Fourmie
 {
 	sf::Clock speed_clock;
 
+	sf::Clock life_clock;
+
 	sf::RenderTarget& render;
 
 	sf::Texture& texture;
@@ -173,10 +181,13 @@ public:
 		enemy,
 	};
 
+	Type_Destination ex_destination = none;
 	Type_Destination destination = none;
 	Type_Destination contenue = none;
 
 	float Pheromone_current = 0;
+
+	bool in_life = true;
 
 	Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, CasePheromones**Pheromone_Table, Fourmiliere& fourmiliere);
 
@@ -210,6 +221,10 @@ class Fourmiliere
 
 	float x = 0, y = 0;
 
+	//parametre de la fourmiliere
+	int birth_Food_cost = 1000;
+	int birth_Water_cost = 1000;
+
 	//parametre des IA
 	Parametre_IA parametre_IA;
 
@@ -218,7 +233,17 @@ class Fourmiliere
 	bool Food_found = false;
 	bool Water_found = false;
 
-	float Pheromone_disipation_speed;
+	int Food_value = 0;
+	int Water_value = 0;
+
+	int search_fourmi = 0;
+	int food_fourmi = 0;
+	int water_fourmi = 0;
+	int enemy_fourmi = 0;
+
+#ifdef _DEBUG
+	bool is_launch = true;
+#endif
 
 public:
 
@@ -227,13 +252,19 @@ public:
 
 	Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
-	void add_fourmie();
+	void add_fourmie(int num_type = -1);
 
 	void action();
 
 	void affiche();
 
-	void select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue);
+	void select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue, int& value, Fourmie::Type_Destination ex_destination);
+
+#ifdef _DEBUG
+	~Fourmiliere();
+
+	void affiche_info();
+#endif
 };
 
 void Simulation(sf::RenderWindow& window);

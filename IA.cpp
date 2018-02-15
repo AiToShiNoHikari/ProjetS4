@@ -16,11 +16,13 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 
 	Sprite.setTexture(&texture);
 
-	Sprite.setFillColor(sf::Color(rand() % 256, rand() % 256, rand() % 256, 1+rand() % 255));
+	//Sprite.setFillColor(sf::Color(rand() % 256, rand() % 256, rand() % 256, 1+rand() % 255));
 
 	Sprite.setOrigin(_size / 4, _size / 2);
 
 	change_dest();
+
+	life_clock.restart();
 };
 
 void Fourmie::deplacement()
@@ -345,6 +347,8 @@ void Fourmie::change_dest()
 {
 	if (destination != home)
 	{
+		ex_destination = destination;
+
 		switch (Terrain.Terrain[case_x][case_y].Type)
 		{
 		case CaseTerrain::Base:
@@ -352,9 +356,11 @@ void Fourmie::change_dest()
 			break;
 		case CaseTerrain::Eau:
 			contenue = water;
+			qantity = parametre_IA.qantity_max;
 			break;
 		case CaseTerrain::Nourriture:
 			contenue = food;
+			qantity = parametre_IA.qantity_max;
 			break;
 		default:
 			contenue = none;
@@ -365,7 +371,7 @@ void Fourmie::change_dest()
 	}
 	else //if (Terrain.Terrain[case_x][case_y].Type == CaseTerrain::Base)
 	{
-		fourmiliere.select_dest(destination, contenue);
+		fourmiliere.select_dest(destination, contenue, qantity, ex_destination);
 
 		contenue = home;
 	}
@@ -422,10 +428,15 @@ void Fourmie::palce_pheromone()
 
 void Fourmie::action()
 {
-	if (case_x != (int)x || case_y != (int)y)
-		analyse();
+	if (in_life)
+	{
+		if (case_x != (int)x || case_y != (int)y)
+			analyse();
 
-	deplacement();
+		deplacement();
+
+		in_life = (life_clock.getElapsedTime().asSeconds() < parametre_IA.life_time);
+	}
 };
 
 void Fourmie::affiche()
@@ -605,18 +616,63 @@ Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromon
 	this->y = y;
 
 	this->parametre_IA = parametre_IA;
+
+#ifdef _DEBUG
+	std::thread info([this]() {this->affiche_info(); });
+	info.detach();
+#endif
 };
 
-void Fourmiliere::add_fourmie()
+void Fourmiliere::add_fourmie(int num_type)
 {
 	Fourmies.push_back(new Fourmie(x, y, parametre_IA, Terrain, render, texture, Pheromone_Table, *this));
 };
 
 void Fourmiliere::action()
 {
+	std::list<Fourmie*> death;
+
 	for (std::list<Fourmie*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
 	{
 		(*iterator)->action();
+
+		if (!((*iterator)->in_life))
+		{
+			death.push_back(*iterator);
+		}
+	}
+
+	for (std::list<Fourmie*>::iterator iterator = death.begin(); iterator != death.end(); iterator++)
+	{
+		switch ((*iterator)->ex_destination)
+		{
+		case Fourmie::search:
+			search_fourmi--;
+			break;
+		case Fourmie::food:
+			food_fourmi--;
+			break;
+		case Fourmie::water:
+			water_fourmi--;
+			break;
+		case Fourmie::enemy:
+			enemy_fourmi--;
+			break;
+		default:
+			break;
+		}
+
+		Fourmies.remove(*iterator);
+
+		free(*iterator);
+	}
+
+	while (Food_value >= birth_Food_cost && Water_value >= birth_Water_cost)
+	{
+		Food_value -= birth_Food_cost;
+		Water_value -= birth_Water_cost;
+
+		add_fourmie();
 	}
 };
 
@@ -631,22 +687,44 @@ void Fourmiliere::affiche()
 
 		(*iterator)->affiche();
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 };
 
-void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue)
+void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue, int& value, Fourmie::Type_Destination ex_destination)
 {
-	switch (contenue)
+	switch (ex_destination)
 	{
-	case Fourmie::Type_Destination::food:
-		Food_found = true;
+	case Fourmie::search:
+		search_fourmi--;
 		break;
-	case Fourmie::Type_Destination::water:
-		Water_found = true;
+	case Fourmie::food:
+		food_fourmi--;
+		break;
+	case Fourmie::water:
+		water_fourmi--;
+		break;
+	case Fourmie::enemy:
+		enemy_fourmi--;
 		break;
 	default:
 		break;
 	}
+
+	switch (contenue)
+	{
+	case Fourmie::Type_Destination::food:
+		Food_found = true;
+		Food_value += value;
+		break;
+	case Fourmie::Type_Destination::water:
+		Water_found = true;
+		Water_value += value;
+		break;
+	default:
+		break;
+	}
+
+	value = 0;
 
 	if (!Food_found && !Water_found)
 	{
@@ -654,14 +732,25 @@ void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::T
 	}
 	else if (Food_found && Water_found)
 	{
-		switch (rand() % 2)
+		if (food_fourmi > water_fourmi)
 		{
-		case 0:
-			destination = Fourmie::Type_Destination::food;
-			break;
-		case 1:
 			destination = Fourmie::Type_Destination::water;
-			break;
+		}
+		else if (food_fourmi < water_fourmi)
+		{
+			destination = Fourmie::Type_Destination::food;
+		}
+		else
+		{
+			switch (rand() % 2)
+			{
+			case 0:
+				destination = Fourmie::Type_Destination::food;
+				break;
+			case 1:
+				destination = Fourmie::Type_Destination::water;
+				break;
+			}
 		}
 	}
 	else if (Food_found && !Water_found)
@@ -688,8 +777,42 @@ void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::T
 			break;
 		}
 	}
+
+	switch (destination)
+	{
+	case Fourmie::search:
+		search_fourmi++;
+		break;
+	case Fourmie::food:
+		food_fourmi++;
+		break;
+	case Fourmie::water:
+		water_fourmi++;
+		break;
+	case Fourmie::enemy:
+		enemy_fourmi++;
+		break;
+	default:
+		break;
+	}
 };
 
+#ifdef _DEBUG
+void Fourmiliere::affiche_info()
+{
+	while (is_launch)
+	{
+		std::cout.seekp(0);
+
+		std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
+	}
+};
+
+Fourmiliere::~Fourmiliere()
+{
+	is_launch = false;
+};
+#endif
 
 void Simulation(sf::RenderWindow& window)
 {
@@ -713,18 +836,19 @@ void Simulation(sf::RenderWindow& window)
 	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
 	//fin terrain de test
 
-
 	Parametre_IA parametre_IA;
 	parametre_IA.detection_range = 2;
 	parametre_IA.Pheromone_max = 40;
 	parametre_IA.speed = 2.5;
 	parametre_IA.sand_speed = 1.5;
 	parametre_IA.water_speed = 1;
-	parametre_IA.max_angle_deviation = 22.5;
+	parametre_IA.max_angle_deviation = 33.75;
+	parametre_IA.life_time = 120;
+	parametre_IA.qantity_max = 260;
 
 	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		test.add_fourmie();
 	};
