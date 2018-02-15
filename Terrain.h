@@ -37,7 +37,7 @@ class ClassTerrain {
 
 	sf::Image ImgTerrain;
 	sf::Texture TextTerrain;
-	sf::Sprite SprtTerrain;
+	sf::Sprite** SprtTerrain = NULL;
 
 public:
 	CaseTerrain** Terrain = NULL;
@@ -48,7 +48,7 @@ public:
 
 	void Redimension(int x, int y);
 
-	void Affiche();
+	void Affiche(int i_mini, int j_mini, int i_max, int j_max);
 
 	// Les éléments suivant sont les paramétres du terrain :
 	int TX, TY;
