@@ -3,8 +3,6 @@
 
 void Edition(sf::RenderWindow& window)
 {
-
-
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -140,9 +138,9 @@ void Edition(sf::RenderWindow& window)
 
 	BSave.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
 
+	bool Sauvegarde = false;
 
-
-	while (window.isOpen())
+	while (window.isOpen() && !Sauvegarde)
 	{
 		window.clear();
 
@@ -204,6 +202,7 @@ void Edition(sf::RenderWindow& window)
 				if (BSave.get_state(event) == Interface::Bouton::cliking)
 				{
 					std::cout << "Save" << std::endl;
+					Sauvegarde = true;
 					ChangeSave = false;
 				}
 
@@ -357,7 +356,6 @@ void Edition(sf::RenderWindow& window)
 			Ssol.setTexture(Tsol);
 
 			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
-
 		}
 		
 		window.draw(Ssol);
@@ -371,9 +369,82 @@ void Edition(sf::RenderWindow& window)
 		window.display();
 	}
 
+	Interface::Texte_Entry_Zone NomMap(window.getSize().x / 2 - 250, window.getSize().y / 2 - 25, 500, 50, window);
+	NomMap.set_bg_type(Interface::Texte_Entry_Zone::BG_type::Rect);
+	NomMap.set_text_font(&Ressource::Arial);
+	NomMap.set_background_outline_thickness(2, 2, 2);
+	NomMap.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	NomMap.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	NomMap.set_background_color(sf::Color::Transparent, sf::Color(255, 255, 255, 128), sf::Color::White);
+
+	NomMap.select();
+	NomMap.set_monol();
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				NomMap.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				NomMap.get_state(event);
+
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				NomMap.get_state(event);
+				break;
+			case sf::Event::TextEntered:
+				if (NomMap.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
+				{
+					SaveTerrain(NomMap.get_text(), ObjTerrain);
+				};
+				break;
+			default:
+				break;
+			}
+		}
+
+		window.draw(Ssol);
+		NomMap.affiche();
+		window.display();
+	}
 
 }
 
+void SaveTerrain(std::string name, ClassTerrain& Terrain)
+{
+	std::ofstream TerrainList("./Ressource/Sauvegarde/Terrain/Terrain_List.save.sl", std::ios::out | std::ios::app);
+
+	std::ofstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + name + ".save.st");
+
+	TerrainList << name << std::endl;
+
+	NewTerrain << Terrain.TX << " " << Terrain.TY;
+
+	for (int i = 0; i < Terrain.TX; i++)
+	{
+		for (int j = 0; j < Terrain.TY; j++)
+		{
+			NewTerrain << " " << Terrain.Terrain[i][j].Type;
+		}
+	}
+
+	TerrainList.close();
+	NewTerrain.close();
+};
 
 ClassTerrain::ClassTerrain(int x, int y, sf::RenderTarget& Render) : Render(Render)
 {

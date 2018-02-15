@@ -24,6 +24,10 @@ struct CaseTerrain
 
 void Menu(sf::RenderWindow& window);
 
+class ClassTerrain;
+
+void SaveTerrain(std::string name, ClassTerrain& Terrain);
+
 
 /***** cette fonction te donnera l'image de la texture de la case *****/
 sf::Image Texture(int x, int y, CaseTerrain** Terrain);
