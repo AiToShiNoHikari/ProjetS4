@@ -12,6 +12,8 @@ sf::Texture Ressource::Save;
 
 sf::Texture Ressource::Fourmie;
 
+sf::Font Ressource::Arial;
+
 void main()
 {
 #ifdef _DEBUG
@@ -85,6 +87,16 @@ void main()
 
 
 	if (Ressource::Save.loadFromFile("./Ressource/Image/Save.png"))
+	{
+		//Non Error
+	}
+	else
+	{
+		//Error
+	}
+
+
+	if (Ressource::Arial.loadFromFile("./Ressource/Police/Arial.ttf"))
 	{
 		//Non Error
 	}

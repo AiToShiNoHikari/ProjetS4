@@ -16,6 +16,8 @@ struct Ressource
 	static sf::Texture Save;
 
 	static sf::Texture Fourmie;
+
+	static sf::Font Arial;
 };
 
 #endif
