@@ -29,7 +29,17 @@ void Edition(sf::RenderWindow& window)
 		vue.setSize(window.getSize().x, window.getSize().y);
 		vue.zoom(zoom);
 
-		ObjTerrain.Affiche();
+		sf::Vector2f position;
+
+		position.x = vue.getCenter().x;
+		position.y = vue.getCenter().y;
+
+		sf::Vector2f size;
+
+		size.x = vue.getSize().x;
+		size.y = vue.getSize().y;
+
+		ObjTerrain.Affiche((((position.x - (size.x / 2)) / _size) / 10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10), (((position.y + (size.y / 2)) / _size) / 10));
 		Tsol = RTextureSol.getTexture();
 
 		Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
@@ -340,11 +350,16 @@ void Edition(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
+			sf::Vector2f size;
+
+			size.x = vue.getSize().x;
+			size.y = vue.getSize().y;
+
 			RTextureSol.setView(vue);
 
 			RTextureSol.clear();
-
-			ObjTerrain.Affiche();
+			
+			ObjTerrain.Affiche((((position.x - (size.x/2))/ _size)/10), (((position.y - (size.y / 2)) / _size) / 10), (((position.x + (size.x / 2)) / _size) / 10), (((position.y + (size.y / 2)) / _size) / 10));
 
 			RTextureSol.display();
 
@@ -846,9 +861,20 @@ void ClassTerrain::MAJTexture(int i_mini, int j_mini, int i_max, int j_max)
 
 	TextTerrain.loadFromImage(ImgTerrain);
 
-	SprtTerrain.setTexture(TextTerrain);
 
-	SprtTerrain.setTextureRect(sf::IntRect(0, 0, TextTerrain.getSize().x, TextTerrain.getSize().y));
+	for (int i = 0; i < (int)(TX / 10 + 1); i++)
+	{
+		for (int j = 0; j < (int)(TY / 10 + 1); j++)
+		{
+
+			SprtTerrain[i][j].setTexture(TextTerrain);
+
+			SprtTerrain[i][j].setTextureRect(sf::IntRect(10 * i*_size, 10 * j*_size, 10 * (i*_size + 1), 10 * (j*_size + 1)));
+
+			SprtTerrain[i][j].setPosition(10 * i*_size, 10 * j*_size);
+
+		}
+	}
 }
 
 void ClassTerrain::Redimension(int x, int y)
@@ -862,6 +888,15 @@ void ClassTerrain::Redimension(int x, int y)
 		delete(Terrain);
 	}
 
+	if (SprtTerrain != NULL)
+	{
+		for (int i = 0; i < (int)(TX/10 +1); i++)
+		{
+			delete(SprtTerrain[i]);
+		}
+		delete(SprtTerrain);
+	}
+
 	TX = x;
 	TY = y;
 
@@ -871,10 +906,23 @@ void ClassTerrain::Redimension(int x, int y)
 		Terrain[i] = new CaseTerrain[TY];
 	}
 
+	SprtTerrain = new sf::Sprite*[(int)(TX / 10 + 1)];
+	for (int i = 0; i < (int)(TX / 10 + 1); i++)
+	{
+		SprtTerrain[i] = new sf::Sprite[(int)(TY / 10 + 1)];
+	}
+
 	MAJTexture();
 }
 
-void ClassTerrain::Affiche()
+void ClassTerrain::Affiche(int i_mini, int j_mini, int i_max, int j_max)
 {
-	Render.draw(SprtTerrain);
+	for (int i = i_mini; i < i_max; i++)
+	{
+		for (int j = j_mini; j < j_max; j++)
+		{
+			Render.draw(SprtTerrain[i][j]);
+
+		}
+	}
 }
