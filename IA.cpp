@@ -27,11 +27,14 @@ Fourmie::Fourmie(int x, int y, Parametre_IA parametre_IA, ClassTerrain& Terrain,
 
 void Fourmie::deplacement()
 {
-	float speed;
+	float speed = 0;
 
 	if (case_x < 0 || case_y < 0 || case_x >= Terrain.TX || case_y >= Terrain.TY)
+	{
 		speed = parametre_IA.speed;
+	}
 	else
+	{
 		switch (Terrain.Terrain[case_x][case_y].Type)
 		{
 		case CaseTerrain::Sable:
@@ -39,16 +42,19 @@ void Fourmie::deplacement()
 			break;
 		case CaseTerrain::Eau:
 			speed = parametre_IA.water_speed;
+			if (speed == 0)
+				speed = parametre_IA.speed;
 			break;
 		default:
 			speed = parametre_IA.speed;
 			break;
 		}
-
+	}
+	
 	float dtime = speed_clock.restart().asSeconds();
 
-	x += (parametre_IA.speed * dx * dtime);
-	y += (parametre_IA.speed * dy* dtime);
+	x += (speed * dx * dtime);
+	y += (speed * dy* dtime);
 
 	Pheromone_current -= dtime;
 
@@ -57,6 +63,8 @@ void Fourmie::deplacement()
 
 void Fourmie::analyse()
 {
+	Orga_Search = false;
+
 	int cx = -1, cy = -1;
 
 	case_x = (int)x, case_y = (int)y;
@@ -310,6 +318,9 @@ void Fourmie::analyse()
 
 			organised_search(cx, cy);
 
+			if (organized_turn >= 8)
+				break;
+
 			anti_hors_map(cx, cy);
 
 			if (cx >= 0)
@@ -340,7 +351,10 @@ void Fourmie::analyse()
 	dx = ndx;
 	dy = ndy;
 
-	palce_pheromone();
+	if (organized_turn < 8)
+		palce_pheromone();
+
+	organized_turn = 0;
 };
 
 void Fourmie::change_dest()
@@ -407,22 +421,25 @@ void Fourmie::palce_pheromone()
 	{
 		if (case_x >= 0 && case_x < Terrain.TX && case_y >= 0 && case_y < Terrain.TY)
 		{
-			Pheromone& valuec = Pheromone_Table[case_x][case_y][place];
-
-			if (valuec < Pheromone_current)
+			if (Terrain.Terrain[case_x][case_y].Type != CaseTerrain::TypeTerrain::Roche)
 			{
-				valuec = Pheromone_current;
-			}
-			else if (valuec > Pheromone_current)
-			{
-				Pheromone_current = (int)valuec;
-			}
+				Pheromone& valuec = Pheromone_Table[case_x][case_y][place];
 
-			//Pheromone_current--;
+				if (valuec < Pheromone_current)
+				{
+					valuec = Pheromone_current;
+				}
+				else if (valuec > Pheromone_current)
+				{
+					Pheromone_current = (int)valuec;
+				}
 
-			if (Pheromone_current <= 0)
-			{
-				change_dest();
+				//Pheromone_current--;
+
+				if (Pheromone_current <= 0)
+				{
+					change_dest();
+				}
 			}
 		}
 	}
@@ -480,28 +497,102 @@ bool Fourmie::anti_wrong_case(int& cx, int& cy)
 
 		while (enx == (int)nx && eny == (int)ny)
 		{
-			nx += ndx;
-			ny += ndy;
+			//nx += ndx * 0.001;
+			//ny += ndy * 0.001;
+
+			float nbdx = 0, nbdy = 0;
+
+			if (signbit(ndx))
+			{
+				nbdx = (nx - (int)(nx) + 0.01) / abs(ndx);
+			}
+			else
+			{
+				nbdx = (((int)(nx) + 1) - nx) / abs(ndx);
+			}
+
+			if (signbit(ndy))
+			{
+				nbdy = (ny - (int)(ny) + 0.01) / abs(ndy);
+			}
+			else
+			{
+				nbdy = (((int)(ny)+1) - ny) / abs(ndy);
+			}
+
+			if (nbdx > nbdy)
+			{
+				nx += ndx * nbdy;
+				ny += ndy * nbdy;
+			}
+			else if(nbdx < nbdy)
+			{
+				nx += ndx * nbdx;
+				ny += ndy * nbdx;
+			}
+			else
+			{
+				nx += ndx * nbdx;
+				ny += ndy * nbdy;
+			}
+
 		}
 
 		if (nx < 0 || ny < 0 || nx >= Terrain.TX || ny >= Terrain.TY)
 			return true;
 
-		switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+		if ((int)nx != case_x || (int)ny != case_y)
 		{
-		case CaseTerrain::Roche:
-			return true;
-			break;
-		case CaseTerrain::Sable:
-			if (parametre_IA.sand_speed <= 0)
+			switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+			{
+			case CaseTerrain::Roche:
 				return true;
-			break;
-		default:
-			break;
+				break;
+			case CaseTerrain::Sable:
+				if (parametre_IA.sand_speed <= 0)
+					return true;
+				break;
+			case CaseTerrain::Eau:
+				if (!(cx == (int)nx && cy == (int)ny) || Terrain.Terrain[case_x][case_y].Type == CaseTerrain::Eau)
+				{
+					if (parametre_IA.sand_speed <= 0)
+						return true;
+				}
+				break;
+			default:
+				break;
+			}
 		}
 
 		if (cx == (int)nx && cy == (int)ny)
 			break;
+
+		if (signbit(ndx))
+		{
+			if (signbit(ndy))
+			{
+				if (cx >= (int)nx && cy >= (int)ny)
+					break;
+			}
+			else
+			{
+				if (cx >= (int)nx && cy <= (int)ny)
+					break;
+			}
+		}
+		else
+		{
+			if (signbit(ndy))
+			{
+				if (cx <= (int)nx && cy >= (int)ny)
+					break;
+			}
+			else
+			{
+				if (cx <= (int)nx && cy <= (int)ny)
+					break;
+			}
+		}
 	}
 
 	return false;
@@ -509,12 +600,14 @@ bool Fourmie::anti_wrong_case(int& cx, int& cy)
 
 void Fourmie::organised_search(int& cx, int& cy)
 {
+	Orga_Search = true;
+
 	cx = case_x;
 	cy = case_y;
 
-	bool test = Pheromone_Table[case_x][case_y].organised_search;
+	int test = Pheromone_Table[case_x][case_y].organised_search;
 
-	int r = ((int)((rotation + 360 - 90 + (test ? 90 : -90) - 45) / 90.0)) % 4;
+	int r = test +((int)((rotation + 360 - 90 + /*(test ? 90 : -90)*/ - 22,5) / 45.0)) % 8;
 
 	switch (r)
 	{
@@ -523,15 +616,32 @@ void Fourmie::organised_search(int& cx, int& cy)
 		break;
 	case 1:
 		cx++;
+		cy--;
 		break;
 	case 2:
-		cy++;
+		cx++;
 		break;
 	case 3:
+		cx++;
+		cy++;
+		break;
+	case 4:
+		cy++;
+		break;
+	case 5:
+		cy++;
 		cx--;
+		break;
+	case 6:
+		cx--;
+		break;
+	case 7:
+		cx--;
+		cy--;
 		break;
 	}
 
+	/*
 	float delta_dest_x = (cx + 0.5) - x;
 	float delta_dest_y = (cy + 0.5) - y;
 
@@ -546,7 +656,11 @@ void Fourmie::organised_search(int& cx, int& cy)
 	rotation += 90;
 
 	if (!(cx < 0 || cy < 0 || cx >= Terrain.TX || cy >= Terrain.TY))
-		Pheromone_Table[case_x][case_y].organised_search = !test;
+		Pheromone_Table[case_x][case_y].organised_search = !test;//*/
+
+	Pheromone_Table[case_x][case_y].organised_search = (Pheromone_Table[case_x][case_y].organised_search + 1) % 8;
+
+	organized_turn++;
 };
 
 void Fourmie::deviation(int& cx, int& cy, float& ndx, float& ndy)
@@ -556,6 +670,14 @@ void Fourmie::deviation(int& cx, int& cy, float& ndx, float& ndy)
 
 	float hypo = hypotf(delta_dest_x, delta_dest_y);
 	ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+	if (organized_turn >= 8)
+		return;
+
+	if (Orga_Search)
+		return;
+
+	//return; // test
 
 	float r = acos(ndx) * 180 / PI;
 
@@ -578,22 +700,62 @@ void Fourmie::deviation(int& cx, int& cy, float& ndx, float& ndy)
 
 		while (case_x == (int)nx && case_y == (int)ny)
 		{
-			nx += ndx;
-			ny += ndy;
+			//nx += ndx * 0.001;
+			//ny += ndy * 0.001;
+
+			float nbdx = 0, nbdy = 0;
+
+			if (signbit(ndx))
+			{
+				nbdx = (nx - (int)(nx)+0.01) / abs(ndx);
+			}
+			else
+			{
+				nbdx = (((int)(nx)+1) - nx) / abs(ndx);
+			}
+
+			if (signbit(ndy))
+			{
+				nbdy = (ny - (int)(ny)+0.01) / abs(ndy);
+			}
+			else
+			{
+				nbdy = (((int)(ny)+1) - ny) / abs(ndy);
+			}
+
+			if (nbdx > nbdy)
+			{
+				nx += ndx * nbdy;
+				ny += ndy * nbdy;
+			}
+			else if (nbdx < nbdy)
+			{
+				nx += ndx * nbdx;
+				ny += ndy * nbdx;
+			}
+			else
+			{
+				nx += ndx * nbdx;
+				ny += ndy * nbdy;
+			}
+
 		}
 
 		if (!(nx < 0 || ny < 0 || nx >= Terrain.TX || ny >= Terrain.TY))
-			switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+			if ((int)nx != case_x || (int)ny != case_y)
 			{
-			case CaseTerrain::Roche:
-				break;
-			case CaseTerrain::Sable:
-				if (parametre_IA.sand_speed > 0)
+				switch (Terrain.Terrain[(int)nx][(int)ny].Type)
+				{
+				case CaseTerrain::Roche:
+					break;
+				case CaseTerrain::Sable:
+					if (parametre_IA.sand_speed > 0)
+						return;
+					break;
+				default:
 					return;
-				break;
-			default:
-				return;
-				break;
+					break;
+				}
 			}
 	}
 };
@@ -609,7 +771,7 @@ Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromon
 
 		for (int j = 0; j < Terrain.TY; j++)
 		{
-			Pheromone_Table[i][j].organised_search = ((rand() % 1) == 1);
+			Pheromone_Table[i][j].organised_search = rand() % 8;
 			Pheromone_Table[i][j].set_disipation_speed(Pheromone_disipation_speed);
 		};
 	};
@@ -669,8 +831,15 @@ void Fourmiliere::action()
 		free(*iterator);
 	}
 
+	int new_f = 0;
+
 	while (Food_value >= birth_Food_cost && Water_value >= birth_Water_cost)
 	{
+		if ((search_fourmi + food_fourmi + water_fourmi + enemy_fourmi + new_f) >= 2500)
+			break;
+
+		new_f++;
+
 		Food_value -= birth_Food_cost;
 		Water_value -= birth_Water_cost;
 
@@ -734,7 +903,13 @@ void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::T
 	}
 	else if (Food_found && Water_found)
 	{
-		if (food_fourmi > water_fourmi)
+		int nb_fourmies = (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi);
+		
+		if(search_fourmi < 10 && search_fourmi < (nb_fourmies/10))
+		{
+			destination = Fourmie::Type_Destination::search;
+		}
+		else if (food_fourmi > water_fourmi)
 		{
 			destination = Fourmie::Type_Destination::water;
 		}
@@ -802,11 +977,22 @@ void Fourmiliere::select_dest(Fourmie::Type_Destination& destination, Fourmie::T
 #ifdef _DEBUG
 void Fourmiliere::affiche_info()
 {
+	sf::Clock clock;
+
 	while (is_launch)
 	{
-		std::cout.seekp(0);
+		while (clock.getElapsedTime().asSeconds() < 0.1){}
+		clock.restart();
 
-		//std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
+		HANDLE hStdout;
+		COORD destCoord;
+		hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		destCoord.X = 0;
+		destCoord.Y = 1;
+		SetConsoleCursorPosition(hStdout, destCoord);
+		
+		std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
 	}
 };
 
@@ -825,7 +1011,8 @@ void Simulation(sf::RenderWindow& window)
 
 	sf::RenderTexture RenderTexture_AI_Calque_Simulation;
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
-
+	
+	
 	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test.save.st");
 
 	int TX, TY;
@@ -836,21 +1023,23 @@ void Simulation(sf::RenderWindow& window)
 
 	int pos_base_x = 0, pos_base_y = 0;
 
-	for (int i = 0; i < (ObjTerrain.TX/2); i++)
+	for (int i = 0; i < (ObjTerrain.TX); i++)
 	{
-		for (int j = 0; j < (ObjTerrain.TY/2); j++)
+		for (int j = 0; j < (ObjTerrain.TY); j++)
 		{
+			CaseTerrain& CT = ObjTerrain.Terrain[i][j];
+
 			int val;
 
 			NewTerrain >> val;
 			
 			if (val != 1)
 			{
-				ObjTerrain.Terrain[i][j].Type = (CaseTerrain::TypeTerrain)val;
-				std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << ObjTerrain.Terrain[i][j].Type << std::endl;
+				CT.Type = (CaseTerrain::TypeTerrain)val;
+				std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << CT.Type << std::endl;
 			}
 
-			if (ObjTerrain.Terrain[i][j].Type == CaseTerrain::TypeTerrain::Base)
+			if (CT.Type == CaseTerrain::TypeTerrain::Base)
 			{
 				pos_base_x = i, pos_base_y = j;
 			}
@@ -859,24 +1048,30 @@ void Simulation(sf::RenderWindow& window)
 
 	NewTerrain.close();
 
-	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
+	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);//*/
 
-	/*terrain de test
+
+	/*//terrain de test
+
+	ClassTerrain ObjTerrain(250, 250, RenderTexture_BG_Simulation);
+
 	int pos_base_x = rand() % ObjTerrain.TX, pos_base_y = rand() % ObjTerrain.TY;
 
 	ObjTerrain.Terrain[pos_base_x][pos_base_y].Type = CaseTerrain::Base;
 	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Nourriture;
 	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Eau;
+	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Roche;
+	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Sable;
 
 	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
-	//fin terrain de test*/
+	//fin terrain de test //*/
 
 	Parametre_IA parametre_IA;
 	parametre_IA.detection_range = 2;
 	parametre_IA.Pheromone_max = 40;
 	parametre_IA.speed = 2.5;
-	parametre_IA.sand_speed = 1.5;
-	parametre_IA.water_speed = 1;
+	parametre_IA.sand_speed = 0.5;
+	parametre_IA.water_speed = 0;
 	parametre_IA.max_angle_deviation = 33.75;
 	parametre_IA.life_time = 120;
 	parametre_IA.qantity_max = 260;
@@ -887,6 +1082,8 @@ void Simulation(sf::RenderWindow& window)
 	{
 		test.add_fourmie();
 	};
+
+	//test.add_fourmie();
 
 	sf::Sprite Sprite_AI_Calque_Simulation;
 	sf::Texture Texture_AI_Calque_Simulation;

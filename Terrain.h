@@ -15,14 +15,14 @@
 
 void Edition(sf::RenderWindow& window);
 
-struct CaseTerrain 
+class CaseTerrain
 {
+public:
+
 	enum TypeTerrain { None = -1, Base, Terre, Eau, Roche, Sable, Nourriture };
 
 	TypeTerrain Type = Terre;
 };
-
-void Menu(sf::RenderWindow& window);
 
 class ClassTerrain;
 

@@ -5,9 +5,13 @@
 
 #include "Terrain.h"
 
+//#include <Windows.h>
+
 #include <cmath>
 #include <random>
 #include <chrono>
+
+#include <windows.h> 
 
 #include <SFML/Graphics.hpp>
 
@@ -111,7 +115,7 @@ struct CasePheromones
 	Pheromone Enemy = 0;
 	Pheromone None = 0;
 
-	bool organised_search;
+	int organised_search;
 
 	Pheromone& operator[](Type T)
 	{
@@ -165,6 +169,10 @@ class Fourmie
 	float rotation = 90;
 
 	int qantity = 0;
+
+	int organized_turn = 0;
+
+	bool Orga_Search = false;
 
 	//parametre de l'IA
 
