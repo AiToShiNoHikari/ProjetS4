@@ -358,4 +358,6 @@ public:
 
 void Simulation(sf::RenderWindow& window);
 
+double probabilite(double x , double p, double f, double s);
+
 #endif

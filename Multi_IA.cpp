@@ -491,39 +491,50 @@ void Fourmie::select_dest(float& ndx, float& ndy, std::list<dest_point>& dest_po
 
 				fix = i * parametre_IA.precision_angle;
 
-				if ((iterator->angle) > (i * parametre_IA.precision_angle) && abs((iterator->angle) - (i * parametre_IA.precision_angle))>180)
-				{
-					//fix += 180;
-				}
-				else if ((iterator->angle) < (i * parametre_IA.precision_angle) && abs((iterator->angle) - (i * parametre_IA.precision_angle))>180)
-				{
-					//fix -= 180;
-				}
+				//pr += ((1.0 / (parametre_IA.sigma_deviation * sqrt(2 * π))) * exp(-(pow((fix - iterator->angle), 2) / (2 * pow(parametre_IA.sigma_deviation, 2)))) * iterator->force * 100);
+				
+				//float a = abs((iterator->angle) - (i * parametre_IA.precision_angle));
 
-				pr += ((1.0 / (parametre_IA.sigma_deviation * sqrt(2 * π))) * exp(-(pow((fix - iterator->angle), 2) / (2 * pow(parametre_IA.sigma_deviation, 2)))) * iterator->force * 100);
+				pr += probabilite(fix, iterator->angle, iterator->force, parametre_IA.sigma_deviation) * 10;
 			}
 
 			proba[i] = (int)pr;
 			total_proba += proba[i];
 		}
 
-		std::vector<float> list_angle;
-
-		for (int i = 0; i < nb_div; i++)
-		{
-			int p10d = proba[i];
-
-			for (int j = 0; j < p10d; j++)
-			{
-				list_angle.push_back(i * parametre_IA.precision_angle);
-			}
-		}
+		int* proba2 = new int[nb_div];
 
 		while (true)
 		{
-			std::random_shuffle(list_angle.begin(), list_angle.end());
+			for (int i = 0; i < nb_div; i++)
+			{
+				proba2[i] = proba[i];
+			}
 
-			float rf = list_angle[0];
+			float rf = 0;
+
+			int reste = fourmiliere.generator() % total_proba;
+
+			while (reste > 0)
+			{
+				int next = fourmiliere.generator() % nb_div;
+
+				if (proba2[next] > 0)
+				{
+					if (proba2[next] >= reste)
+					{
+						rf = next * parametre_IA.precision_angle;
+
+						reste = 0;
+					}
+					else
+					{
+						reste -= proba2[next];
+
+						proba2[next] = 0;
+					}
+				}
+			}
 
 			float nx = x, ny = y;
 
@@ -593,6 +604,7 @@ void Fourmie::select_dest(float& ndx, float& ndy, std::list<dest_point>& dest_po
 		}
 
 		delete proba;
+		delete proba2;
 	}
 	//si aucune direction n'a été prise
 	else if (dest_point_list.size() == 0)
@@ -1251,6 +1263,9 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								dp.angle = r;
 
 								dp.force = 1 / hypo * 100 * valuec;
+
+								if(dp.force > 0)
+									dest_point_list.push_back(dp);
 							}
 						}
 					}
@@ -1633,8 +1648,8 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.max_angle_deviation = 33.75;
 	parametre_IA.life_time = 120;
 	parametre_IA.qantity_max = 260;
-	parametre_IA.precision_angle = 5.625;
-	parametre_IA.sigma_deviation = 1;
+	parametre_IA.precision_angle = 2.8125;
+	parametre_IA.sigma_deviation = 10;
 
 	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
@@ -1855,4 +1870,10 @@ void Simulation(sf::RenderWindow& window)
 		window.draw(Sprite_AI_Calque_Simulation);
 		window.display();
 	}
-}
+};
+
+
+double probabilite(double x, double p, double f, double s)
+{
+	return ((exp(-(pow(((x - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x - 720 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x - 360 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x + 720 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x + 360 - (p))*(1 / s)), 2))) * f));
+};
