@@ -345,7 +345,7 @@ void Fourmie::deviation(float& cx, float& cy, float& ndx, float& ndy)
 
 	//return; // test
 
-	float r = acos(ndx) * 180 / π;
+	float r = acos(ndx) * 180 / PI;
 
 	if (ndy<0)
 		r = 360 - r;
@@ -360,7 +360,7 @@ void Fourmie::deviation(float& cx, float& cy, float& ndx, float& ndy)
 
 		rf += (fourmiliere.distribution(fourmiliere.generator) * parametre_IA.max_angle_deviation);
 
-		float rfr = rf * π / 180;
+		float rfr = rf * PI / 180;
 
 		ndx = cos(rfr), ndy = sin(rfr);
 
@@ -491,7 +491,7 @@ void Fourmie::select_dest(float& ndx, float& ndy, std::list<dest_point>& dest_po
 
 				fix = i * parametre_IA.precision_angle;
 
-				//pr += ((1.0 / (parametre_IA.sigma_deviation * sqrt(2 * π))) * exp(-(pow((fix - iterator->angle), 2) / (2 * pow(parametre_IA.sigma_deviation, 2)))) * iterator->force * 100);
+				//pr += ((1.0 / (parametre_IA.sigma_deviation * sqrt(2 * PI))) * exp(-(pow((fix - iterator->angle), 2) / (2 * pow(parametre_IA.sigma_deviation, 2)))) * iterator->force * 100);
 				
 				//float a = abs((iterator->angle) - (i * parametre_IA.precision_angle));
 
@@ -538,7 +538,7 @@ void Fourmie::select_dest(float& ndx, float& ndy, std::list<dest_point>& dest_po
 
 			float nx = x, ny = y;
 
-			float rfr = rf * π / 180;
+			float rfr = rf * PI / 180;
 
 			ndx = cos(rfr), ndy = sin(rfr);
 
@@ -1017,7 +1017,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1053,7 +1053,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1089,7 +1089,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1125,7 +1125,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1161,7 +1161,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1253,7 +1253,7 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 								float hypo = hypotf(delta_dest_x, delta_dest_y);
 								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
 
-								float r = acos(ndx) * 180 / π;
+								float r = acos(ndx) * 180 / PI;
 
 								if (ndy<0)
 									r = 360 - r;
@@ -1289,7 +1289,7 @@ void Fourmie_1::analyse()
 	deviation(cx, cy, ndx, ndy);
 
 	mutex.lock();
-	rotation = acos(ndx) * 180 / π;
+	rotation = acos(ndx) * 180 / PI;
 
 	if (ndy<0)
 		rotation = 360 - rotation;
@@ -1317,7 +1317,7 @@ void Fourmie_2::analyse()
 	select_dest(ndx, ndy, dest_point_list);
 
 	mutex.lock();
-	rotation = acos(ndx) * 180 / π;
+	rotation = acos(ndx) * 180 / PI;
 
 	if (ndy<0)
 		rotation = 360 - rotation;
