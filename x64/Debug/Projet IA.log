@@ -1,21 +1,76 @@
-﻿  Terrain.cpp
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(19): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(24): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(31): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(56): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(70): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(84): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(98): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(112): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(126): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(135): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(169): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(170): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(243): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(251): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(276): warning C4305: 'argument' : troncation de 'double' à 'float'
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(292): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(305): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(318): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-c:\users\thibault\desktop\projets4 - copie\projet ia\projet ia\terrain.cpp(331): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-  Projet IA.vcxproj -> C:\Users\Thibault\Desktop\ProjetS4 - Copie\Projet IA\x64\Debug\Projet IA.exe
+﻿  Multi_IA.cpp
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(288): warning C4250: 'Fourmie_1_F1' : hérite de 'Fourmie_1::Fourmie_1::analyse' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(263): note: voir la déclaration de 'Fourmie_1::analyse'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(288): warning C4250: 'Fourmie_1_F1' : hérite de 'Fourmie_F1::Fourmie_F1::palce_pheromone' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(253): note: voir la déclaration de 'Fourmie_F1::palce_pheromone'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(288): warning C4250: 'Fourmie_1_F1' : hérite de 'Fourmie_F1::Fourmie_F1::select_dest' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(255): note: voir la déclaration de 'Fourmie_F1::select_dest'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(288): warning C4250: 'Fourmie_1_F1' : hérite de 'Fourmie_F1::Fourmie_F1::select_dest_point' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(257): note: voir la déclaration de 'Fourmie_F1::select_dest_point'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(298): warning C4250: 'Fourmie_2_F1' : hérite de 'Fourmie_2::Fourmie_2::analyse' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(273): note: voir la déclaration de 'Fourmie_2::analyse'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(298): warning C4250: 'Fourmie_2_F1' : hérite de 'Fourmie_F1::Fourmie_F1::palce_pheromone' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(253): note: voir la déclaration de 'Fourmie_F1::palce_pheromone'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(298): warning C4250: 'Fourmie_2_F1' : hérite de 'Fourmie_F1::Fourmie_F1::select_dest' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(255): note: voir la déclaration de 'Fourmie_F1::select_dest'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(298): warning C4250: 'Fourmie_2_F1' : hérite de 'Fourmie_F1::Fourmie_F1::select_dest_point' via la dominance
+  d:\b2\s4\projet\projet ia\projet ia\multi_ia.h(257): note: voir la déclaration de 'Fourmie_F1::select_dest_point'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(6): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(7): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(9): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(148): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(149): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(158): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(173): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(182): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(348): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(363): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(376): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(385): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(461): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(473): warning C4244: 'initialisation' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(498): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(541): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(554): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(563): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(637): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(689): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(977): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1012): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1020): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1029): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1048): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1056): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1065): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1084): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1092): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1101): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1120): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1128): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1137): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1156): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1164): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1173): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1248): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1256): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1265): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1292): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1320): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1338): warning C4244: 'argument' : conversion de 'std::chrono::system_clock::rep' en 'unsigned int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1339): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1354): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1355): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1367): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1669): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1674): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1682): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1696): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1720): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1729): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1762): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1779): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1793): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1807): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1821): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+d:\b2\s4\projet\projet ia\projet ia\multi_ia.cpp(1845): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+  Projet IA.vcxproj -> D:\B2\S4\Projet\Projet IA\x64\Debug\Projet IA.exe
