@@ -1165,13 +1165,19 @@ void Simulation(sf::RenderWindow& window)
 			{
 				window.close();
 			}
+
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
-				sf::Vector2f mousepos = RenderTexture_BG_Simulation.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+				sf::Vector2f position;
+
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
+
+				std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
 
 				if (event.mouseWheel.delta == 1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom < 10)
 					{
 						ValZoom++;
@@ -1180,7 +1186,6 @@ void Simulation(sf::RenderWindow& window)
 				}
 				if (event.mouseWheel.delta == -1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom > 2)
 					{
 						ValZoom--;
@@ -1188,6 +1193,26 @@ void Simulation(sf::RenderWindow& window)
 					}
 				}
 
+				if ((position.y - vue.getSize().y / 2) < 0)
+				{
+					vue.setCenter(position.x, 0 + vue.getSize().y / 2);
+				}
+
+				if ((position.y + vue.getSize().y / 2) > ObjTerrain.TY * _size)
+				{
+					vue.setCenter(position.x, ObjTerrain.TY * _size - vue.getSize().y / 2);
+				}
+
+				if ((position.x - vue.getSize().x / 2) < 0)
+				{
+					vue.setCenter(0 + vue.getSize().x / 2, position.y);
+				}
+
+				if ((position.x + vue.getSize().x / 2) > ObjTerrain.TX * _size)
+				{
+					vue.setCenter(ObjTerrain.TX * _size - vue.getSize().x / 2, position.y);
+				}
+				
 				HaveChange = true;
 			}
 		}

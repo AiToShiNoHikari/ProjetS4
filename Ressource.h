@@ -3,6 +3,8 @@
 #define _Ressource true
 
 #include <SFML/Graphics.hpp>
+#include <list>
+#include <string>
 
 struct Ressource
 {
@@ -18,6 +20,8 @@ struct Ressource
 	static sf::Texture Fourmie;
 
 	static sf::Font Arial;
+
+	static std::list<std::string> ListTerrain;
 };
 
 #endif

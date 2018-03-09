@@ -266,10 +266,16 @@ void Edition(sf::RenderWindow& window)
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
 
-
-
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
+
+				sf::Vector2f position;
+
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
+
+				std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+
 				if (event.mouseWheel.delta == 1)
 				{
 					if (ValZoom < 10)
@@ -288,22 +294,30 @@ void Edition(sf::RenderWindow& window)
 						vue.zoom(1.0 / 0.9f);
 					}
 				}
+
+				if ((position.y - vue.getSize().y / 2) < 0)
+				{
+					vue.setCenter(position.x, 0 + vue.getSize().y / 2);
+				}
+
+				if ((position.y + vue.getSize().y / 2) > ObjTerrain.TY * _size)
+				{
+					vue.setCenter(position.x, ObjTerrain.TY * _size - vue.getSize().y / 2);
+				}
+
+				if ((position.x - vue.getSize().x / 2) < 0)
+				{
+					vue.setCenter(0 + vue.getSize().x / 2, position.y);
+				}
+
+				if ((position.x + vue.getSize().x / 2) > ObjTerrain.TX * _size)
+				{
+					vue.setCenter(ObjTerrain.TX * _size - vue.getSize().x / 2, position.y);
+				}
 				
 				HaveChange = true;
 			}
 		}
-		/*
-
-		sf::Vector2f position;
-
-		position.x = vue.getCenter().x;
-		position.y = vue.getCenter().y;
-
-		if (((position.y - vue.getSize().y / 2) > 0) && ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size) && ((position.x - vue.getSize().x / 2) > 0) && ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size))
-		{
-
-		}
-		*/
 
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -313,7 +327,7 @@ void Edition(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y - vue.getSize().y / 2) > 0)
+			if ((position.y - vue.getSize().y / 2) > 0) ///////////////////////
 			{
 				vue.move(0, -ValZoom);
 			}
@@ -326,7 +340,7 @@ void Edition(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size)
+			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size) ///////////////////
 			{
 				vue.move(0, ValZoom);
 			}
@@ -339,7 +353,7 @@ void Edition(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.x - vue.getSize().x / 2) > 0)
+			if ((position.x - vue.getSize().x / 2) > 0) ///////////////////////
 			{
 				vue.move(-ValZoom, 0);
 			}
@@ -352,7 +366,7 @@ void Edition(sf::RenderWindow& window)
 			position.x = vue.getCenter().x;
 			position.y = vue.getCenter().y;
 
-			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size)
+			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size) /////////////////////
 			{
 				vue.move(ValZoom, 0);
 			}
@@ -413,6 +427,16 @@ void Edition(sf::RenderWindow& window)
 	NomMap.select();
 	NomMap.set_monol();
 
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+	sf::Text Message("", font);
+	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
+	Message.setCharacterSize(30);
+	Message.setStyle(sf::Text::Bold);
+
 	while (window.isOpen())
 	{
 		window.clear();
@@ -441,7 +465,30 @@ void Edition(sf::RenderWindow& window)
 			case sf::Event::TextEntered:
 				if (NomMap.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
 				{
-					SaveTerrain(NomMap.get_text(), ObjTerrain);
+					std::string Nom = NomMap.get_text();
+
+					std::cout << Nom << std::endl;
+
+					bool isnew = true;
+
+					for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
+					{
+						if(*iterator == Nom)
+							isnew = false;
+
+					}
+
+					if(isnew)
+					{
+						Message.setString("Sauvegarde réussis !");
+						Message.setFillColor(sf::Color::White);
+						SaveTerrain(NomMap.get_text(), ObjTerrain);
+					}
+					else
+					{
+						Message.setString("Nom de sauvegarde déjà utilisé !");
+						Message.setFillColor(sf::Color::Red);
+					}
 				};
 				break;
 			default:
@@ -449,7 +496,8 @@ void Edition(sf::RenderWindow& window)
 			}
 		}
 
-		window.draw(Ssol);
+		window.draw(Ssol); 
+		window.draw(Message);
 		NomMap.affiche();
 		window.display();
 	}
@@ -459,6 +507,8 @@ void Edition(sf::RenderWindow& window)
 void SaveTerrain(std::string name, ClassTerrain& Terrain)
 {
 	std::ofstream TerrainList("./Ressource/Sauvegarde/Terrain/Terrain_List.save.sl", std::ios::out | std::ios::app);
+
+	Ressource::ListTerrain.push_back(name);
 
 	std::ofstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + name + ".save.st");
 

@@ -12,6 +12,8 @@ sf::Texture Ressource::Save;
 
 sf::Texture Ressource::Fourmie;
 
+std::list<std::string> Ressource::ListTerrain;
+
 sf::Font Ressource::Arial;
 
 void Menu(sf::RenderWindow& window)
@@ -209,6 +211,24 @@ void main()
 	else
 	{
 		//Error
+	}
+
+	std::ifstream SaveListTerrain("./Ressource/Sauvegarde/Terrain/Terrain_List.save.sl");
+
+	if (SaveListTerrain)
+	{
+		std::string Nom;
+		while (getline(SaveListTerrain, Nom))
+		{
+			Ressource::ListTerrain.push_back(Nom);
+		}
+
+		SaveListTerrain.close();
+	}
+
+	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
+	{
+		std::cout << *iterator << std::endl;
 	}
 
 	srand(time(NULL));
