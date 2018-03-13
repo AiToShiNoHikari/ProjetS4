@@ -1,4 +1,4 @@
-#include "IA.h"
+#include "Multi_IA.h"
 #include "Terrain.h"
 
 sf::Image Ressource::TileMapBase;

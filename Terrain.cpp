@@ -248,7 +248,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 				}
 				if (BSave.get_state(event) == Interface::Bouton::cliking)
 				{
+#ifdef _DEBUG
 					std::cout << "Save" << std::endl;
+#endif
 					Sauvegarde = true;
 					ChangeSave = false;
 				}
@@ -261,7 +263,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					HaveChange = true;
 				}
 
+#ifdef _DEBUG
 					std::cout << Change << std::endl;
+#endif
 
 			}
 				break;
@@ -438,7 +442,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 			Ssol.setTexture(Tsol);
 
+#ifdef _DEBUG
 			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
+#endif
 		}
 		
 		window.draw(Ssol);
