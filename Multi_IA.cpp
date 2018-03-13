@@ -53,10 +53,67 @@ void Fourmie::deplacement()
 
 	float dtime = speed_clock.restart().asSeconds();
 
-	mutex.lock();
-	x += (speed * dx * dtime);
-	y += (speed * dy* dtime);
-	mutex.unlock();
+	float nx = x + (speed * dx * dtime);
+	float ny = y + (speed * dy* dtime);
+
+	if (case_x != (int)nx || case_y != (int)ny)
+	{
+		while (true)
+		{
+			if ((int)nx < 0 || (int)ny < 0 || (int)nx >= Terrain.TX || (int)ny >= Terrain.TY)
+			{
+				analyse();
+
+				mutex.lock();
+				Sprite.setRotation(rotation);
+				mutex.unlock();
+
+				nx = x + (speed * dx * dtime);
+				ny = y + (speed * dy* dtime);
+
+				break;
+			}
+
+			CaseTerrain::TypeTerrain test = Terrain.Terrain[(int)nx][(int)ny].Type;
+
+			if (test == CaseTerrain::TypeTerrain::Roche)
+			{
+				analyse();
+
+				mutex.lock();
+				Sprite.setRotation(rotation);
+				mutex.unlock();
+
+				nx = x + (speed * dx * dtime);
+				ny = y + (speed * dy* dtime);
+			}
+			else if (test == CaseTerrain::TypeTerrain::Sable)
+			{
+				if (parametre_IA.sand_speed > 0)
+				{
+					break;
+				}
+				else
+				{
+					analyse();
+
+					mutex.lock();
+					Sprite.setRotation(rotation);
+					mutex.unlock();
+
+					nx = x + (speed * dx * dtime);
+					ny = y + (speed * dy* dtime);
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	x = nx;
+	y = ny;
 
 	Pheromone_current -= dtime;
 };
@@ -112,11 +169,15 @@ void Fourmie::action()
 		{
 			analyse();
 
+			mutex.lock();
 			Sprite.setRotation(rotation);
+			mutex.unlock();
 		}
 
 		deplacement();
+		mutex.lock();
 		Sprite.setPosition(x*_size, y*_size);
+		mutex.unlock();
 
 		in_life = (life_clock.getElapsedTime().asSeconds() < parametre_IA.life_time);
 
@@ -644,63 +705,7 @@ void Fourmie::select_dest(float& ndx, float& ndy, std::list<dest_point>& dest_po
 	}
 };
 
-
-Fourmie_F1::Fourmie_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
-{
-	this->Pheromone_Table = fourmiliere.Pheromone_Table;
-};
-
-void Fourmie_F1::palce_pheromone()
-{
-	CasePheromones::Type place;
-	switch (contenue)
-	{
-	case Fourmie::home:
-		place = CasePheromones::Type::home;
-		break;
-	case Fourmie::food:
-		place = CasePheromones::Type::food;
-		break;
-	case Fourmie::water:
-		place = CasePheromones::Type::water;
-		break;
-	case Fourmie::enemy:
-		place = CasePheromones::Type::enemy;
-		break;
-	default:
-		place = CasePheromones::Type::none;
-		break;
-	}
-
-	if (place != CasePheromones::Type::none)
-	{
-		if (case_x >= 0 && case_x < Terrain.TX && case_y >= 0 && case_y < Terrain.TY)
-		{
-			if (Terrain.Terrain[case_x][case_y].Type != CaseTerrain::TypeTerrain::Roche)
-			{
-				Pheromone& valuec = Pheromone_Table[case_x][case_y][place];
-
-				if (valuec < Pheromone_current)
-				{
-					valuec = Pheromone_current;
-				}
-				else if (valuec > Pheromone_current)
-				{
-					Pheromone_current = (int)valuec;
-				}
-
-				//Pheromone_current--;
-
-				if (Pheromone_current <= 0)
-				{
-					change_dest();
-				}
-			}
-		}
-	}
-};
-
-void Fourmie_F1::select_dest(float& fcx, float& fcy)
+void Fourmie::select_dest(float& fcx, float& fcy)
 {
 	Orga_Search = false;
 
@@ -883,66 +888,44 @@ void Fourmie_F1::select_dest(float& fcx, float& fcy)
 				}
 			}
 		}
+
+		fcx = cx + 0.5, fcy = cy + 0.5;
 	}
 
 	//suit les pheromones si aucune direction n'est prise
 	if (cx < 0)
 	{
-		CasePheromones::Type searched;
+		Pheromone::Type searched;
 		switch (destination)
 		{
 		case Fourmie::home:
-			searched = CasePheromones::Type::home;
+			searched = Pheromone::Type::home;
 			break;
 		case Fourmie::food:
-			searched = CasePheromones::Type::food;
+			searched = Pheromone::Type::food;
 			break;
 		case Fourmie::water:
-			searched = CasePheromones::Type::water;
+			searched = Pheromone::Type::water;
 			break;
 		case Fourmie::enemy:
-			searched = CasePheromones::Type::enemy;
+			searched = Pheromone::Type::enemy;
 			break;
 		default:
-			searched = CasePheromones::Type::none;
+			searched = Pheromone::Type::none;
 			break;
 		}
 
-		if (searched != CasePheromones::Type::none)
+		if (searched != Pheromone::Type::none)
 		{
-			float value = 0;
+			fcx = -1;
+			fcy = -1;
 
-			for (int i = min_x; i < max_x; i++)
+			read_Pheromone(min_x, max_x, min_y, max_y, searched, fcx, fcy);
+
+			if (fcx >= 0)
 			{
-				for (int j = min_y; j < max_y; j++)
-				{
-					Pheromone& valuec = Pheromone_Table[i][j][searched];
-
-					if (valuec > 0)
-					{
-						if (value < valuec)
-						{
-							if (!anti_wrong_case(i, j))
-							{
-								cx = i;
-								cy = j;
-								value = valuec;
-							}
-						}
-						else if (value == valuec)
-						{
-							if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - i) + abs(y - j)) / 2.0)
-							{
-								if (!anti_wrong_case(i, j))
-								{
-									cx = i;
-									cy = j;
-									value = valuec;
-								}
-							}
-						}
-					}
-				}
+				cx = fcx;
+				cy = fcy;
 			}
 		}
 	}
@@ -972,12 +955,12 @@ void Fourmie_F1::select_dest(float& fcx, float& fcy)
 			}
 
 		} while ((cx == (int)x && cy == (int)y) || cx < 0);
-	}
 
-	fcx = cx + 0.5, fcy = cy + 0.5;
+		fcx = cx + 0.5, fcy = cy + 0.5;
+	}
 };
 
-void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
+void Fourmie::select_dest_point(std::list<dest_point>& dest_point_list)
 {
 	Orga_Search = false;
 
@@ -1209,63 +1192,294 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 	//suit les pheromones si aucune direction n'est prise
 	if (dest_point_list.size() == 0)
 	{
-		CasePheromones::Type searched;
+		Pheromone::Type searched;
 		switch (destination)
 		{
 		case Fourmie::home:
-			searched = CasePheromones::Type::home;
+			searched = Pheromone::Type::home;
 			break;
 		case Fourmie::food:
-			searched = CasePheromones::Type::food;
+			searched = Pheromone::Type::food;
 			break;
 		case Fourmie::water:
-			searched = CasePheromones::Type::water;
+			searched = Pheromone::Type::water;
 			break;
 		case Fourmie::enemy:
-			searched = CasePheromones::Type::enemy;
+			searched = Pheromone::Type::enemy;
 			break;
 		default:
-			searched = CasePheromones::Type::none;
+			searched = Pheromone::Type::none;
 			break;
 		}
 
-		if (searched != CasePheromones::Type::none)
+		if (searched != Pheromone::Type::none)
 		{
-			Pheromone& value = Pheromone_Table[case_x][case_y][searched];
+			read_Pheromone(min_x, max_x, min_y, max_y, searched, dest_point_list);
+		}
+	}
+};
 
-			for (int i = min_x; i < max_x; i++)
+
+Fourmie_F1::Fourmie_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_1& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
+{
+	this->Pheromone_Table = fourmiliere.Pheromone_Table;
+};
+
+void Fourmie_F1::palce_pheromone()
+{
+	Pheromone::Type place;
+	switch (contenue)
+	{
+	case Fourmie::home:
+		place = Pheromone::Type::home;
+		break;
+	case Fourmie::food:
+		place = Pheromone::Type::food;
+		break;
+	case Fourmie::water:
+		place = Pheromone::Type::water;
+		break;
+	case Fourmie::enemy:
+		place = Pheromone::Type::enemy;
+		break;
+	default:
+		place = Pheromone::Type::none;
+		break;
+	}
+
+	if (place != Pheromone::Type::none)
+	{
+		if (case_x >= 0 && case_x < Terrain.TX && case_y >= 0 && case_y < Terrain.TY)
+		{
+			if (Terrain.Terrain[case_x][case_y].Type != CaseTerrain::TypeTerrain::Roche)
 			{
-				for (int j = min_y; j < max_y; j++)
-				{
-					if (case_x != i || case_y != j)
-					{
-						Pheromone& valuec = Pheromone_Table[i][j][searched];
+				Pheromone& valuec = Pheromone_Table[case_x][case_y][place];
 
-						if (value < valuec)
+				if (valuec < Pheromone_current)
+				{
+					valuec = Pheromone_current;
+				}
+				else if (valuec > Pheromone_current)
+				{
+					Pheromone_current = (int)valuec;
+				}
+
+				//Pheromone_current--;
+
+				if (Pheromone_current <= 0)
+				{
+					change_dest();
+				}
+			}
+		}
+	}
+};
+
+void Fourmie_F1::read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, float& cx, float& cy)
+{
+	float value = 0;
+
+	for (int i = min_x; i < max_x; i++)
+	{
+		for (int j = min_y; j < max_y; j++)
+		{
+			Pheromone& valuec = Pheromone_Table[i][j][searched];
+
+			if (valuec > 0)
+			{
+				if (value < valuec)
+				{
+					if (!anti_wrong_case(i, j))
+					{
+						cx = i;
+						cy = j;
+						value = valuec;
+					}
+				}
+				else if (value == valuec)
+				{
+					if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - i) + abs(y - j)) / 2.0)
+					{
+						if (!anti_wrong_case(i, j))
+						{
+							cx = i;
+							cy = j;
+							value = valuec;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	if (cx <= 0)
+	{
+		cx += 0.5;
+		cy += 0.5;
+	}
+};
+
+void Fourmie_F1::read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, std::list<dest_point>& dest_point_list)
+{
+	Pheromone& value = Pheromone_Table[case_x][case_y][searched];
+
+	for (int i = min_x; i < max_x; i++)
+	{
+		for (int j = min_y; j < max_y; j++)
+		{
+			if (case_x != i || case_y != j)
+			{
+				Pheromone& valuec = Pheromone_Table[i][j][searched];
+
+				if (value < valuec)
+				{
+					if (!anti_wrong_case(i, j))
+					{
+						float fcx = i + 0.5, fcy = j + 0.5;
+
+						float delta_dest_x = fcx - x;
+						float delta_dest_y = fcy - y;
+
+						float hypo = hypotf(delta_dest_x, delta_dest_y);
+						float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+						float r = acos(ndx) * 180 / π;
+
+						if (ndy<0)
+							r = 360 - r;
+
+						dest_point dp;
+
+						dp.angle = r;
+
+						dp.force = 1 / hypo * 100 * valuec;
+
+						if(dp.force > 0)
+							dest_point_list.push_back(dp);
+					}
+				}
+			}
+		}
+	}
+};
+
+
+Fourmie_F2::Fourmie_F2(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_2& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere), Pheromone_list(fourmiliere.Pheromone_list), fourmiliere2(fourmiliere)
+{
+};
+
+void Fourmie_F2::palce_pheromone()
+{
+	Pheromone::Type place;
+	switch (contenue)
+	{
+	case Fourmie::home:
+		place = Pheromone::Type::home;
+		break;
+	case Fourmie::food:
+		place = Pheromone::Type::food;
+		break;
+	case Fourmie::water:
+		place = Pheromone::Type::water;
+		break;
+	case Fourmie::enemy:
+		place = Pheromone::Type::enemy;
+		break;
+	default:
+		place = Pheromone::Type::none;
+		break;
+	}
+
+	if (place != Pheromone::Type::none)
+	{
+		int cx = x, cy = y;
+
+		Pheromone_list[cx][cy][place].push_back(new PheromonePoint(x, y, fourmiliere.Pheromone_disipation_speed, place, Pheromone_current, fourmiliere2));
+	}
+};
+
+void Fourmie_F2::read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, float& cx, float& cy)
+{
+	float value = 0;
+
+	int lcx, lcy;
+
+	for (int i = min_x; i < max_x; i++)
+	{
+		for (int j = min_y; j < max_y; j++)
+		{
+			float valuec = 0;
+
+			auto& PhL = Pheromone_list[i][j][searched];
+			
+			if (PhL.size() > 0)
+			{
+				for (auto iterator = PhL.begin(); iterator != PhL.end(); iterator++)
+				{
+					int i = (*iterator)->x;
+					int j = (*iterator)->y;
+
+					float delta_dest_x = (*iterator)->x - x;
+					float delta_dest_y = (*iterator)->y - y;
+
+					float hypo = abs(hypotf(delta_dest_x, delta_dest_y));
+
+					if (hypo < parametre_IA.detection_range)
+					{
+						valuec += **iterator;
+					}
+				}
+
+				//valuec = PhL.size();
+
+				if (valuec > value)
+				{
+					value = valuec;
+					lcx = i;
+					lcy = j;
+				}
+			}
+		}
+	}
+
+	if (value > 0)
+	{
+		value = 0;
+
+		auto& PhL = Pheromone_list[lcx][lcy][searched];
+
+		for (auto iterator = PhL.begin(); iterator != PhL.end(); iterator++)
+		{
+			if ((**iterator) > 0)
+			{
+				int i = (*iterator)->x;
+				int j = (*iterator)->y;
+
+				float delta_dest_x = (*iterator)->x - x;
+				float delta_dest_y = (*iterator)->y - y;
+
+				float hypo = abs(hypotf(delta_dest_x, delta_dest_y));
+
+				if (hypo < parametre_IA.detection_range)
+				{
+					if (value < (**iterator))
+					{
+						if (!anti_wrong_case(i, j))
+						{
+							cx = (*iterator)->x;
+							cy = (*iterator)->y;
+							value = (**iterator);
+						}
+					}
+					else if (value == (**iterator))
+					{
+						if ((abs(x - cx) + abs(y - cy)) / 2.0 > (abs(x - (*iterator)->x) + abs(y - (*iterator)->y)) / 2.0)
 						{
 							if (!anti_wrong_case(i, j))
 							{
-								float fcx = i + 0.5, fcy = j + 0.5;
-
-								float delta_dest_x = fcx - x;
-								float delta_dest_y = fcy - y;
-
-								float hypo = hypotf(delta_dest_x, delta_dest_y);
-								float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
-
-								float r = acos(ndx) * 180 / π;
-
-								if (ndy<0)
-									r = 360 - r;
-
-								dest_point dp;
-
-								dp.angle = r;
-
-								dp.force = 1 / hypo * 100 * valuec;
-
-								if(dp.force > 0)
-									dest_point_list.push_back(dp);
+								cx = (*iterator)->x;
+								cy = (*iterator)->y;
+								value = (**iterator);
 							}
 						}
 					}
@@ -1273,8 +1487,61 @@ void Fourmie_F1::select_dest_point(std::list<dest_point>& dest_point_list)
 			}
 		}
 	}
+};
 
+void Fourmie_F2::read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, std::list<dest_point>& dest_point_list)
+{
+	float value = Pheromone_current;
 
+	for (int i = min_x; i < max_x; i++)
+	{
+		for (int j = min_y; j < max_y; j++)
+		{
+			auto& PhL = Pheromone_list[i][j][searched];
+
+			for (auto iterator = PhL.begin(); iterator != PhL.end(); iterator++)
+			{
+				if ((**iterator) > 0)
+				{
+					int i = (*iterator)->x;
+					int j = (*iterator)->y;
+
+					float delta_dest_x = abs((*iterator)->x - x);
+					float delta_dest_y = abs((*iterator)->y - y);
+
+					float hypo = hypotf(delta_dest_x, delta_dest_y);
+
+					if (hypo < parametre_IA.detection_range)
+					{
+						if (!anti_wrong_case(i, j))
+						{
+							float fcx = (*iterator)->x, fcy = (*iterator)->y;
+
+							float delta_dest_x = fcx - x;
+							float delta_dest_y = fcy - y;
+
+							float hypo = hypotf(delta_dest_x, delta_dest_y);
+							float ndx = delta_dest_x / hypo, ndy = delta_dest_y / hypo;
+
+							float r = acos(ndx) * 180 / π;
+
+							if (ndy<0)
+								r = 360 - r;
+
+							dest_point dp;
+
+							dp.angle = r;
+
+							dp.force = 1 / hypo * 100 * (**iterator);
+
+							if (dp.force > 0)
+								dest_point_list.push_back(dp);
+						}
+					}
+				}
+			}
+		}
+	}
 };
 
 
@@ -1333,21 +1600,20 @@ void Fourmie_2::analyse()
 
 	organized_turn = 0;
 };
-//Fourmiliere
 
+//Fourmiliere
 Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture), distribution(0.0, (1.0 / 3.0)), generator(std::chrono::system_clock::now().time_since_epoch().count())
 {
-	Pheromone_Table = new CasePheromones*[Terrain.TX];
+	this->Pheromone_disipation_speed = Pheromone_disipation_speed;
+
 	organised_search = new int*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
 	{
-		Pheromone_Table[i] = new CasePheromones[Terrain.TY];
 		organised_search[i] = new int[Terrain.TY];
 
 		for (int j = 0; j < Terrain.TY; j++)
 		{
 			organised_search[i][j] = rand() % 8;
-			Pheromone_Table[i][j].set_disipation_speed(Pheromone_disipation_speed);
 		};
 	};
 
@@ -1360,11 +1626,6 @@ Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromon
 	std::thread info([this]() {this->affiche_info(); });
 	info.detach();
 #endif
-};
-
-void Fourmiliere::add_fourmie(int num_type)
-{
-	Fourmies.push_back(new Fourmie_1_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
 };
 
 void Fourmiliere::action()
@@ -1404,7 +1665,7 @@ void Fourmiliere::action()
 		Fourmies.remove(*iterator);
 
 		delete((*iterator));
-	}//*/
+	}
 
 	int new_f = 0;
 
@@ -1570,12 +1831,146 @@ void Fourmiliere::affiche_info()
 		std::cout << "Nb fourmi" << std::setw(5) << (search_fourmi + food_fourmi + water_fourmi + enemy_fourmi) << " Nb fourmi water" << std::setw(5) << water_fourmi << " Nb fourmi food" << std::setw(5) << food_fourmi << " Nb fourmi enemy" << std::setw(5) << enemy_fourmi << " Nb fourmi search" << std::setw(5) << search_fourmi << std::endl;
 	}
 };
+#endif
 
 Fourmiliere::~Fourmiliere()
 {
+	for (std::list<Fourmie*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
+	{
+		delete((*iterator));
+	}
+
+#ifdef _DEBUG
 	is_launch = false;
-};
 #endif
+};
+
+
+Fourmiliere_1::Fourmiliere_1(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, Pheromone_disipation_speed, Terrain, render, texture)
+{
+	Pheromone_Table = new CasePheromones<Pheromone>*[Terrain.TX];
+	for (int i = 0; i < Terrain.TX; i++)
+	{
+		Pheromone_Table[i] = new CasePheromones<Pheromone>[Terrain.TY];
+
+		for (int j = 0; j < Terrain.TY; j++)
+		{
+			Pheromone_Table[i][j][Pheromone::Type::enemy].set_disipation_speed(Pheromone_disipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::food].set_disipation_speed(Pheromone_disipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::water].set_disipation_speed(Pheromone_disipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::home].set_disipation_speed(Pheromone_disipation_speed);
+		};
+	};
+};
+
+Fourmiliere_1::~Fourmiliere_1()
+{
+	for (int i = 0; i < Terrain.TX; i++)
+	{
+		delete Pheromone_Table[i];
+	};
+
+	delete Pheromone_Table;
+};
+
+void Fourmiliere_1::add_fourmie(int num_type)
+{
+	switch (parametre_IA.type_IA)
+	{
+	case 1:
+		Fourmies.push_back(new Fourmie_1_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		break;
+	case 2:
+		Fourmies.push_back(new Fourmie_2_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		break;
+	default:
+		if (rand() % 2)
+		{
+			Fourmies.push_back(new Fourmie_1_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		}
+		else
+		{
+			Fourmies.push_back(new Fourmie_2_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		}
+		break;
+	}
+};
+
+
+Fourmiliere_2::Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, Pheromone_disipation_speed, Terrain, render, texture)
+{
+	Pheromone_list = new CasePheromones<std::list<PheromonePoint*>>*[Terrain.TX];
+	for (int i = 0; i < Terrain.TX; i++)
+	{
+		Pheromone_list[i] = new CasePheromones<std::list<PheromonePoint*>>[Terrain.TY];
+
+		for (int j = 0; j < Terrain.TY; j++)
+		{
+			Pheromone_list[i][j].disipation_speed = Pheromone_disipation_speed;
+		};
+	};
+};
+
+Fourmiliere_2::~Fourmiliere_2()
+{
+};
+
+void Fourmiliere_2::add_fourmie(int num_type)
+{
+	switch (parametre_IA.type_IA)
+	{
+	case 1:
+		Fourmies.push_back(new Fourmie_1_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		break;
+	case 2:
+		Fourmies.push_back(new Fourmie_2_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		break;
+	default:
+		if (rand() % 2)
+		{
+			Fourmies.push_back(new Fourmie_1_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		}
+		else
+		{
+			Fourmies.push_back(new Fourmie_2_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, *this));
+		}
+		break;
+	}
+};
+
+void Fourmiliere_2::action()
+{
+	Fourmiliere::action();
+
+	Pheromone_void_list.sort();
+	Pheromone_void_list.unique();
+
+	for (auto iterator = Pheromone_void_list.begin(); iterator != Pheromone_void_list.end(); iterator++)
+	{
+		int cx = (*iterator)->x, cy = (*iterator)->y;
+
+		Pheromone_list[cx][cy][(*iterator)->Type].remove(*iterator);
+
+		delete((*iterator));
+	}
+
+	Pheromone_void_list.clear();
+};
+
+//autre
+
+PheromonePoint::operator float()
+{
+	value -= clock.restart().asSeconds() * disipation_speed;
+
+	if (value < 0)
+	{
+		value = 0;
+		fourmiliere.Pheromone_void_list.push_back(this);
+	}
+
+	return value;
+};
 
 void Simulation(sf::RenderWindow& window)
 {
@@ -1611,7 +2006,10 @@ void Simulation(sf::RenderWindow& window)
 			if (val != 1)
 			{
 				CT.Type = (CaseTerrain::TypeTerrain)val;
+
+#ifdef _DEBUG
 				std::cout << std::setw(3) << i << " | " << std::setw(3) << j << " | " << std::setw(3) << CT.Type << std::endl;
+#endif
 			}
 
 			if (CT.Type == CaseTerrain::TypeTerrain::Base)
@@ -1650,8 +2048,9 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.qantity_max = 260;
 	parametre_IA.precision_angle = 2.8125;
 	parametre_IA.sigma_deviation = 10;
+	parametre_IA.type_IA = 1;
 
-	Fourmiliere test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
+	Fourmiliere_2 test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
 	for (int i = 0; i < 250; i++)
 	{
@@ -1852,8 +2251,9 @@ void Simulation(sf::RenderWindow& window)
 
 			Sprite_BG_Simulation.setTexture(Texture_BG_Simulation);
 
+#ifdef _DEBUG
 			std::cout << "X: " << position.x << " | Y: " << position.y << std::endl;
-
+#endif
 		}
 
 		test.action();
@@ -1872,8 +2272,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 };
 
-
 double probabilite(double x, double p, double f, double s)
 {
-	return ((exp(-(pow(((x - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x - 720 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x - 360 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x + 720 - (p))*(1 / s)), 2))) * f) + (exp(-(pow(((x + 360 - (p))*(1 / s)), 2))) * f));
+	return (exp(-(pow(((abs(x - p) > 180 ? ((x > p) ? (x - p - 180) : (x - p + 180)) : (x - p))*(1 / s)), 2))) * f);
 };

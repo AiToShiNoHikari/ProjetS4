@@ -39,6 +39,8 @@ class ClassTerrain;
 class CaseTerrain;
 
 class Fourmiliere;
+class Fourmiliere_1;
+class Fourmiliere_2;
 
 struct dest_point
 {
@@ -67,6 +69,8 @@ struct Parametre_IA
 	
 	float sigma_deviation;
 
+	int type_IA = 0;
+
 	void operator=(Parametre_IA& in)
 	{
 		speed = in.speed;
@@ -79,12 +83,22 @@ struct Parametre_IA
 		life_time = in.life_time;
 		precision_angle = in.precision_angle;
 		sigma_deviation = in.sigma_deviation;
+		type_IA = in.type_IA;
 	};
 };
 
 struct Pheromone
 {
-	Pheromone(float disipation_speed) : disipation_speed(disipation_speed) {};
+	enum Type
+	{
+		none,
+		home,
+		food,
+		water,
+		enemy,
+	};
+
+	Pheromone(float disipation_speed = 0) : disipation_speed(disipation_speed) {};
 
 	void operator=(float i)
 	{
@@ -92,7 +106,7 @@ struct Pheromone
 		clock.restart();
 	};
 
-	operator float()
+	virtual operator float()
 	{
 		value -= clock.restart().asSeconds() * disipation_speed;
 
@@ -104,44 +118,51 @@ struct Pheromone
 
 	void set_disipation_speed(float disipation_speed) { this->disipation_speed = disipation_speed; };
 
-private:
-	float disipation_speed;
+protected:
+	float disipation_speed = 0;
 
 	sf::Clock clock;
-	float value;
+	float value = 0;
 };
 
+struct PheromonePoint : public Pheromone
+{
+	float x;
+	float y;
+	Fourmiliere_2& fourmiliere;
+
+	Pheromone::Type Type;
+
+	PheromonePoint(float x, float y, float disipation_speed, Pheromone::Type Type, float value, Fourmiliere_2& fourmiliere) : x(x), y(y), Type(Type), Pheromone(disipation_speed), fourmiliere(fourmiliere) {};
+
+	virtual operator float();
+};
+
+template <class Tclass>
 struct CasePheromones
 {
-	enum Type
-	{
-		none,
-		home,
-		food,
-		water,
-		enemy,
-	};
+	float disipation_speed = 0;
 
-	Pheromone Home = 0;
-	Pheromone Food = 0;
-	Pheromone Water = 0;
-	Pheromone Enemy = 0;
-	Pheromone None = 0;
+	Tclass Home;
+	Tclass Food;
+	Tclass Water;
+	Tclass Enemy;
+	Tclass None;
 
-	Pheromone& operator[](Type T)
+	Tclass& operator[](Pheromone::Type T)
 	{
 		switch (T)
 		{
-		case CasePheromones::home:
+		case Pheromone::home:
 			return Home;
 			break;
-		case CasePheromones::food:
+		case Pheromone::food:
 			return Food;
 			break;
-		case CasePheromones::water:
+		case Pheromone::water:
 			return Water;
 			break;
-		case CasePheromones::enemy:
+		case Pheromone::enemy:
 			return Enemy;
 			break;
 		default:
@@ -150,11 +171,15 @@ struct CasePheromones
 		}
 	};
 
-	void set_disipation_speed(float disipation_speed) { Home.set_disipation_speed(disipation_speed); Food.set_disipation_speed(disipation_speed); Water.set_disipation_speed(disipation_speed); Enemy.set_disipation_speed(disipation_speed); };
+	//void set_disipation_speed(float disipation_speed) { Home.set_disipation_speed(disipation_speed); Food.set_disipation_speed(disipation_speed); Water.set_disipation_speed(disipation_speed); Enemy.set_disipation_speed(disipation_speed); };
 };
 
 class Fourmie
 {
+private:
+	Fourmie(const Fourmie &) = delete;
+	Fourmie & operator = (const Fourmie &) = delete;
+
 protected:
 	std::mutex mutex;
 
@@ -234,28 +259,60 @@ protected:
 
 	void deviation(float& cx, float& cy, float& ndx, float& ndy);
 
-	virtual void select_dest(float& fcx, float& fcy) = 0;
+	void select_dest(float& fcx, float& fcy);
 
-	virtual void select_dest_point(std::list<dest_point>& dest_point_list) = 0;
+	void select_dest_point(std::list<dest_point>& dest_point_list);
+
+	virtual void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, float& cx, float& cy) = 0;
+
+	virtual void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, std::list<dest_point>& dest_point_list) = 0;
 
 	void select_dest(float& fcx, float& fcy, std::list<dest_point>& dest_point_list);
 };
 
+
 class Fourmie_F1 : virtual public Fourmie
 {
+private:
+	Fourmie_F1(const Fourmie_F1 &) = delete;
+	Fourmie_F1 & operator = (const Fourmie_F1 &) = delete;
+
 public:
-	Fourmie_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere& fourmiliere);
+	Fourmie_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_1& fourmiliere);
 
 	virtual ~Fourmie_F1() {};
 protected:
-	CasePheromones** Pheromone_Table;
+	CasePheromones<Pheromone>** Pheromone_Table;
 
 	void palce_pheromone();
 
-	void select_dest(float& fcx, float& fcy);
+	void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, float& cx, float& cy);
 
-	void select_dest_point(std::list<dest_point>& dest_point_list);
+	void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, std::list<dest_point>& dest_point_list);
 };
+
+class Fourmie_F2 : virtual public Fourmie
+{
+private:
+	Fourmie_F2(const Fourmie_F2 &) = delete;
+	Fourmie_F2 & operator = (const Fourmie_F2 &) = delete;
+
+	Fourmiliere_2& fourmiliere2;
+
+public:
+	Fourmie_F2(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_2& fourmiliere);
+
+	virtual ~Fourmie_F2() {};
+protected:
+	CasePheromones<std::list<PheromonePoint*>>** Pheromone_list;
+
+	void palce_pheromone();
+
+	void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, float& cx, float& cy);
+
+	void read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pheromone::Type searched, std::list<dest_point>& dest_point_list);
+};
+
 
 class Fourmie_1 : virtual public Fourmie
 {
@@ -277,10 +334,15 @@ public:
 	virtual ~Fourmie_2() {};
 };
 
+
 class Fourmie_1_F1 : public Fourmie_1, public Fourmie_F1
 {
+private:
+	Fourmie_1_F1(const Fourmie_1_F1 &) = delete;
+	Fourmie_1_F1 & operator = (const Fourmie_1_F1 &) = delete;
+
 public:
-	Fourmie_1_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere), Fourmie_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
+	Fourmie_1_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_1& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, (Fourmiliere&)fourmiliere), Fourmie_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
 	{
 		//std::thread life([this]() {this->action(); });
 		//life.detach();
@@ -289,16 +351,50 @@ public:
 
 class Fourmie_2_F1 : public Fourmie_2, public Fourmie_F1
 {
+private:
+	Fourmie_2_F1(const Fourmie_2_F1 &) = delete;
+	Fourmie_2_F1 & operator = (const Fourmie_2_F1 &) = delete;
+
 public:
-	Fourmie_2_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere), Fourmie_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
+	Fourmie_2_F1(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_1& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, (Fourmiliere&)fourmiliere), Fourmie_F1(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
 	{
 		//std::thread life([this]() {this->action(); });
 		//life.detach();
 	};
 };
 
+class Fourmie_1_F2 : public Fourmie_1, public Fourmie_F2
+{
+private:
+	Fourmie_1_F2(const Fourmie_1_F2 &) = delete;
+	Fourmie_1_F2 & operator = (const Fourmie_1_F2 &) = delete;
+
+public:
+	Fourmie_1_F2(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_2& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, (Fourmiliere&)fourmiliere), Fourmie_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
+	{
+		//std::thread life([this]() {this->action(); });
+		//life.detach();
+	};
+};
+
+class Fourmie_2_F2 : public Fourmie_2, public Fourmie_F2
+{
+private:
+	Fourmie_2_F2(const Fourmie_2_F2 &) = delete;
+	Fourmie_2_F2 & operator = (const Fourmie_2_F2 &) = delete;
+
+public:
+	Fourmie_2_F2(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere_2& fourmiliere) : Fourmie(x, y, parametre_IA, Terrain, render, texture, organised_search, (Fourmiliere&)fourmiliere), Fourmie_F2(x, y, parametre_IA, Terrain, render, texture, organised_search, fourmiliere)
+	{
+		//std::thread life([this]() {this->action(); });
+		//life.detach();
+	};
+};
+
+
 class Fourmiliere
 {
+protected:
 	sf::RenderTarget& render;
 
 	sf::Texture& texture;
@@ -334,27 +430,57 @@ class Fourmiliere
 #endif
 
 public:
-	CasePheromones** Pheromone_Table;
-
 	std::default_random_engine generator;
 	std::normal_distribution<float> distribution;
 
+	float Pheromone_disipation_speed;
+
 	Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
-	void add_fourmie(int num_type = -1);
+	virtual void add_fourmie(int num_type = -1) = 0;
 
-	void action();
+	virtual void action();
 
 	void affiche();
 
 	void select_dest(Fourmie::Type_Destination& destination, Fourmie::Type_Destination& contenue, int& value, Fourmie::Type_Destination ex_destination);
 
-#ifdef _DEBUG
 	~Fourmiliere();
 
+#ifdef _DEBUG
 	void affiche_info();
 #endif
 };
+
+
+class Fourmiliere_1 : public Fourmiliere
+{
+public:
+	CasePheromones<Pheromone>** Pheromone_Table;
+
+	Fourmiliere_1 (int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+
+	~Fourmiliere_1();
+
+	void add_fourmie(int num_type = -1);
+};
+
+class Fourmiliere_2 : public Fourmiliere
+{
+public:
+	CasePheromones<std::list<PheromonePoint*>>** Pheromone_list;
+
+	std::list<PheromonePoint*> Pheromone_void_list;
+
+	Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+
+	~Fourmiliere_2();
+
+	void add_fourmie(int num_type = -1);
+
+	void action();
+};
+
 
 void Simulation(sf::RenderWindow& window);
 
