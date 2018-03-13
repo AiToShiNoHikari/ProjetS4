@@ -269,29 +269,46 @@ void Edition(sf::RenderWindow& window)
 
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
+
+
+
 			if (event.type == sf::Event::MouseWheelMoved)
 			{
 				if (event.mouseWheel.delta == 1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom < 10)
 					{
 						ValZoom++;
+						vue.setCenter(mousepos.x, mousepos.y);
 						vue.zoom(0.9f);
 					}
 				}
 				if (event.mouseWheel.delta == -1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom > 2)
 					{
 						ValZoom--;
+						vue.setCenter(mousepos.x, mousepos.y);
 						vue.zoom(1.0 / 0.9f);
 					}
 				}
+				
 				HaveChange = true;
 			}
 		}
+		/*
+
+		sf::Vector2f position;
+
+		position.x = vue.getCenter().x;
+		position.y = vue.getCenter().y;
+
+		if (((position.y - vue.getSize().y / 2) > 0) && ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size) && ((position.x - vue.getSize().x / 2) > 0) && ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size))
+		{
+
+		}
+		*/
+
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
