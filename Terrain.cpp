@@ -5,42 +5,44 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 {
 	bool HaveChange = true;
 
-
-	//////////////////////
-
-	sf::RenderTexture RenderTexture_BG_Simulation;
-	RenderTexture_BG_Simulation.create(window.getSize().x, window.getSize().y);
-
-	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/ " + Nom + ".save.st");
-
-	int TX, TY;
-
-	NewTerrain >> TX >> TY;
-
-	ClassTerrain ObjTerrain(TX, TY, RenderTexture_BG_Simulation);
-
-	for (int i = 0; i < (ObjTerrain.TX); i++)
+	if (Nom != "Nouveau")
 	{
-		for (int j = 0; j < (ObjTerrain.TY); j++)
+
+		//////////////////////
+
+		sf::RenderTexture RenderTexture_BG_Simulation;
+		RenderTexture_BG_Simulation.create(window.getSize().x, window.getSize().y);
+
+		std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/ " + Nom + ".save.st");
+
+		int TX, TY;
+
+		NewTerrain >> TX >> TY;
+
+		ClassTerrain ObjTerrain1(TX, TY, RenderTexture_BG_Simulation);
+
+		for (int i = 0; i < (ObjTerrain1.TX); i++)
 		{
-			CaseTerrain& CT = ObjTerrain.Terrain[i][j];
+			for (int j = 0; j < (ObjTerrain1.TY); j++)
+			{
+				CaseTerrain& CT = ObjTerrain1.Terrain[i][j];
 
-			int val;
+				int val;
 
-			NewTerrain >> val;
+				NewTerrain >> val;
 
-			CT.Type = (CaseTerrain::TypeTerrain)val;
+				CT.Type = (CaseTerrain::TypeTerrain)val;
+			}
 		}
+
+		NewTerrain.close();
+
+		ObjTerrain1.MAJTexture(0, 0, ObjTerrain1.TX, ObjTerrain1.TY);
+
+
+		//////////////////////
+
 	}
-
-	NewTerrain.close();
-
-	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
-
-
-	//////////////////////
-
-
 
 	sf::RenderTexture RTextureSol;
 
