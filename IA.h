@@ -275,6 +275,6 @@ public:
 #endif
 };
 
-void Simulation(sf::RenderWindow& window);
+void Simulation(sf::RenderWindow& window, std::string Nom);
 
 #endif

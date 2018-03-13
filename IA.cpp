@@ -1002,7 +1002,7 @@ Fourmiliere::~Fourmiliere()
 };
 #endif
 
-void Simulation(sf::RenderWindow& window)
+void Simulation(sf::RenderWindow& window) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 {
 	bool HaveChange = true;
 
@@ -1021,7 +1021,7 @@ void Simulation(sf::RenderWindow& window)
 
 	ClassTerrain ObjTerrain(TX, TY, RenderTexture_BG_Simulation);
 
-	int pos_base_x = 0, pos_base_y = 0;
+	int pos_base_x = 0, pos_base_y = 0;//
 
 	for (int i = 0; i < (ObjTerrain.TX); i++)
 	{

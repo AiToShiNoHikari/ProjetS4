@@ -22,6 +22,8 @@ struct Ressource
 	static sf::Font Arial;
 
 	static std::list<std::string> ListTerrain;
+
+
 };
 
 #endif

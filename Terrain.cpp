@@ -1,9 +1,46 @@
 #include "Terrain.h"
 
 
-void Edition(sf::RenderWindow& window)
+void Edition(sf::RenderWindow& window, std::string Nom)
 {
 	bool HaveChange = true;
+
+
+	//////////////////////
+
+	sf::RenderTexture RenderTexture_BG_Simulation;
+	RenderTexture_BG_Simulation.create(window.getSize().x, window.getSize().y);
+
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/ " + Nom + ".save.st");
+
+	int TX, TY;
+
+	NewTerrain >> TX >> TY;
+
+	ClassTerrain ObjTerrain(TX, TY, RenderTexture_BG_Simulation);
+
+	for (int i = 0; i < (ObjTerrain.TX); i++)
+	{
+		for (int j = 0; j < (ObjTerrain.TY); j++)
+		{
+			CaseTerrain& CT = ObjTerrain.Terrain[i][j];
+
+			int val;
+
+			NewTerrain >> val;
+
+			CT.Type = (CaseTerrain::TypeTerrain)val;
+		}
+	}
+
+	NewTerrain.close();
+
+	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
+
+
+	//////////////////////
+
+
 
 	sf::RenderTexture RTextureSol;
 

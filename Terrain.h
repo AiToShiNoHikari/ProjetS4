@@ -13,7 +13,7 @@
 #include <iostream>
 #endif
 
-void Edition(sf::RenderWindow& window);
+void Edition(sf::RenderWindow& window, std::string nom);
 
 class CaseTerrain
 {

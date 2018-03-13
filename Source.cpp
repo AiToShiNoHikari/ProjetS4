@@ -16,6 +16,104 @@ std::list<std::string> Ressource::ListTerrain;
 
 sf::Font Ressource::Arial;
 
+void ChoixMap(sf::RenderWindow& window)
+{
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+	
+	std::list<Interface::Bouton*> BoutonNomMap;
+
+	sf::Texture texture;
+	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
+	{
+		std::cout << "Erreur Fond" << std::endl;
+	}
+
+	
+	int Val = 0;
+	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
+	{
+		std::cout << *iterator << std::endl;
+		
+		Interface::Bouton* b = new Interface::Bouton (200 * Val, 100, 200, 50, window, *iterator);
+
+		b->set_bg_type(Interface::Bouton::BG_type::Rect);
+		b->set_background_outline_thickness(2, 2, 2);
+		b->set_text_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		b->set_text_font(&Ressource::Arial);
+		b->set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		b->set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+
+		BoutonNomMap.push_back(b);
+		Val++;
+	}
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+
+				for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+				{
+					(*iterator)->update_state(event);
+				}
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				auto iterator = Ressource::ListTerrain.begin();
+
+				for (auto iterator1 = BoutonNomMap.begin(); iterator1 != BoutonNomMap.end(); iterator1++)
+				{
+					if ((*iterator1)->get_state(event) == Interface::Bouton::state::cliking)
+					{
+
+						iterator;
+
+						Edition(window, *iterator);
+					}
+
+					iterator++;
+				}
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+				{
+					(*iterator)->update_state(event);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+		{
+			(*iterator)->affiche();
+		}
+
+		window.display();
+	}
+
+	for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+	{
+		delete (*iterator);
+	}
+}
+
 void Menu(sf::RenderWindow& window)
 {
 	sf::Font font;
@@ -48,8 +146,6 @@ void Menu(sf::RenderWindow& window)
 	BEdition.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
 	BEdition.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	BEdition.set_text_pos_correction_y(-8, -8, -8);
-
-
 
 	sf::Texture texture;
 	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
@@ -102,15 +198,14 @@ void Menu(sf::RenderWindow& window)
 				break;
 			}
 		}
-
-
+		
 		switch (Fenetre)
 		{
 		case 1:
 			Simulation(window);
 			break;
 		case 2:
-			Edition(window);
+			ChoixMap(window);
 			break;
 		}
 
