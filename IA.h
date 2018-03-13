@@ -3,7 +3,7 @@
 
 #define _IA 1
 
-#include "Terrain.h"
+//#include "Terrain.h"
 
 //#include <Windows.h>
 
@@ -212,7 +212,7 @@ private:
 
 	bool anti_wrong_case(int& cx, int& cy);
 
-	void organised_search(int& cx, int& cy);
+	void Organised_Search(int& cx, int& cy);
 
 	void deviation(int& cx, int& cy, float& ndx, float& ndy);
 };

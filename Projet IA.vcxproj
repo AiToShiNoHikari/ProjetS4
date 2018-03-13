@@ -131,14 +131,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="IA.cpp" />
     <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="Multi_IA.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IA.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="Multi_IA.h" />
     <ClInclude Include="Ressource.h" />
     <ClInclude Include="Terrain.h" />
   </ItemGroup>

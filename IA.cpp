@@ -316,7 +316,7 @@ void Fourmie::analyse()
 			//cx = ((int)x + (rand() % 3) - 1);
 			//cy = ((int)y + (rand() % 3) - 1);
 
-			organised_search(cx, cy);
+			Organised_Search(cx, cy);
 
 			if (organized_turn >= 8)
 				break;
@@ -598,7 +598,7 @@ bool Fourmie::anti_wrong_case(int& cx, int& cy)
 	return false;
 };
 
-void Fourmie::organised_search(int& cx, int& cy)
+void Fourmie::Organised_Search(int& cx, int& cy)
 {
 	Orga_Search = true;
 

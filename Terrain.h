@@ -4,7 +4,7 @@
 #define _Terrain 1
 
 #include "Interface.h"
-#include "IA.h"
+#include "Multi_IA.h"
 #include "Ressource.h"
 
 #include <SFML/Graphics.hpp>
