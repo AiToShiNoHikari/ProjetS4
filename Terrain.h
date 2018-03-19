@@ -22,6 +22,8 @@ public:
 	enum TypeTerrain { None = -1, Base, Terre, Eau, Roche, Sable, Nourriture };
 
 	TypeTerrain Type = Terre;
+
+	int Value = 0;
 };
 
 class ClassTerrain;

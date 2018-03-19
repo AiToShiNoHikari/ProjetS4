@@ -16,36 +16,43 @@ std::list<std::string> Ressource::ListTerrain;
 
 sf::Font Ressource::Arial;
 
+
 void ChoixMap(sf::RenderWindow& window)
 {
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
-	
-	std::list<Interface::Bouton*> BoutonNomMap;
-
 	sf::Texture texture;
 	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
 	{
 		std::cout << "Erreur Fond" << std::endl;
 	}
 
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
+	sprite.setPosition(0, 0);
+
+
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+
+	std::list<Interface::Bouton*> BoutonNomMap;
 	
+
 	int Val = 0;
 	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 	{
 		std::cout << *iterator << std::endl;
-		
-		Interface::Bouton* b = new Interface::Bouton (200 * Val, 100, 200, 50, window, *iterator);
+
+		Interface::Bouton* b = new Interface::Bouton(((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4))*Val + 100, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, *iterator);
 
 		b->set_bg_type(Interface::Bouton::BG_type::Rect);
 		b->set_background_outline_thickness(2, 2, 2);
-		b->set_text_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		b->set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
 		b->set_text_font(&Ressource::Arial);
 		b->set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
 		b->set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		b->set_text_pos_correction_y(-8, -8, -8);
 
 		BoutonNomMap.push_back(b);
 		Val++;
@@ -100,6 +107,7 @@ void ChoixMap(sf::RenderWindow& window)
 			}
 		}
 
+		window.draw(sprite);
 		for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
 		{
 			(*iterator)->affiche();
@@ -111,6 +119,86 @@ void ChoixMap(sf::RenderWindow& window)
 	for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
 	{
 		delete (*iterator);
+	}
+}
+
+void ChoixOption(sf::RenderWindow& window)
+{
+	sf::Texture texture;
+	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
+	{
+		std::cout << "Erreur Fond" << std::endl;
+	}
+
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
+	sprite.setPosition(0, 0);
+
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+	
+	Interface::Bouton CM((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4), sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Charger map");
+	CM.set_bg_type(Interface::Bouton::BG_type::Rect);
+	CM.set_background_outline_thickness(2, 2, 2);
+	CM.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	CM.set_text_font(&Ressource::Arial);
+	CM.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	CM.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+	CM.set_text_pos_correction_y(-8, -8, -8);
+
+	Interface::Bouton NM((sf::VideoMode::getDesktopMode().width / 2) + (sf::VideoMode::getDesktopMode().width / 4) - 200, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Nouvelle map");
+	NM.set_bg_type(Interface::Bouton::BG_type::Rect);
+	NM.set_background_outline_thickness(2, 2, 2);
+	NM.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	NM.set_text_font(&Ressource::Arial);
+	NM.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	NM.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+	NM.set_text_pos_correction_y(-8, -8, -8);
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				CM.get_state(event);
+				NM.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				if (CM.get_state(event) == Interface::Bouton::cliking)
+				{
+					ChoixMap(window);
+				}
+				if (NM.get_state(event) == Interface::Bouton::cliking)
+				{
+					Edition(window, "");
+				}
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				CM.update_state(event);
+				NM.update_state(event);
+				break;
+			default:
+				break;
+			}
+		}
+		window.draw(sprite);
+		NM.affiche();
+		CM.affiche();
+		window.display();
 	}
 }
 
@@ -205,7 +293,7 @@ void Menu(sf::RenderWindow& window)
 			Simulation(window);
 			break;
 		case 2:
-			ChoixMap(window);
+			ChoixOption(window);
 			break;
 		}
 

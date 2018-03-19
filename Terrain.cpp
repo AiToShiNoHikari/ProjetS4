@@ -1,54 +1,154 @@
 #include "Terrain.h"
 
-
-void Edition(sf::RenderWindow& window, std::string Nom)
+/*void MenuModifVal(sf::RenderWindow& window, int& test)
 {
-	bool HaveChange = true;
-
-	if (Nom != "Nouveau")
+	sf::Texture texture;
+	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
 	{
-
-		//////////////////////
-
-		sf::RenderTexture RenderTexture_BG_Simulation;
-		RenderTexture_BG_Simulation.create(window.getSize().x, window.getSize().y);
-
-		std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/ " + Nom + ".save.st");
-
-		int TX, TY;
-
-		NewTerrain >> TX >> TY;
-
-		ClassTerrain ObjTerrain1(TX, TY, RenderTexture_BG_Simulation);
-
-		for (int i = 0; i < (ObjTerrain1.TX); i++)
-		{
-			for (int j = 0; j < (ObjTerrain1.TY); j++)
-			{
-				CaseTerrain& CT = ObjTerrain1.Terrain[i][j];
-
-				int val;
-
-				NewTerrain >> val;
-
-				CT.Type = (CaseTerrain::TypeTerrain)val;
-			}
-		}
-
-		NewTerrain.close();
-
-		ObjTerrain1.MAJTexture(0, 0, ObjTerrain1.TX, ObjTerrain1.TY);
-
-
-		//////////////////////
-
-	}
+		std::cout << "Erreur Fond" << std::endl;
+	}	
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
+	sprite.setPosition(0, 0);
 
 	sf::RenderTexture RTextureSol;
 
 	RTextureSol.create(window.getSize().x, window.getSize().y);
 
-	ClassTerrain ObjTerrain(50, 50, RTextureSol);
+	ClassTerrain ObjTerrain(100, 100, RTextureSol);
+
+	Interface::Texte_Entry_Zone Val(window.getSize().x / 2 - 250, window.getSize().y / 2 - 25, 500, 50, window);
+	Val.set_bg_type(Interface::Texte_Entry_Zone::BG_type::Rect);
+	Val.set_text_font(&Ressource::Arial);
+	Val.set_background_outline_thickness(2, 2, 2);
+	Val.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	Val.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	Val.set_background_color(sf::Color::Transparent, sf::Color(255, 255, 255, 128), sf::Color::White);
+
+	Val.select();
+	Val.set_monol();
+
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+	sf::Text Message("", font);
+	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
+	Message.setCharacterSize(30);
+	Message.setStyle(sf::Text::Bold);
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					test = 0;
+					std::cout << test << std::endl;
+					return;
+				}
+			break;
+			case sf::Event::MouseMoved:
+				Val.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				Val.get_state(event);
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				Val.get_state(event);
+				break;
+			case sf::Event::TextEntered:
+				if (Val.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
+				{
+					int MX = mousepos.x / _size;
+					int MY = mousepos.y / _size;
+					
+					ObjTerrain.Terrain[MX][MY].Value = 2000000000000;
+
+				};
+				break;
+			default:
+				break;
+			}
+		}
+		window.draw(sprite);
+		window.draw(Message);
+		Val.affiche();
+		window.display();
+	}
+}*/
+
+void Edition(sf::RenderWindow& window, std::string Nom)
+{
+	bool HaveChange = true;
+
+	sf::RenderTexture RTextureSol;
+
+	RTextureSol.create(window.getSize().x, window.getSize().y);
+
+	ClassTerrain ObjTerrain(100, 100, RTextureSol);
+
+	//////////////////////
+	if (Nom != "")
+	{
+		std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + Nom + ".save.st");
+
+		if (NewTerrain)
+		{
+			int TX, TY;
+			
+			NewTerrain >> TX >> TY;
+
+			ObjTerrain.Redimension(TX, TY);
+
+			for (int i = 0; i < (ObjTerrain.TX); i++)
+			{
+				for (int j = 0; j < (ObjTerrain.TY); j++)
+				{
+					CaseTerrain& CT = ObjTerrain.Terrain[i][j];
+
+					int val;
+					
+					NewTerrain >> val;
+
+					CT.Type = (CaseTerrain::TypeTerrain)val;
+				}
+			}
+
+			NewTerrain.close();
+
+			ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
+		}
+	}
+	//////////////////////
+
+	Interface::Texte_Entry_Zone Val(window.getSize().x / 2 - 250, window.getSize().y / 2 - 25, 500, 50, window);
+	Val.set_bg_type(Interface::Texte_Entry_Zone::BG_type::Rect);
+	Val.set_text_font(&Ressource::Arial);
+	Val.set_background_outline_thickness(2, 2, 2);
+	Val.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+
+	Val.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	Val.set_background_color(sf::Color::Transparent, sf::Color(255, 255, 255, 128), sf::Color::White);
+
+
+	Val.set_monol();
 
 	sf::Sprite Ssol;
 	sf::Texture Tsol;
@@ -189,6 +289,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 	bool Sauvegarde = false;
 
+	CaseTerrain* CaseSelect = NULL;
+
+
+
 	while (window.isOpen() && !Sauvegarde)
 	{
 		window.clear();
@@ -202,89 +306,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			case sf::Event::Closed:
 				window.close();
 				break;
-			case sf::Event::MouseMoved:
-				BTerre.get_state(event);
-				BEau.get_state(event);
-				BRoche.get_state(event);
-				BSable.get_state(event);
-				BBase.get_state(event);
-				BNourriture.get_state(event);
-				BSave.get_state(event);
-				break;
-			case sf::Event::MouseButtonPressed:
-			{
-				int MX = mousepos.x / _size;
-				int MY = mousepos.y / _size;
-
-				bool ChangeSave = true;
-
-				if (BTerre.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 1;
-					ChangeSave = false;
-				}
-				if (BEau.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 2;
-					ChangeSave = false;
-				}
-				if (BRoche.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 3;
-					ChangeSave = false;
-				}
-				if (BSable.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 4;
-					ChangeSave = false;
-				}
-				if (BBase.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 0;
-					ChangeSave = false;
-				}
-				if (BNourriture.get_state(event) == Interface::Bouton::cliking)
-				{
-					Change = 5;
-					ChangeSave = false;
-				}
-				if (BSave.get_state(event) == Interface::Bouton::cliking)
-				{
-#ifdef _DEBUG
-					std::cout << "Save" << std::endl;
-#endif
-					Sauvegarde = true;
-					ChangeSave = false;
-				}
-
-
-				if (ChangeSave)
-				{
-					ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
-					ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
-					HaveChange = true;
-				}
-
-#ifdef _DEBUG
-					std::cout << Change << std::endl;
-#endif
-
-			}
-				break;
-			case sf::Event::MouseButtonReleased:
-				BTerre.update_state(event);
-				BEau.update_state(event);
-				BRoche.update_state(event);
-				BSable.update_state(event);
-				BBase.update_state(event);
-				BNourriture.update_state(event);
-				BSave.update_state(event);
-				break;
-			default:
-				break;
-			}
-		
-			if (event.type == sf::Event::Resized)
+			case sf::Event::Resized:
 			{
 
 				window.setSize(sf::Vector2u(event.size.width < 800 ? 800 : event.size.width, event.size.height < 600 ? 600 : event.size.height));
@@ -308,114 +330,239 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 				Ssol.setTextureRect(sf::IntRect(0, 0, Tsol.getSize().x, Tsol.getSize().y));
 			}
+			}
 
-			if (event.type == sf::Event::MouseWheelMoved)
+			if (CaseSelect == NULL)
 			{
+				switch (event.type)
+				{
+				case sf::Event::MouseMoved:
+					BTerre.get_state(event);
+					BEau.get_state(event);
+					BRoche.get_state(event);
+					BSable.get_state(event);
+					BBase.get_state(event);
+					BNourriture.get_state(event);
+					BSave.get_state(event);
+					break;
+				case sf::Event::MouseButtonPressed:
+				{
+					int MX = mousepos.x / _size;
+					int MY = mousepos.y / _size;
 
+					if (event.mouseButton.button == sf::Mouse::Right)
+					{
+						std::cout << "Value: " << ObjTerrain.Terrain[MX][MY].Value << std::endl;
+						CaseSelect = &ObjTerrain.Terrain[MX][MY];
+
+						std::stringstream Convert;
+						Convert.str("");
+						Convert << ObjTerrain.Terrain[MX][MY].Value;
+						Val.set_text(Convert.str());
+
+						Val.select();
+					}
+					else if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						bool ChangeSave = true;
+
+						if (BTerre.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 1;
+							ChangeSave = false;
+						}
+						if (BEau.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 2;
+							ChangeSave = false;
+						}
+						if (BRoche.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 3;
+							ChangeSave = false;
+						}
+						if (BSable.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 4;
+							ChangeSave = false;
+						}
+						if (BBase.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 0;
+							ChangeSave = false;
+						}
+						if (BNourriture.get_state(event) == Interface::Bouton::cliking)
+						{
+							Change = 5;
+							ChangeSave = false;
+						}
+						if (BSave.get_state(event) == Interface::Bouton::cliking)
+						{
+#ifdef _DEBUG
+							std::cout << "Save" << std::endl;
+#endif
+							Sauvegarde = true;
+							ChangeSave = false;
+						}
+
+
+						if (ChangeSave)
+						{
+							ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
+							ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
+							HaveChange = true;
+						}
+
+#ifdef _DEBUG
+						std::cout << Change << std::endl;
+#endif
+					}
+
+
+				}
+				break;
+				case sf::Event::MouseButtonReleased:
+					BTerre.update_state(event);
+					BEau.update_state(event);
+					BRoche.update_state(event);
+					BSable.update_state(event);
+					BBase.update_state(event);
+					BNourriture.update_state(event);
+					BSave.update_state(event);
+					break;
+
+				case sf::Event::MouseWheelMoved:
+				{
+
+					sf::Vector2f position;
+
+					position.x = vue.getCenter().x;
+					position.y = vue.getCenter().y;
+
+					std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+
+					if (event.mouseWheel.delta == 1)
+					{
+						if (ValZoom < 10)
+						{
+							ValZoom++;
+							vue.setCenter(mousepos.x, mousepos.y);
+							vue.zoom(0.9f);
+						}
+					}
+					if (event.mouseWheel.delta == -1)
+					{
+						if (ValZoom > 2)
+						{
+							ValZoom--;
+							vue.setCenter(mousepos.x, mousepos.y);
+							vue.zoom(1.0 / 0.9f);
+						}
+					}
+
+					if ((position.y - vue.getSize().y / 2) < 0)
+					{
+						vue.setCenter(position.x, 0 + vue.getSize().y / 2);
+					}
+
+					if ((position.y + vue.getSize().y / 2) > ObjTerrain.TY * _size)
+					{
+						vue.setCenter(position.x, ObjTerrain.TY * _size - vue.getSize().y / 2);
+					}
+
+					if ((position.x - vue.getSize().x / 2) < 0)
+					{
+						vue.setCenter(0 + vue.getSize().x / 2, position.y);
+					}
+
+					if ((position.x + vue.getSize().x / 2) > ObjTerrain.TX * _size)
+					{
+						vue.setCenter(ObjTerrain.TX * _size - vue.getSize().x / 2, position.y);
+					}
+
+					HaveChange = true;
+				}
+				}
+			}
+			else
+			{
+				switch (event.type)
+				{
+					case sf::Event::TextEntered:
+						if (Val.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
+						{
+							int v;
+							std::stringstream Convert;
+
+							Convert.str(Val.get_text());
+							Convert >> v;
+
+							std::cout << v << std::endl;
+
+							CaseSelect->Value = v;
+							CaseSelect = NULL;
+							Val.unselect();
+						}
+					break;
+				}
+
+			}
+		}
+		if (CaseSelect == NULL)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
 				sf::Vector2f position;
 
 				position.x = vue.getCenter().x;
 				position.y = vue.getCenter().y;
 
-				std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+				if ((position.y - vue.getSize().y / 2) > 0) ///////////////////////
+				{
+					vue.move(0, -ValZoom);
+				}
+				HaveChange = true;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				sf::Vector2f position;
 
-				if (event.mouseWheel.delta == 1)
-				{
-					if (ValZoom < 10)
-					{
-						ValZoom++;
-						vue.setCenter(mousepos.x, mousepos.y);
-						vue.zoom(0.9f);
-					}
-				}
-				if (event.mouseWheel.delta == -1)
-				{
-					if (ValZoom > 2)
-					{
-						ValZoom--;
-						vue.setCenter(mousepos.x, mousepos.y);
-						vue.zoom(1.0 / 0.9f);
-					}
-				}
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
 
-				if ((position.y - vue.getSize().y / 2) < 0)
+				if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size) ///////////////////
 				{
-					vue.setCenter(position.x, 0 + vue.getSize().y / 2);
+					vue.move(0, ValZoom);
 				}
+				HaveChange = true;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				sf::Vector2f position;
 
-				if ((position.y + vue.getSize().y / 2) > ObjTerrain.TY * _size)
-				{
-					vue.setCenter(position.x, ObjTerrain.TY * _size - vue.getSize().y / 2);
-				}
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
 
-				if ((position.x - vue.getSize().x / 2) < 0)
+				if ((position.x - vue.getSize().x / 2) > 0) ///////////////////////
 				{
-					vue.setCenter(0 + vue.getSize().x / 2, position.y);
+					vue.move(-ValZoom, 0);
 				}
+				HaveChange = true;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				sf::Vector2f position;
 
-				if ((position.x + vue.getSize().x / 2) > ObjTerrain.TX * _size)
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
+
+				if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size) /////////////////////
 				{
-					vue.setCenter(ObjTerrain.TX * _size - vue.getSize().x / 2, position.y);
+					vue.move(ValZoom, 0);
 				}
-				
 				HaveChange = true;
 			}
 		}
-
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			sf::Vector2f position;
-
-			position.x = vue.getCenter().x;
-			position.y = vue.getCenter().y;
-
-			if ((position.y - vue.getSize().y / 2) > 0) ///////////////////////
-			{
-				vue.move(0, -ValZoom);
-			}
-			HaveChange = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			sf::Vector2f position;
-
-			position.x = vue.getCenter().x;
-			position.y = vue.getCenter().y;
-
-			if ((position.y + vue.getSize().y / 2) < ObjTerrain.TY * _size) ///////////////////
-			{
-				vue.move(0, ValZoom);
-			}
-			HaveChange = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			sf::Vector2f position;
-
-			position.x = vue.getCenter().x;
-			position.y = vue.getCenter().y;
-
-			if ((position.x - vue.getSize().x / 2) > 0) ///////////////////////
-			{
-				vue.move(-ValZoom, 0);
-			}
-			HaveChange = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			sf::Vector2f position;
-
-			position.x = vue.getCenter().x;
-			position.y = vue.getCenter().y;
-
-			if ((position.x + vue.getSize().x / 2) < ObjTerrain.TX * _size) /////////////////////
-			{
-				vue.move(ValZoom, 0);
-			}
-			HaveChange = true;
-		}
-
 
 		if (HaveChange)
 		{
@@ -450,13 +597,20 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 		}
 		
 		window.draw(Ssol);
-		BTerre.affiche();
-		BEau.affiche();
-		BRoche.affiche();
-		BSable.affiche();
-		BBase.affiche();
-		BNourriture.affiche();
-		BSave.affiche();
+		if (CaseSelect == NULL)
+		{
+			BTerre.affiche();
+			BEau.affiche();
+			BRoche.affiche();
+			BSable.affiche();
+			BBase.affiche();
+			BNourriture.affiche();
+			BSave.affiche();
+		}
+		else
+		{
+			Val.affiche();
+		}
 		window.display();
 	}
 
@@ -546,7 +700,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 		NomMap.affiche();
 		window.display();
 	}
-
 }
 
 void SaveTerrain(std::string name, ClassTerrain& Terrain)
@@ -1005,7 +1158,7 @@ void ClassTerrain::Redimension(int x, int y)
 	{
 		for (int i = 0; i < (int)(TX/10 +1); i++)
 		{
-			delete(SprtTerrain[i]);
+				//delete(SprtTerrain[i]);
 		}
 		delete(SprtTerrain);
 	}
