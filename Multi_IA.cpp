@@ -2050,7 +2050,7 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.sigma_deviation = 10;
 	parametre_IA.type_IA = 1;
 
-	Fourmiliere_2 test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
+	Fourmiliere_1 test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
 	for (int i = 0; i < 250; i++)
 	{
