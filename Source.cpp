@@ -17,6 +17,10 @@ std::list<std::string> Ressource::ListTerrain;
 sf::Font Ressource::Arial;
 
 
+
+void ChoixOption(sf::RenderWindow& window);
+void Menu(sf::RenderWindow& window);
+
 void ChoixMap(sf::RenderWindow& window)
 {
 	sf::Texture texture;
@@ -100,6 +104,12 @@ void ChoixMap(sf::RenderWindow& window)
 				for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
 				{
 					(*iterator)->update_state(event);
+				}
+				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					ChoixOption(window);
 				}
 				break;
 			default:
@@ -191,6 +201,12 @@ void ChoixOption(sf::RenderWindow& window)
 				CM.update_state(event);
 				NM.update_state(event);
 				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					Menu(window);
+				}
+				break;
 			default:
 				break;
 			}
@@ -260,6 +276,12 @@ void Menu(sf::RenderWindow& window)
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					window.close();
+				}
 				break;
 			case sf::Event::MouseMoved:
 				BSimulation.get_state(event);

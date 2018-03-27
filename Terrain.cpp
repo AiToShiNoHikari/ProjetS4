@@ -1,8 +1,13 @@
 #include "Terrain.h"
 
 
+void ChoixOption(sf::RenderWindow& window);
+void ChoixMap(sf::RenderWindow& window);
+
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
+	int testLoc;
+
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -14,6 +19,8 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	//////////////////////
 	if (Nom != "")
 	{
+		testLoc = 0;
+
 		std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + Nom + ".save.st");
 
 		if (NewTerrain)
@@ -35,6 +42,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					NewTerrain >> val;
 
 					CT.Type = (CaseTerrain::TypeTerrain)val;
+
+					NewTerrain >> val;
+
+					CT.Value = val;
 				}
 			}
 
@@ -42,6 +53,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 			ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
 		}
+	}
+	else
+	{
+		testLoc = 1;
 	}
 	//////////////////////
 
@@ -197,9 +212,16 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	bool Sauvegarde = false;
 
 	CaseTerrain* CaseSelect = NULL;
-
-	int Verif = 0;
-	int Max = 0, Var = 0;
+	
+	sf::Font font;
+	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
+	{
+		std::cout << "Erreur chargement Arial.ttf" << std::endl;
+	}
+	sf::Text MessageError("", font);
+	MessageError.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
+	MessageError.setCharacterSize(80);
+	MessageError.setStyle(sf::Text::Bold);
 
 	while (window.isOpen() && !Sauvegarde)
 	{
@@ -214,6 +236,20 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					if (testLoc == 1)
+					{
+						ChoixOption(window);
+					}
+					else
+					{
+						ChoixMap(window);
+					}
+					window.close();
+				}
 				break;
 			case sf::Event::Resized:
 			{
@@ -310,45 +346,32 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 #ifdef _DEBUG
 							std::cout << "Save" << std::endl;
 #endif
-							Sauvegarde = true;
-							ChangeSave = false;
-						}
-						
-						if (ChangeSave)
-						{
-							Max = 0, Var = 0;
+							Sauvegarde = false;
 
 							for (int i = 0; i < (ObjTerrain.TX); i++)
 							{
 								for (int j = 0; j < (ObjTerrain.TY); j++)
 								{
-									Max++;
 									if (ObjTerrain.Terrain[i][j].Type == 0)
 									{
-										Verif++;
+										Sauvegarde = true;
 									}
 									else
 									{
-										Var++;
+										MessageError.setString("Ajouter une base !");
+										MessageError.setFillColor(sf::Color::Red);
 									}
 								}
 							}
-							if (Max == Var)
-							{
-								Verif = 0;
-								std::cout << "Max == Var" << std::endl;
-							}
-							else
-							{
-								Verif++;
-								std::cout << "Max != Var" << std::endl;
-							}
-							if (!(Change == 0 && Verif != 0))
-							{
-								ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change; 
-								ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
-								HaveChange = true;
-							}
+
+							ChangeSave = false;
+						}
+						
+						if (ChangeSave)
+						{
+							ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
+							ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
+							HaveChange = true;
 						}
 
 						
@@ -365,10 +388,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					BEau.update_state(event);
 					BRoche.update_state(event);
 					BSable.update_state(event);
-					if (Verif == 0)
-					{
-						BBase.update_state(event);
-					}
+					BBase.update_state(event);
 					BNourriture.update_state(event);
 					BSave.update_state(event);
 					break;
@@ -553,6 +573,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 		{
 			Val.affiche();
 		}
+		window.draw(MessageError);
 		window.display();
 	}
 
@@ -568,11 +589,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	NomMap.select();
 	NomMap.set_monol();
 
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
 	sf::Text Message("", font);
 	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
 	Message.setCharacterSize(30);
@@ -608,39 +624,31 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 				if (NomMap.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
 				{
-					if (Verif != 0)
+					std::string Nom = NomMap.get_text();
+
+					std::cout << Nom << std::endl;
+
+					bool isnew = true;
+
+					for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 					{
-						std::string Nom = NomMap.get_text();
+						if (*iterator == Nom)
+							isnew = false;
 
-						std::cout << Nom << std::endl;
+					}
 
-						bool isnew = true;
-
-						for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
-						{
-							if (*iterator == Nom)
-								isnew = false;
-
-						}
-
-						if (isnew)
-						{
-							sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
-							int MX = mousepos.x / _size;
-							int MY = mousepos.y / _size;
-							Message.setString("Sauvegarde réussis !");
-							Message.setFillColor(sf::Color::White);
-							SaveTerrain(NomMap.get_text(), ObjTerrain);
-						}
-						else
-						{
-							Message.setString("Nom de sauvegarde déjà utilisé !");
-							Message.setFillColor(sf::Color::Red);
-						}
+					if (isnew)
+					{
+						sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
+						int MX = mousepos.x / _size;
+						int MY = mousepos.y / _size;
+						Message.setString("Sauvegarde réussis !");
+						Message.setFillColor(sf::Color::White);
+						SaveTerrain(NomMap.get_text(), ObjTerrain);
 					}
 					else
 					{
-						Message.setString("Veuillez ajouter une base !");
+						Message.setString("Nom de sauvegarde déjà utilisé !");
 						Message.setFillColor(sf::Color::Red);
 					}
 				};
