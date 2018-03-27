@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include <list>
+
 namespace Interface
 {
 	class ultra_personnalisable
@@ -63,7 +65,7 @@ namespace Interface
 	public:
 		enum alignement { Gauche = 0, Center_Horizontal = 0b0001, Droite = 0b0010, Haut = 0, Center_Vertical = 0b0100, Bas = 0b1000, };
 
-		enum state { standard = 0, overlay = 1, cliking = 2, selected = 2, bad_event = -1 };
+		enum state { standard = 0, overlay = 0b1, cliking = 0b10, selected = 0b10, bad_event = -1 };
 
 		enum BG_type { none, Rect, Circle, Sprite };
 
@@ -96,14 +98,14 @@ namespace Interface
 
 		void set_bg_type(BG_type T);
 
-		void set_size(float w, float h);
-		void set_size(sf::Vector2f size);
+		virtual void set_size(float w, float h);
+		virtual void set_size(sf::Vector2f size);
 
-		void set_position(float x, float y);
-		void set_position(sf::Vector2f position);
+		virtual void set_position(float x, float y);
+		virtual void set_position(sf::Vector2f position);
 
-		void move(float dx, float dy);
-		void move(sf::Vector2f dposition);
+		virtual void move(float dx, float dy);
+		virtual void move(sf::Vector2f dposition);
 
 		void set_text(std::string text);
 
@@ -148,7 +150,7 @@ namespace Interface
 		Texte_Entry_Zone(sf::Vector2f position, sf::Vector2f size, sf::RenderWindow& window, bool is_selected = false);
 		Texte_Entry_Zone(float x, float y, float w, float h, sf::RenderWindow& window, bool is_selected = false);
 
-		void update_state(sf::Event event);
+		virtual void update_state(sf::Event event);
 
 		std::string get_text();
 
@@ -157,13 +159,65 @@ namespace Interface
 		void select();
 		void unselect();
 
-		void generation_text();
+		virtual void generation_text();
 
-		void affiche();
+		virtual void affiche();
 
 		void set_marge(float x = 0, float y = 0);
 		void set_monol(bool is = true);
 		void set_max_char(int nmx = 0);
+	};
+
+	class Scroll_Menu : public Texte_Entry_Zone
+	{
+		std::list<Bouton> bouton_list;
+		std::list<std::string> string_list;
+
+		sf::RenderTexture scroll_zone_RenderTexture;
+		const sf::Texture* scroll_zone_Texture;
+		sf::RectangleShape scroll_zone;
+
+		int scroll_height = 12;
+		int scroll_pos = 0;
+
+	public:
+		Scroll_Menu(sf::FloatRect rect, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Scroll_Menu(sf::Vector2f position, sf::Vector2f size, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Scroll_Menu(float x, float y, float w, float h, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected = false);
+		Scroll_Menu(sf::FloatRect rect, sf::RenderWindow& window, bool is_selected = false);
+		Scroll_Menu(sf::Vector2f position, sf::Vector2f size, sf::RenderWindow& window, bool is_selected = false);
+		Scroll_Menu(float x, float y, float w, float h, sf::RenderWindow& window, bool is_selected = false);
+
+		void add_choice(std::string str);
+
+		void set_background_texture(sf::Texture* bg1, sf::Texture* bg2 = NULL, sf::Texture* bg3 = NULL);
+		void set_background_color(sf::Color bg1, sf::Color bg2, sf::Color bg3);
+		void set_background_outline_color(sf::Color bg1, sf::Color bg2, sf::Color bg3);
+		void set_background_outline_thickness(int bg1, int bg2, int bg3);
+
+		void set_text_font(sf::Font* t1, sf::Font* t2 = NULL, sf::Font* t3 = NULL);
+		void set_text_color(sf::Color t1, sf::Color t2, sf::Color t3);
+		void set_text_outline_color(sf::Color t1, sf::Color t2, sf::Color t3);
+		void set_text_outline_thickness(int t1, int t2, int t3);
+		void set_text_size(int t1, int t2, int t3);
+		void set_text_style(int t1, int t2, int t3);
+		void set_text_pos_correction_x(int t1, int t2, int t3);
+		void set_text_pos_correction_y(int t1, int t2, int t3);
+
+		void set_size(float w, float h);
+		void set_size(sf::Vector2f size);
+
+		void set_position(float x, float y);
+		void set_position(sf::Vector2f position);
+
+		void move(float dx, float dy);
+		void move(sf::Vector2f dposition);
+
+		void update_state(sf::Event event);
+		
+		void affiche();
+
+		void scroll(sf::Event event);
 	};
 };
 #endif

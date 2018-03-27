@@ -16,6 +16,59 @@ std::list<std::string> Ressource::ListTerrain;
 
 sf::Font Ressource::Arial;
 
+void test(sf::RenderWindow& window)
+{
+	Interface::Scroll_Menu test_sc(10, 10, 200, 50, window, true);
+
+	test_sc.set_bg_type(Interface::Bouton::BG_type::Rect);
+	test_sc.set_background_outline_thickness(2, 2, 2);
+	test_sc.set_text_color(sf::Color::White, sf::Color::Red, sf::Color::White);
+	test_sc.set_text_font(&Ressource::Arial);
+	test_sc.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	test_sc.set_background_color(sf::Color::Blue, sf::Color::Black, sf::Color(255, 255, 255, 128));
+	test_sc.set_text_pos_correction_y(-8, -8, -8);
+
+	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
+	{
+		test_sc.add_choice(*iterator);
+	}
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				test_sc.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				test_sc.get_state(event);
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				test_sc.get_state(event);
+				break;
+			case sf::Event::MouseWheelMoved:
+				test_sc.scroll(event);
+				break;
+			default:
+				break;
+			}
+		}
+
+		test_sc.affiche();
+		window.display();
+	}
+}
 
 
 void ChoixOption(sf::RenderWindow& window);
@@ -442,6 +495,7 @@ void main()
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
+	test(window);
 	Menu(window);
 }
 

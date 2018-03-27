@@ -1985,7 +1985,7 @@ void Simulation(sf::RenderWindow& window)
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
 
 
-	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test.save.st");
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test1.save.st");
 
 	int TX, TY;
 
@@ -2048,8 +2048,8 @@ void Simulation(sf::RenderWindow& window)
 	parametre_IA.detection_range = 2;
 	parametre_IA.Pheromone_max = 40;
 	parametre_IA.speed = 2.5;
-	parametre_IA.sand_speed = 0.5;
-	parametre_IA.water_speed = 0;
+	parametre_IA.sand_speed = 2.5;
+	parametre_IA.water_speed = 2.5;
 	parametre_IA.max_angle_deviation = 33.75;
 	parametre_IA.life_time = 120;
 	parametre_IA.qantity_max = 260;

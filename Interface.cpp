@@ -905,4 +905,614 @@ namespace Interface
 	{
 		max_char = nmx;
 	};
+
+	/** Scroll_Menu **/
+
+	Scroll_Menu::Scroll_Menu(sf::FloatRect rect, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(rect, render, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+	Scroll_Menu::Scroll_Menu(sf::Vector2f position, sf::Vector2f size, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(position, size, render, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+	Scroll_Menu::Scroll_Menu(float x, float y, float w, float h, sf::RenderTarget& render, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(x, y, w, h, render, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+	Scroll_Menu::Scroll_Menu(sf::FloatRect rect, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(rect, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+	Scroll_Menu::Scroll_Menu(sf::Vector2f position, sf::Vector2f size, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(position, size, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+	Scroll_Menu::Scroll_Menu(float x, float y, float w, float h, sf::RenderWindow& window, bool is_selected) : Texte_Entry_Zone(x, y, w, h, window, is_selected)
+	{
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+	};
+
+	void Scroll_Menu::set_background_texture(sf::Texture* bg1, sf::Texture* bg2, sf::Texture* bg3)
+	{
+		Texte_Entry_Zone::set_background_texture(bg1, bg2, bg3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_background_texture(bg1, bg2, bg3);
+		}
+	};
+	void Scroll_Menu::set_background_color(sf::Color bg1, sf::Color bg2, sf::Color bg3)
+	{
+		Texte_Entry_Zone::set_background_color(bg1, bg2, bg3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_background_color(bg1, bg2, bg3);
+		}
+	};
+	void Scroll_Menu::set_background_outline_color(sf::Color bg1, sf::Color bg2, sf::Color bg3)
+	{
+		Texte_Entry_Zone::set_background_outline_color(bg1, bg2, bg3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_background_outline_color(bg1, bg2, bg3);
+		}
+	};
+	void Scroll_Menu::set_background_outline_thickness(int bg1, int bg2, int bg3)
+	{
+		Texte_Entry_Zone::set_background_outline_thickness(bg1, bg2, bg3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_background_outline_thickness(bg1, bg2, bg3);
+		}
+	};
+
+	void Scroll_Menu::set_text_font(sf::Font* t1, sf::Font* t2, sf::Font* t3)
+	{
+		Texte_Entry_Zone::set_text_font(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_font(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_color(sf::Color t1, sf::Color t2, sf::Color t3)
+	{
+		Texte_Entry_Zone::set_text_color(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_color(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_outline_color(sf::Color t1, sf::Color t2, sf::Color t3)
+	{
+		Texte_Entry_Zone::set_text_outline_color(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_outline_color(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_outline_thickness(int t1, int t2, int t3)
+	{
+		Texte_Entry_Zone::set_text_outline_thickness(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_outline_thickness(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_size(int t1, int t2, int t3)
+	{
+		Texte_Entry_Zone::set_text_outline_thickness(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_outline_thickness(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_style(int t1, int t2, int t3)
+	{
+		Texte_Entry_Zone::set_text_style(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_style(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_pos_correction_x(int t1, int t2, int t3)
+	{
+		Texte_Entry_Zone::set_text_pos_correction_x(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_pos_correction_x(t1, t2, t3);
+		}
+	};
+	void Scroll_Menu::set_text_pos_correction_y(int t1, int t2, int t3)
+	{
+		Texte_Entry_Zone::set_text_pos_correction_y(t1, t2, t3);
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			iterator->set_text_pos_correction_y(t1, t2, t3);
+		}
+	};
+
+	void Scroll_Menu::add_choice(std::string str)
+	{
+		string_list.push_back(str);
+
+		sf::FloatRect btn_rect;
+		
+		btn_rect.height = rect.height;
+		btn_rect.width = rect.width;
+		btn_rect.top = rect.top + rect.height * (bouton_list.size() + 1);
+		btn_rect.left = rect.left;
+
+		bouton_list.push_back(Bouton(btn_rect, scroll_zone_RenderTexture, window, str));
+
+		if (background_texture != NULL)
+		{
+			bouton_list.back().set_background_texture(background_texture[0], background_texture[1], background_texture[2]);
+		}
+		if (background_color != NULL)
+		{
+			bouton_list.back().set_background_color(background_color[0], background_color[1], background_color[2]);
+		}
+		if (background_outline_color != NULL)
+		{
+			bouton_list.back().set_background_outline_color(background_outline_color[0], background_outline_color[1], background_outline_color[2]);
+		}
+		if (background_outline_thickness != NULL)
+		{
+			bouton_list.back().set_background_outline_thickness(background_outline_thickness[0], background_outline_thickness[1], background_outline_thickness[2]);
+		}
+
+		if (text_font != NULL)
+		{
+			bouton_list.back().set_text_font(text_font[0], text_font[1], text_font[2]);
+		}
+		if (text_color != NULL)
+		{
+			bouton_list.back().set_text_color(text_color[0], text_color[1], text_color[2]);
+		}
+		if (text_outline_color != NULL)
+		{
+			bouton_list.back().set_text_outline_color(text_outline_color[0], text_outline_color[1], text_outline_color[2]);
+		}
+		if (text_outline_thickness != NULL)
+		{
+			bouton_list.back().set_text_outline_thickness(text_outline_thickness[0], text_outline_thickness[1], text_outline_thickness[2]);
+		}
+		if (text_size != NULL)
+		{
+			bouton_list.back().set_text_size(text_size[0], text_size[1], text_size[2]);
+		}
+		if (text_style != NULL)
+		{
+			bouton_list.back().set_text_style(text_style[0], text_style[1], text_style[2]);
+		}
+		if (text_pos_correction_x != NULL)
+		{
+			bouton_list.back().set_text_pos_correction_x(text_pos_correction_x[0], text_pos_correction_x[1], text_pos_correction_x[2]);
+		}
+		if (text_pos_correction_y != NULL)
+		{
+			bouton_list.back().set_text_pos_correction_y(text_pos_correction_y[0], text_pos_correction_y[1], text_pos_correction_y[2]);
+		}
+
+		bouton_list.back().set_bg_type(Interface::Bouton::BG_type::Rect);
+
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+	
+	void Scroll_Menu::set_size(float w, float h)
+	{
+		Texte_Entry_Zone::set_size(w, h);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_size(w, h);
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+	void Scroll_Menu::set_size(sf::Vector2f size)
+	{
+		Texte_Entry_Zone::set_size(size);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_size(size);
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+
+	void Scroll_Menu::set_position(float x, float y)
+	{
+		Texte_Entry_Zone::set_position(x, y);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+	void Scroll_Menu::set_position(sf::Vector2f position)
+	{
+		Texte_Entry_Zone::set_position(position);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+
+	void Scroll_Menu::move(float dx, float dy)
+	{
+		Texte_Entry_Zone::set_position(dx, dy);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+	void Scroll_Menu::move(sf::Vector2f dposition)
+	{
+		Texte_Entry_Zone::set_position(dposition);
+
+		int i = 0;
+
+		for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+		{
+			i++;
+
+			iterator->set_position(rect.left, rect.top + rect.height * i);
+		}
+
+		if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+		{
+			// erreur...
+		}
+		scroll_zone.setPosition(rect.left, rect.top + rect.height);
+		scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+		scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+		scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+
+	void Scroll_Menu::update_state(sf::Event event)
+	{
+		if (current_state == state::selected)
+		{
+			auto current_view = scroll_zone_RenderTexture.getView();
+
+			auto event_view = window.getView();
+
+			event_view.move(sf::Vector2f(0, rect.height * scroll_pos));
+
+			scroll_zone_RenderTexture.setView(event_view);
+
+			auto string_iterator = string_list.begin();
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				if (iterator->get_state(event) == state::cliking)
+				{
+					set_text(*string_iterator);
+				}
+
+				string_iterator++;
+			}
+
+			scroll_zone_RenderTexture.setView(current_view);
+		}
+
+		Texte_Entry_Zone::update_state(event);
+
+		if (current_state == state::selected)
+		{
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->update_state(event);
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+		}
+	};
+
+	void Scroll_Menu::affiche()
+	{
+		Texte_Entry_Zone::affiche();
+		
+		if (current_state == state::selected)
+		{
+			if (!scroll_zone_RenderTexture.create(window.getView().getSize().x, window.getView().getSize().y))
+			{
+				// erreur...
+			}
+			scroll_zone.setPosition(rect.left, rect.top + rect.height);
+			scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
+			scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+			scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
+
+			scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+			for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+			{
+				iterator->affiche();
+			}
+
+			scroll_zone_RenderTexture.display();
+
+			const sf::Texture& texture = scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+			scroll_zone.setTexture(scroll_zone_Texture);
+
+			render.draw(scroll_zone);
+		}
+	};
+
+	void Scroll_Menu::scroll(sf::Event event)
+	{
+		if (current_state == state::selected)
+		{
+			if (event.type == sf::Event::MouseWheelMoved)
+			{
+				if (event.mouseWheel.delta == 1)
+				{
+					if (scroll_pos > 0)
+					{
+						scroll_pos--;
+					}
+				}
+				if (event.mouseWheel.delta == -1)
+				{
+					if (scroll_pos < ((int)string_list.size() - scroll_height))
+					{
+						scroll_pos++;
+					}
+				}
+
+				scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(rect.left, rect.top + (rect.height*(scroll_pos)), rect.width, rect.height*scroll_height)));
+				if (current_state == state::selected)
+				{
+					scroll_zone_RenderTexture.clear(sf::Color::Transparent);
+
+					for (auto iterator = bouton_list.begin(); iterator != bouton_list.end(); iterator++)
+					{
+						iterator->affiche();
+					}
+
+					scroll_zone_RenderTexture.display();
+
+					scroll_zone_Texture = &scroll_zone_RenderTexture.getTexture();
+
+					scroll_zone.setTexture(scroll_zone_Texture);
+				}
+			}
+		}
+	};
 };
