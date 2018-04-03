@@ -1,13 +1,8 @@
 #include "Terrain.h"
 
 
-void ChoixOption(sf::RenderWindow& window);
-void ChoixMap(sf::RenderWindow& window);
-
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
-	int testLoc;
-
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -19,8 +14,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	//////////////////////
 	if (Nom != "")
 	{
-		testLoc = 0;
-
 		std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + Nom + ".save.st");
 
 		if (NewTerrain)
@@ -53,10 +46,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 			ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
 		}
-	}
-	else
-	{
-		testLoc = 1;
 	}
 	//////////////////////
 
@@ -213,16 +202,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 	CaseTerrain* CaseSelect = NULL;
 	
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
-	sf::Text MessageError("", font);
-	MessageError.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
+	sf::Text MessageError("", Ressource::Arial);
+	MessageError.setPosition(window.getSize().x / 2 - 380, window.getSize().y - 200);
 	MessageError.setCharacterSize(80);
 	MessageError.setStyle(sf::Text::Bold);
-
+	
 	while (window.isOpen() && !Sauvegarde)
 	{
 		window.clear();
@@ -240,15 +224,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			case sf::Event::KeyReleased:
 				if (event.key.code == sf::Keyboard::Escape)
 				{
-					if (testLoc == 1)
-					{
-						ChoixOption(window);
-					}
-					else
-					{
-						ChoixMap(window);
-					}
-					window.close();
+					return;
 				}
 				break;
 			case sf::Event::Resized:
@@ -297,7 +273,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 					if (event.mouseButton.button == sf::Mouse::Right)
 					{
+#ifdef _DEBUG
 						std::cout << "Value: " << ObjTerrain.Terrain[MX][MY].Value << std::endl;
+#endif
 						CaseSelect = &ObjTerrain.Terrain[MX][MY];
 
 						std::stringstream Convert;
@@ -354,6 +332,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 								{
 									if (ObjTerrain.Terrain[i][j].Type == 0)
 									{
+										MessageError.setString("");
 										Sauvegarde = true;
 									}
 									else
@@ -366,10 +345,18 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 							ChangeSave = false;
 						}
-						
+
 						if (ChangeSave)
 						{
 							ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
+							if (ObjTerrain.Terrain[MX][MY].Type == 2 || ObjTerrain.Terrain[MX][MY].Type == 5)
+							{
+								ObjTerrain.Terrain[MX][MY].Value = 10000;
+							}
+							else
+							{
+								ObjTerrain.Terrain[MX][MY].Value = 0;
+							}
 							ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
 							HaveChange = true;
 						}
@@ -400,8 +387,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 					position.x = vue.getCenter().x;
 					position.y = vue.getCenter().y;
-
+#ifdef _DEBUG
 					std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+#endif
 
 					if (event.mouseWheel.delta == 1)
 					{
@@ -458,8 +446,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 							Convert.str(Val.get_text());
 							Convert >> v;
-
+#ifdef _DEBUG
 							std::cout << v << std::endl;
+#endif
 
 							CaseSelect->Value = v;
 							CaseSelect = NULL;
@@ -589,11 +578,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	NomMap.select();
 	NomMap.set_monol();
 
-	sf::Text Message("", font);
+	sf::Text Message("", Ressource::Arial);
 	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
 	Message.setCharacterSize(30);
 	Message.setStyle(sf::Text::Bold);
-
+	
 	while (window.isOpen())
 	{
 		window.clear();
@@ -625,8 +614,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 				if (NomMap.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
 				{
 					std::string Nom = NomMap.get_text();
-
+#ifdef _DEBUG
 					std::cout << Nom << std::endl;
+#endif
 
 					bool isnew = true;
 
@@ -644,7 +634,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 						int MY = mousepos.y / _size;
 						Message.setString("Sauvegarde réussis !");
 						Message.setFillColor(sf::Color::White);
-						SaveTerrain(NomMap.get_text(), ObjTerrain);
+						SaveTerrain(NomMap.get_text(), ObjTerrain, window);
 					}
 					else
 					{
@@ -652,8 +642,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 						Message.setFillColor(sf::Color::Red);
 					}
 				};
-				break;
-			default:
 				break;
 			}
 		}
@@ -665,7 +653,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	}
 }
 
-void SaveTerrain(std::string name, ClassTerrain& Terrain)
+void SaveTerrain(std::string name, ClassTerrain& Terrain, sf::RenderWindow& window)
 {
 	std::ofstream TerrainList("./Ressource/Sauvegarde/Terrain/Terrain_List.save.sl", std::ios::out | std::ios::app);
 

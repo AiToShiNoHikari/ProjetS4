@@ -12,11 +12,13 @@ sf::Texture Ressource::Save;
 
 sf::Texture Ressource::Fourmie;
 
+sf::Texture Ressource::FondMenu;
+
 std::list<std::string> Ressource::ListTerrain;
 
 sf::Font Ressource::Arial;
 
-void test(sf::RenderWindow& window)
+/*void test(sf::RenderWindow& window)
 {
 	Interface::Scroll_Menu test_sc(10, 10, 200, 50, window, true);
 
@@ -68,38 +70,23 @@ void test(sf::RenderWindow& window)
 		test_sc.affiche();
 		window.display();
 	}
-}
-
-
-void ChoixOption(sf::RenderWindow& window);
-void Menu(sf::RenderWindow& window);
+}*/
 
 void ChoixMap(sf::RenderWindow& window)
 {
-	sf::Texture texture;
-	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
-	{
-		std::cout << "Erreur Fond" << std::endl;
-	}
-
 	sf::Sprite sprite;
-	sprite.setTexture(texture);
+	sprite.setTexture(Ressource::FondMenu);
 	sprite.setPosition(0, 0);
-
-
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
-
+	
 	std::list<Interface::Bouton*> BoutonNomMap;
 	
 
 	int Val = 0;
 	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 	{
+#ifdef _DEBUG
 		std::cout << *iterator << std::endl;
+#endif
 
 		Interface::Bouton* b = new Interface::Bouton(((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4))*Val + 100, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, *iterator);
 
@@ -162,7 +149,7 @@ void ChoixMap(sf::RenderWindow& window)
 			case sf::Event::KeyReleased:
 				if (event.key.code == sf::Keyboard::Escape)
 				{
-					ChoixOption(window);
+					return;
 				}
 				break;
 			default:
@@ -187,21 +174,9 @@ void ChoixMap(sf::RenderWindow& window)
 
 void ChoixOption(sf::RenderWindow& window)
 {
-	sf::Texture texture;
-	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
-	{
-		std::cout << "Erreur Fond" << std::endl;
-	}
-
 	sf::Sprite sprite;
-	sprite.setTexture(texture);
+	sprite.setTexture(Ressource::FondMenu);
 	sprite.setPosition(0, 0);
-
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
 	
 	Interface::Bouton CM((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4), sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Charger map");
 	CM.set_bg_type(Interface::Bouton::BG_type::Rect);
@@ -257,7 +232,7 @@ void ChoixOption(sf::RenderWindow& window)
 			case sf::Event::KeyReleased:
 				if (event.key.code == sf::Keyboard::Escape)
 				{
-					Menu(window);
+					return;
 				}
 				break;
 			default:
@@ -273,13 +248,7 @@ void ChoixOption(sf::RenderWindow& window)
 
 void Menu(sf::RenderWindow& window)
 {
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
-
-	sf::Text titre("Fourmis Simulator", font);
+	sf::Text titre("Fourmis Simulator", Ressource::Arial);
 	titre.setPosition((sf::VideoMode::getDesktopMode().width / 2 - 340), 50);
 	titre.setCharacterSize(80);
 	titre.setStyle(sf::Text::Bold);
@@ -303,15 +272,9 @@ void Menu(sf::RenderWindow& window)
 	BEdition.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
 	BEdition.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	BEdition.set_text_pos_correction_y(-8, -8, -8);
-
-	sf::Texture texture;
-	if (!texture.loadFromFile("Ressource/Image/Fond.jpg"))
-	{
-		std::cout << "Erreur Fond" << std::endl;
-	}
-	
+		
 	sf::Sprite sprite;
-	sprite.setTexture(texture);
+	sprite.setTexture(Ressource::FondMenu);
 	sprite.setPosition(0, 0);
 
 	int Fenetre = 0;
@@ -366,9 +329,11 @@ void Menu(sf::RenderWindow& window)
 		{
 		case 1:
 			Simulation(window);
+			Fenetre = 0;
 			break;
 		case 2:
 			ChoixOption(window);
+			Fenetre = 0;
 			break;
 		}
 
@@ -461,6 +426,15 @@ void main()
 		//Error
 	}
 
+	if (Ressource::FondMenu.loadFromFile("./Ressource/Image/Fond.jpg"))
+	{
+		//Non Error
+	}
+	else
+	{
+		//Error
+	}
+
 
 	if (Ressource::Arial.loadFromFile("./Ressource/Police/Arial.ttf"))
 	{
@@ -486,7 +460,9 @@ void main()
 
 	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 	{
+#ifdef _DEBUG
 		std::cout << *iterator << std::endl;
+#endif
 	}
 
 	srand(time(NULL));
@@ -495,7 +471,7 @@ void main()
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
-	test(window);
+	//test(window);
 	Menu(window);
 }
 

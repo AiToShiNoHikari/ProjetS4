@@ -1,7 +1,5 @@
 ﻿#include "Multi_IA.h"
 
-void Menu(sf::RenderWindow& window);
-
 //IA
 Fourmie::Fourmie(int x, int y, Parametre_IA& parametre_IA, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture, int** organised_search, Fourmiliere& fourmiliere) : parametre_IA(parametre_IA), Terrain(Terrain), render(render), texture(texture), fourmiliere(fourmiliere)
 {
@@ -1985,7 +1983,7 @@ void Simulation(sf::RenderWindow& window)
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
 
 
-	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test1.save.st");
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test3.save.st");
 
 	int TX, TY;
 
@@ -2174,7 +2172,10 @@ void Simulation(sf::RenderWindow& window)
 
 			if (event.type == sf::Event::KeyReleased)
 			{
-				Menu(window);
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					return;
+				}
 			}
 		}
 

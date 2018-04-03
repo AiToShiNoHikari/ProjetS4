@@ -19,6 +19,8 @@ struct Ressource
 
 	static sf::Texture Fourmie;
 
+	static sf::Texture FondMenu;
+
 	static sf::Font Arial;
 
 	static std::list<std::string> ListTerrain;
