@@ -3,6 +3,8 @@
 
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
+	a:
+
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -206,6 +208,12 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	MessageError.setPosition(window.getSize().x / 2 - 380, window.getSize().y - 200);
 	MessageError.setCharacterSize(80);
 	MessageError.setStyle(sf::Text::Bold);
+	MessageError.setFillColor(sf::Color::Red);
+	
+	sf::Clock clock;
+	bool temp = false;
+
+	sf::Time elapsed1;
 	
 	while (window.isOpen() && !Sauvegarde)
 	{
@@ -213,6 +221,8 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 		sf::Event event;
 
+		elapsed1 = clock.getElapsedTime();
+		
 		while (window.pollEvent(event))
 		{
 			sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -271,7 +281,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					int MX = mousepos.x / _size;
 					int MY = mousepos.y / _size;
 
-					if (event.mouseButton.button == sf::Mouse::Right)
+					if (event.mouseButton.button == sf::Mouse::Right && (ObjTerrain.Terrain[MX][MY].Type == 2 || ObjTerrain.Terrain[MX][MY].Type == 5))
 					{
 #ifdef _DEBUG
 						std::cout << "Value: " << ObjTerrain.Terrain[MX][MY].Value << std::endl;
@@ -324,6 +334,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 #ifdef _DEBUG
 							std::cout << "Save" << std::endl;
 #endif
+							
 							Sauvegarde = false;
 
 							for (int i = 0; i < (ObjTerrain.TX); i++)
@@ -332,13 +343,12 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 								{
 									if (ObjTerrain.Terrain[i][j].Type == 0)
 									{
-										MessageError.setString("");
 										Sauvegarde = true;
 									}
 									else
 									{
+										clock.restart();
 										MessageError.setString("Ajouter une base !");
-										MessageError.setFillColor(sf::Color::Red);
 									}
 								}
 							}
@@ -360,7 +370,6 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 							ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
 							HaveChange = true;
 						}
-
 						
 #ifdef _DEBUG
 						std::cout << Change << std::endl;
@@ -458,6 +467,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 				}
 
 			}
+
+			/*if (elapsed1.asSeconds() >= 2)
+			{
+				MessageError.setString("");
+			}*/
 		}
 		if (CaseSelect == NULL)
 		{
@@ -561,8 +575,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 		else
 		{
 			Val.affiche();
+		}			
+		if (elapsed1.asSeconds() <= 2)
+		{
+			window.draw(MessageError);
 		}
-		window.draw(MessageError);
 		window.display();
 	}
 
@@ -582,8 +599,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
 	Message.setCharacterSize(30);
 	Message.setStyle(sf::Text::Bold);
+
+	bool save_on = true;
 	
-	while (window.isOpen())
+	while (window.isOpen() && save_on)
 	{
 		window.clear();
 
@@ -602,9 +621,16 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			case sf::Event::MouseButtonPressed:
 			{
 				NomMap.get_state(event);
-
 			}
 			break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					Sauvegarde = false;
+					save_on = false;
+					goto a;
+				}
+				break;
 			case sf::Event::MouseButtonReleased:
 				NomMap.get_state(event);
 				break;
