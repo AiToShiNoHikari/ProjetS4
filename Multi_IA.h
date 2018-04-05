@@ -69,7 +69,7 @@ struct Parametre_IA
 	
 	float sigma_deviation;
 
-	int type_IA = 0;
+	int type_IA = 1;
 
 	void operator=(Parametre_IA& in)
 	{

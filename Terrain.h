@@ -28,7 +28,7 @@ public:
 
 class ClassTerrain;
 
-void SaveTerrain(std::string name, ClassTerrain& Terrain);
+void SaveTerrain(std::string name, ClassTerrain& Terrain, sf::RenderWindow& window);
 
 
 /***** cette fonction te donnera l'image de la texture de la case *****/

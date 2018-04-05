@@ -1988,7 +1988,7 @@ void Simulation(sf::RenderWindow& window)
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
 
 
-	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test1.save.st");
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test3.save.st");
 
 	int TX, TY;
 
@@ -2021,6 +2021,11 @@ void Simulation(sf::RenderWindow& window)
 			{
 				pos_base_x = i, pos_base_y = j;
 			}
+
+
+			NewTerrain >> val;
+
+			CT.Value = val;
 		}
 	}
 
@@ -2168,6 +2173,14 @@ void Simulation(sf::RenderWindow& window)
 				}
 
 				HaveChange = true;
+			}
+
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					return;
+				}
 			}
 		}
 

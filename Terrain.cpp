@@ -3,6 +3,8 @@
 
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
+	a:
+
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -35,6 +37,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					NewTerrain >> val;
 
 					CT.Type = (CaseTerrain::TypeTerrain)val;
+
+					NewTerrain >> val;
+
+					CT.Value = val;
 				}
 			}
 
@@ -197,16 +203,26 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	bool Sauvegarde = false;
 
 	CaseTerrain* CaseSelect = NULL;
+	
+	sf::Text MessageError("", Ressource::Arial);
+	MessageError.setPosition(window.getSize().x / 2 - 380, window.getSize().y - 200);
+	MessageError.setCharacterSize(80);
+	MessageError.setStyle(sf::Text::Bold);
+	MessageError.setFillColor(sf::Color::Red);
+	
+	sf::Clock clock;
+	bool temp = false;
 
-	int Verif = 0;
-	int Max = 0, Var = 0;
-
+	sf::Time elapsed1;
+	
 	while (window.isOpen() && !Sauvegarde)
 	{
 		window.clear();
 
 		sf::Event event;
 
+		elapsed1 = clock.getElapsedTime();
+		
 		while (window.pollEvent(event))
 		{
 			sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -214,6 +230,12 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					return;
+				}
 				break;
 			case sf::Event::Resized:
 			{
@@ -259,9 +281,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					int MX = mousepos.x / _size;
 					int MY = mousepos.y / _size;
 
-					if (event.mouseButton.button == sf::Mouse::Right)
+					if (event.mouseButton.button == sf::Mouse::Right && (ObjTerrain.Terrain[MX][MY].Type == 2 || ObjTerrain.Terrain[MX][MY].Type == 5))
 					{
+#ifdef _DEBUG
 						std::cout << "Value: " << ObjTerrain.Terrain[MX][MY].Value << std::endl;
+#endif
 						CaseSelect = &ObjTerrain.Terrain[MX][MY];
 
 						std::stringstream Convert;
@@ -310,47 +334,42 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 #ifdef _DEBUG
 							std::cout << "Save" << std::endl;
 #endif
-							Sauvegarde = true;
-							ChangeSave = false;
-						}
-						
-						if (ChangeSave)
-						{
-							Max = 0, Var = 0;
+							
+							Sauvegarde = false;
 
 							for (int i = 0; i < (ObjTerrain.TX); i++)
 							{
 								for (int j = 0; j < (ObjTerrain.TY); j++)
 								{
-									Max++;
 									if (ObjTerrain.Terrain[i][j].Type == 0)
 									{
-										Verif++;
+										Sauvegarde = true;
 									}
 									else
 									{
-										Var++;
+										clock.restart();
+										MessageError.setString("Ajouter une base !");
 									}
 								}
 							}
-							if (Max == Var)
+
+							ChangeSave = false;
+						}
+
+						if (ChangeSave)
+						{
+							ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change;
+							if (ObjTerrain.Terrain[MX][MY].Type == 2 || ObjTerrain.Terrain[MX][MY].Type == 5)
 							{
-								Verif = 0;
-								std::cout << "Max == Var" << std::endl;
+								ObjTerrain.Terrain[MX][MY].Value = 10000;
 							}
 							else
 							{
-								Verif++;
-								std::cout << "Max != Var" << std::endl;
+								ObjTerrain.Terrain[MX][MY].Value = 0;
 							}
-							if (!(Change == 0 && Verif != 0))
-							{
-								ObjTerrain.Terrain[MX][MY].Type = (CaseTerrain::TypeTerrain)Change; 
-								ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
-								HaveChange = true;
-							}
+							ObjTerrain.MAJTexture(MX - 2, MY - 2, MX + 2, MY + 2);
+							HaveChange = true;
 						}
-
 						
 #ifdef _DEBUG
 						std::cout << Change << std::endl;
@@ -365,10 +384,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 					BEau.update_state(event);
 					BRoche.update_state(event);
 					BSable.update_state(event);
-					if (Verif == 0)
-					{
-						BBase.update_state(event);
-					}
+					BBase.update_state(event);
 					BNourriture.update_state(event);
 					BSave.update_state(event);
 					break;
@@ -380,8 +396,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 					position.x = vue.getCenter().x;
 					position.y = vue.getCenter().y;
-
+#ifdef _DEBUG
 					std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+#endif
 
 					if (event.mouseWheel.delta == 1)
 					{
@@ -438,8 +455,9 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 							Convert.str(Val.get_text());
 							Convert >> v;
-
+#ifdef _DEBUG
 							std::cout << v << std::endl;
+#endif
 
 							CaseSelect->Value = v;
 							CaseSelect = NULL;
@@ -449,6 +467,11 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 				}
 
 			}
+
+			/*if (elapsed1.asSeconds() >= 2)
+			{
+				MessageError.setString("");
+			}*/
 		}
 		if (CaseSelect == NULL)
 		{
@@ -552,6 +575,10 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 		else
 		{
 			Val.affiche();
+		}			
+		if (elapsed1.asSeconds() <= 2)
+		{
+			window.draw(MessageError);
 		}
 		window.display();
 	}
@@ -568,17 +595,14 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	NomMap.select();
 	NomMap.set_monol();
 
-	sf::Font font;
-	if (!font.loadFromFile("Ressource/Police/arial.ttf"))
-	{
-		std::cout << "Erreur chargement Arial.ttf" << std::endl;
-	}
-	sf::Text Message("", font);
+	sf::Text Message("", Ressource::Arial);
 	Message.setPosition(window.getSize().x / 2 - 250, window.getSize().y / 2 + 50);
 	Message.setCharacterSize(30);
 	Message.setStyle(sf::Text::Bold);
 
-	while (window.isOpen())
+	bool save_on = true;
+	
+	while (window.isOpen() && save_on)
 	{
 		window.clear();
 
@@ -597,9 +621,16 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 			case sf::Event::MouseButtonPressed:
 			{
 				NomMap.get_state(event);
-
 			}
 			break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					Sauvegarde = false;
+					save_on = false;
+					goto a;
+				}
+				break;
 			case sf::Event::MouseButtonReleased:
 				NomMap.get_state(event);
 				break;
@@ -608,44 +639,35 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 
 				if (NomMap.entry(event) == Interface::Texte_Entry_Zone::entry_result::enter)
 				{
-					if (Verif != 0)
+					std::string Nom = NomMap.get_text();
+#ifdef _DEBUG
+					std::cout << Nom << std::endl;
+#endif
+
+					bool isnew = true;
+
+					for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 					{
-						std::string Nom = NomMap.get_text();
+						if (*iterator == Nom)
+							isnew = false;
 
-						std::cout << Nom << std::endl;
+					}
 
-						bool isnew = true;
-
-						for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
-						{
-							if (*iterator == Nom)
-								isnew = false;
-
-						}
-
-						if (isnew)
-						{
-							sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
-							int MX = mousepos.x / _size;
-							int MY = mousepos.y / _size;
-							Message.setString("Sauvegarde réussis !");
-							Message.setFillColor(sf::Color::White);
-							SaveTerrain(NomMap.get_text(), ObjTerrain);
-						}
-						else
-						{
-							Message.setString("Nom de sauvegarde déjà utilisé !");
-							Message.setFillColor(sf::Color::Red);
-						}
+					if (isnew)
+					{
+						sf::Vector2f mousepos = RTextureSol.mapPixelToCoords(sf::Mouse::getPosition(window));
+						int MX = mousepos.x / _size;
+						int MY = mousepos.y / _size;
+						Message.setString("Sauvegarde réussis !");
+						Message.setFillColor(sf::Color::White);
+						SaveTerrain(NomMap.get_text(), ObjTerrain, window);
 					}
 					else
 					{
-						Message.setString("Veuillez ajouter une base !");
+						Message.setString("Nom de sauvegarde déjà utilisé !");
 						Message.setFillColor(sf::Color::Red);
 					}
 				};
-				break;
-			default:
 				break;
 			}
 		}
@@ -657,7 +679,7 @@ void Edition(sf::RenderWindow& window, std::string Nom)
 	}
 }
 
-void SaveTerrain(std::string name, ClassTerrain& Terrain)
+void SaveTerrain(std::string name, ClassTerrain& Terrain, sf::RenderWindow& window)
 {
 	std::ofstream TerrainList("./Ressource/Sauvegarde/Terrain/Terrain_List.save.sl", std::ios::out | std::ios::app);
 
