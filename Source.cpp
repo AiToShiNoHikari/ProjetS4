@@ -473,7 +473,6 @@ void main()
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
-	test(window);
 	Menu(window);
 }
 

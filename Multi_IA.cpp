@@ -1408,35 +1408,40 @@ void Fourmie_F2::read_Pheromone(int min_x, int max_x, int min_y, int max_y, Pher
 	{
 		for (int j = min_y; j < max_y; j++)
 		{
-			float valuec = 0;
-
-			auto& PhL = Pheromone_list[i][j][searched];
-			
-			if (PhL.size() > 0)
+			if(i != case_x || j != case_y)
 			{
-				for (auto iterator = PhL.begin(); iterator != PhL.end(); iterator++)
+				float valuec = 0;
+
+				auto& PhL = Pheromone_list[i][j][searched];
+
+				if (PhL.size() > 0)
 				{
-					int i = (*iterator)->x;
-					int j = (*iterator)->y;
+					auto iterator_c = PhL.begin();
 
-					float delta_dest_x = (*iterator)->x - x;
-					float delta_dest_y = (*iterator)->y - y;
-
-					float hypo = abs(hypotf(delta_dest_x, delta_dest_y));
-
-					if (hypo < parametre_IA.detection_range)
+					for (auto iterator = PhL.begin(); iterator != PhL.end(); iterator++)
 					{
-						valuec += **iterator;
+						int i = (*iterator)->x;
+						int j = (*iterator)->y;
+
+						float delta_dest_x = (*iterator)->x - x;
+						float delta_dest_y = (*iterator)->y - y;
+
+						float hypo = abs(hypotf(delta_dest_x, delta_dest_y));
+
+						if (hypo < parametre_IA.detection_range)
+						{
+							valuec += **iterator;
+						}
 					}
-				}
 
-				//valuec = PhL.size();
+					//valuec = PhL.size();
 
-				if (valuec > value)
-				{
-					value = valuec;
-					lcx = i;
-					lcy = j;
+					if (valuec > value)
+					{
+						value = valuec;
+						lcx = i;
+						lcy = j;
+					}
 				}
 			}
 		}
