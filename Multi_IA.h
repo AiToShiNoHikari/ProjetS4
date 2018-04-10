@@ -87,6 +87,14 @@ struct Parametre_IA
 	};
 };
 
+struct Parametre_Simulation
+{
+	Parametre_IA parametre_IA;
+	std::string map_name;
+	int nb_four;
+	float dissipation_speed;
+};
+
 struct Pheromone
 {
 	enum Type

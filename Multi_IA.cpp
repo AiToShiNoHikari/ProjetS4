@@ -55,18 +55,17 @@ void Fourmie::deplacement()
 
 	float nx = x + (speed * dx * dtime);
 	float ny = y + (speed * dy* dtime);
-
+	
 	if (case_x != (int)nx || case_y != (int)ny)
 	{
+		int anti_lag = 0;
 		while (true)
 		{
+			anti_lag++;
+
 			if ((int)nx < 0 || (int)ny < 0 || (int)nx >= Terrain.TX || (int)ny >= Terrain.TY)
 			{
 				analyse();
-
-				mutex.lock();
-				Sprite.setRotation(rotation);
-				mutex.unlock();
 
 				nx = x + (speed * dx * dtime);
 				ny = y + (speed * dy* dtime);
@@ -74,18 +73,14 @@ void Fourmie::deplacement()
 				break;
 			}
 
-			CaseTerrain::TypeTerrain test = Terrain.Terrain[(int)nx][(int)ny].Type;
+			CaseTerrain::TypeTerrain& test = Terrain.Terrain[(int)nx][(int)ny].Type;
 
 			if (test == CaseTerrain::TypeTerrain::Roche)
 			{
 				analyse();
 
-				mutex.lock();
-				Sprite.setRotation(rotation);
-				mutex.unlock();
-
 				nx = x + (speed * dx * dtime);
-				ny = y + (speed * dy* dtime);
+				ny = y + (speed * dy * dtime);
 			}
 			else if (test == CaseTerrain::TypeTerrain::Sable)
 			{
@@ -97,20 +92,26 @@ void Fourmie::deplacement()
 				{
 					analyse();
 
-					mutex.lock();
-					Sprite.setRotation(rotation);
-					mutex.unlock();
-
 					nx = x + (speed * dx * dtime);
-					ny = y + (speed * dy* dtime);
+					ny = y + (speed * dy * dtime);
 				}
 			}
 			else
 			{
 				break;
 			}
+
+			if (anti_lag > 150)
+			{
+				in_life = false;
+				throw std::string("Lag");
+			}
 		}
-	}
+
+		mutex.lock();
+		Sprite.setRotation(rotation);
+		mutex.unlock();
+	}//*/
 
 	x = nx;
 	y = ny;
@@ -174,14 +175,19 @@ void Fourmie::action()
 			mutex.unlock();
 		}
 
-		deplacement();
-		mutex.lock();
-		Sprite.setPosition(x*_size, y*_size);
-		mutex.unlock();
+		try
+		{
+			deplacement();
+			mutex.lock();
+			Sprite.setPosition(x*_size, y*_size);
+			mutex.unlock();
 
-		in_life = (life_clock.getElapsedTime().asSeconds() < parametre_IA.life_time);
-
-
+			in_life = (life_clock.getElapsedTime().asSeconds() < parametre_IA.life_time);
+		}
+		catch (const std::string& e)
+		{
+			throw e;
+		}
 	}
 };
 
@@ -222,37 +228,53 @@ bool Fourmie::anti_wrong_case(int& cx, int& cy)
 	{
 		enx = (int)nx, eny = (int)ny;
 
-		while (enx == (int)nx && eny == (int)ny)
+		//while (enx == (int)nx && eny == (int)ny)
 		{
 			//nx += ndx * 0.001;
 			//ny += ndy * 0.001;
 
 			float nbdx = 0, nbdy = 0;
 
-			if (signbit(ndx))
+			if (ndx == 0)
 			{
-				nbdx = (nx - (int)(nx)+0.01) / abs(ndx);
+
+			}
+			else if (signbit(ndx))
+			{
+				nbdx = (nx - (int)(nx)) / abs(ndx);
+				if (nbdx == 0)
+				{
+					nbdx = 0.001;
+				}
 			}
 			else
 			{
 				nbdx = (((int)(nx)+1) - nx) / abs(ndx);
 			}
 
-			if (signbit(ndy))
+			if (ndy == 0)
 			{
-				nbdy = (ny - (int)(ny)+0.01) / abs(ndy);
+
+			}
+			else if (signbit(ndy))
+			{
+				nbdy = (ny - (int)(ny)) / abs(ndy);
+				if (nbdy == 0)
+				{
+					nbdy = 0.001;
+				}
 			}
 			else
 			{
 				nbdy = (((int)(ny)+1) - ny) / abs(ndy);
 			}
 
-			if (nbdx > nbdy)
+			if ((nbdx > nbdy || nbdx == 0) && nbdy != 0)
 			{
 				nx += ndx * nbdy;
 				ny += ndy * nbdy;
 			}
-			else if (nbdx < nbdy)
+			else if ((nbdx < nbdy || nbdy == 0) && nbdx != 0)
 			{
 				nx += ndx * nbdx;
 				ny += ndy * nbdx;
@@ -432,30 +454,46 @@ void Fourmie::deviation(float& cx, float& cy, float& ndx, float& ndy)
 
 			float nbdx = 0, nbdy = 0;
 
-			if (signbit(ndx))
+			if (ndx == 0)
 			{
-				nbdx = (nx - (int)(nx)+0.01) / abs(ndx);
+
+			}
+			else if (signbit(ndx))
+			{
+				nbdx = (nx - (int)(nx)) / abs(ndx);
+				if (nbdx == 0)
+				{
+					nbdx = 0.001;
+				}
 			}
 			else
 			{
 				nbdx = (((int)(nx)+1) - nx) / abs(ndx);
 			}
 
-			if (signbit(ndy))
+			if (ndy == 0)
 			{
-				nbdy = (ny - (int)(ny)+0.01) / abs(ndy);
+
+			}
+			else if (signbit(ndy))
+			{
+				nbdy = (ny - (int)(ny)) / abs(ndy);
+				if (nbdy == 0)
+				{
+					nbdy = 0.001;
+				}
 			}
 			else
 			{
 				nbdy = (((int)(ny)+1) - ny) / abs(ndy);
 			}
 
-			if (nbdx > nbdy)
+			if ((nbdx > nbdy || nbdx == 0) && nbdy != 0)
 			{
 				nx += ndx * nbdy;
 				ny += ndy * nbdy;
 			}
-			else if (nbdx < nbdy)
+			else if ((nbdx < nbdy || nbdy == 0) && nbdx != 0)
 			{
 				nx += ndx * nbdx;
 				ny += ndy * nbdx;
@@ -1639,7 +1677,16 @@ void Fourmiliere::action()
 
 	for (std::list<Fourmie*>::iterator iterator = Fourmies.begin(); iterator != Fourmies.end(); iterator++)
 	{
-		(*iterator)->action();
+		try
+		{
+			(*iterator)->action();
+		}
+		catch (const std::string& e )
+		{
+#ifdef _DEBUG
+			std::cout << e;
+#endif
+		}
 
 		if (!((*iterator)->in_life))
 		{
@@ -1977,7 +2024,7 @@ PheromonePoint::operator float()
 	return value;
 };
 
-void Simulation(sf::RenderWindow& window)
+void Simulation(sf::RenderWindow& window, Parametre_Simulation& PS)
 {
 	bool HaveChange = true;
 
@@ -1987,16 +2034,20 @@ void Simulation(sf::RenderWindow& window)
 	sf::RenderTexture RenderTexture_AI_Calque_Simulation;
 	RenderTexture_AI_Calque_Simulation.create(window.getSize().x, window.getSize().y);
 
+	int pos_base_x = 0, pos_base_y = 0;
 
-	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/test3.save.st");
+	std::ifstream NewTerrain("./Ressource/Sauvegarde/Terrain/" + PS.map_name + ".save.st");
+
+	ClassTerrain ObjTerrain(100, 100, RenderTexture_BG_Simulation);
+
+	if (NewTerrain)
+	{
 
 	int TX, TY;
 
 	NewTerrain >> TX >> TY;
 
-	ClassTerrain ObjTerrain(TX, TY, RenderTexture_BG_Simulation);
-
-	int pos_base_x = 0, pos_base_y = 0;
+	ObjTerrain.Redimension(TX, TY);
 
 	for (int i = 0; i < (ObjTerrain.TX); i++)
 	{
@@ -2032,37 +2083,28 @@ void Simulation(sf::RenderWindow& window)
 	NewTerrain.close();
 
 	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
-	/*//terrain de test
+	}
+	else
+	{
+		//terrain de test
 
-	ClassTerrain ObjTerrain(250, 250, RenderTexture_BG_Simulation);
+		ObjTerrain.Redimension(25, 25);
 
-	int pos_base_x = rand() % ObjTerrain.TX, pos_base_y = rand() % ObjTerrain.TY;
+		pos_base_x = rand() % ObjTerrain.TX, pos_base_y = rand() % ObjTerrain.TY;
 
-	ObjTerrain.Terrain[pos_base_x][pos_base_y].Type = CaseTerrain::Base;
-	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Nourriture;
-	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Eau;
-	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Roche;
-	ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Sable;
+		ObjTerrain.Terrain[pos_base_x][pos_base_y].Type = CaseTerrain::Base;
+		ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Nourriture;
+		ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Eau;
+		ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Roche;
+		ObjTerrain.Terrain[rand() % ObjTerrain.TX][rand() % ObjTerrain.TY].Type = CaseTerrain::Sable;
 
-	ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
-	//fin terrain de test //*/
+		ObjTerrain.MAJTexture(0, 0, ObjTerrain.TX, ObjTerrain.TY);
+		//fin terrain de test //*/
+	}
 
-	Parametre_IA parametre_IA;
-	parametre_IA.detection_range = 2;
-	parametre_IA.Pheromone_max = 40;
-	parametre_IA.speed = 2.5;
-	parametre_IA.sand_speed = 2.5;
-	parametre_IA.water_speed = 2.5;
-	parametre_IA.max_angle_deviation = 33.75;
-	parametre_IA.life_time = 120;
-	parametre_IA.qantity_max = 260;
-	parametre_IA.precision_angle = 2.8125;
-	parametre_IA.sigma_deviation = 10;
-	parametre_IA.type_IA = 1;
+	Fourmiliere_1 test(pos_base_x, pos_base_y, PS.parametre_IA, PS.dissipation_speed, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
-	Fourmiliere_1 test(pos_base_x, pos_base_y, parametre_IA, 0.5, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
-
-	for (int i = 0; i < 250; i++)
+	for (int i = 0; i < PS.nb_four; i++)
 	{
 		test.add_fourmie();
 	};
@@ -2149,27 +2191,55 @@ void Simulation(sf::RenderWindow& window)
 			{
 				window.close();
 			}
-			if (event.type == sf::Event::MouseWheelMoved)
-			{
+			if (event.type == sf::Event::MouseWheelMoved) {
+
 				sf::Vector2f mousepos = RenderTexture_BG_Simulation.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+				sf::Vector2f position;
+
+				position.x = vue.getCenter().x;
+				position.y = vue.getCenter().y;
+#ifdef _DEBUG
+				std::cout << vue.getCenter().x << "|" << vue.getCenter().y << std::endl;
+#endif
 
 				if (event.mouseWheel.delta == 1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom < 10)
 					{
 						ValZoom++;
+						vue.setCenter(mousepos.x, mousepos.y);
 						vue.zoom(0.9f);
 					}
 				}
 				if (event.mouseWheel.delta == -1)
 				{
-					vue.setCenter(mousepos.x, mousepos.y);
 					if (ValZoom > 2)
 					{
 						ValZoom--;
+						vue.setCenter(mousepos.x, mousepos.y);
 						vue.zoom(1.0 / 0.9f);
 					}
+				}
+
+				if ((position.y - vue.getSize().y / 2) < 0)
+				{
+					vue.setCenter(position.x, 0 + vue.getSize().y / 2);
+				}
+
+				if ((position.y + vue.getSize().y / 2) > ObjTerrain.TY * _size)
+				{
+					vue.setCenter(position.x, ObjTerrain.TY * _size - vue.getSize().y / 2);
+				}
+
+				if ((position.x - vue.getSize().x / 2) < 0)
+				{
+					vue.setCenter(0 + vue.getSize().x / 2, position.y);
+				}
+
+				if ((position.x + vue.getSize().x / 2) > ObjTerrain.TX * _size)
+				{
+					vue.setCenter(ObjTerrain.TX * _size - vue.getSize().x / 2, position.y);
 				}
 
 				HaveChange = true;
@@ -2289,6 +2359,120 @@ void Simulation(sf::RenderWindow& window)
 		window.display();
 	}
 };
+
+void Simulation(sf::RenderWindow& window)
+{
+	sf::Sprite sprite;
+	sprite.setTexture(Ressource::FondMenu);
+	sprite.setPosition(0, 0);
+
+	Parametre_Simulation PS;
+
+	PS.parametre_IA.detection_range = 2;
+	PS.parametre_IA.Pheromone_max = 40;
+	PS.parametre_IA.speed = 2.5;
+	PS.parametre_IA.sand_speed = 2.5;
+	PS.parametre_IA.water_speed = 2.5;
+	PS.parametre_IA.max_angle_deviation = 33.75;
+	PS.parametre_IA.life_time = 120;
+	PS.parametre_IA.qantity_max = 260;
+	PS.parametre_IA.precision_angle = 2.8125;
+	PS.parametre_IA.sigma_deviation = 10;
+	PS.parametre_IA.type_IA = 1;
+
+	PS.dissipation_speed = 0.5;
+	PS.nb_four = 250;
+
+	Interface::Bouton Valider(window.getSize().x - 250, window.getSize().y - 75, 200, 50, window, "Valider");
+	Valider.set_bg_type(Interface::Bouton::BG_type::Rect);
+	Valider.set_background_outline_thickness(2, 2, 2);
+	Valider.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	Valider.set_text_font(&Ressource::Arial);
+	Valider.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	Valider.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+	Valider.set_text_pos_correction_y(-8, -8, -8);
+
+	Interface::Scroll_Menu test_sc(10, 10, 200, 50, window);
+
+	test_sc.set_bg_type(Interface::Bouton::BG_type::Rect);
+	test_sc.set_background_outline_thickness(2, 2, 2);
+	test_sc.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	test_sc.set_text_font(&Ressource::Arial);
+	test_sc.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	test_sc.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+	test_sc.set_text_pos_correction_y(-8, -8, -8);
+
+	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
+	{
+		test_sc.add_choice(*iterator);
+	}
+
+	while (window.isOpen())
+	{
+		window.clear();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Resized:
+			{
+				window.setSize(sf::Vector2u(event.size.width < 800 ? 800 : event.size.width, event.size.height < 600 ? 600 : event.size.height));
+
+				// on met à jour la vue, avec la nouvelle taille de la fenêtre
+				{
+					sf::FloatRect visibleArea;
+					visibleArea = sf::FloatRect(0, 0, event.size.width, event.size.height);
+					window.setView(sf::View(visibleArea));
+				}
+				Valider.set_position(window.getSize().x - 250, window.getSize().y - 75);
+			}
+				break;
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				test_sc.get_state(event);
+				Valider.get_state(event);
+				break;
+			case sf::Event::MouseButtonPressed:
+			{
+				test_sc.get_state(event);
+				if (Valider.get_state(event) == Interface::Bouton::state::cliking)
+				{
+					PS.map_name = test_sc.get_text();
+					Simulation(window, PS);
+				}
+			}
+			break;
+			case sf::Event::MouseButtonReleased:
+				test_sc.get_state(event);
+				Valider.get_state(event);
+				break;
+			case sf::Event::MouseWheelMoved:
+				test_sc.scroll(event);
+				break;
+			default:
+				break;
+			}
+
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					return;
+				}
+			}
+		}
+
+		window.draw(sprite);
+		Valider.affiche();
+		test_sc.affiche();
+		window.display();
+	}
+}
 
 double probabilite(double x, double p, double f, double s)
 {
