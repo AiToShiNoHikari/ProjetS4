@@ -3,7 +3,7 @@
 
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
-	a:
+a:
 
 	bool HaveChange = true;
 
