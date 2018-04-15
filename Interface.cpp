@@ -773,12 +773,22 @@ namespace Interface
 					msg.clear();
 					break;
 				case 0x20:
-					if (msg.size())
+					if (msg.size() && !only_nb)
 						msg += event.text.unicode;
 					break;
 				default:
 					if (!((sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) ^ (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt))))
-						msg += event.text.unicode;
+					{
+						if (only_nb)
+						{
+							if((event.text.unicode >= 0x30 && event.text.unicode <= 0x39) || event.text.unicode == 0x2E)
+								msg += event.text.unicode;
+						}
+						else
+						{
+							msg += event.text.unicode;
+						}
+					}
 					break;
 				}
 
@@ -904,6 +914,14 @@ namespace Interface
 	void Texte_Entry_Zone::set_max_char(int nmx)
 	{
 		max_char = nmx;
+	};
+	void Texte_Entry_Zone::set_only_nb(bool is)
+	{
+		only_nb = is;
+		if (is)
+		{
+			monol = is;
+		}
 	};
 
 	/** Scroll_Menu **/

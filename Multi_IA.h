@@ -58,7 +58,6 @@ struct Parametre_IA
 	float detection_range;
 
 	float Pheromone_max;
-
 	int qantity_max;
 
 	float max_angle_deviation;
@@ -66,7 +65,6 @@ struct Parametre_IA
 	float life_time;
 
 	float precision_angle;
-	
 	float sigma_deviation;
 
 	int type_IA = 1;
@@ -87,12 +85,26 @@ struct Parametre_IA
 	};
 };
 
+struct Parametre_Fourmiliere
+{
+	int birth_Food_cost = 1000;
+	int birth_Water_cost = 1000;
+	float dissipation_speed;
+
+	void operator=(Parametre_Fourmiliere& in)
+	{
+		birth_Food_cost = in.birth_Food_cost;
+		birth_Water_cost = in.birth_Water_cost;
+		dissipation_speed = in.dissipation_speed;
+	};
+};
+
 struct Parametre_Simulation
 {
 	Parametre_IA parametre_IA;
 	std::string map_name;
 	int nb_four;
-	float dissipation_speed;
+	Parametre_Fourmiliere parametre_Fourmiliere;
 };
 
 struct Pheromone
@@ -413,10 +425,6 @@ protected:
 
 	float x = 0, y = 0;
 
-	//parametre de la fourmiliere
-	int birth_Food_cost = 1000;
-	int birth_Water_cost = 1000;
-
 	//parametre des IA
 	Parametre_IA parametre_IA;
 
@@ -441,9 +449,10 @@ public:
 	std::default_random_engine generator;
 	std::normal_distribution<float> distribution;
 
-	float Pheromone_disipation_speed;
+	//parametre de la fourmiliere
+	Parametre_Fourmiliere parametre_Fourmiliere;
 
-	Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+	Fourmiliere(int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
 	virtual void add_fourmie(int num_type = -1) = 0;
 
@@ -466,7 +475,7 @@ class Fourmiliere_1 : public Fourmiliere
 public:
 	CasePheromones<Pheromone>** Pheromone_Table;
 
-	Fourmiliere_1 (int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+	Fourmiliere_1 (int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
 	~Fourmiliere_1();
 
@@ -480,7 +489,7 @@ public:
 
 	std::list<PheromonePoint*> Pheromone_void_list;
 
-	Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
+	Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture);
 
 	~Fourmiliere_2();
 
