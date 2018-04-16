@@ -2403,7 +2403,7 @@ void Simulation(sf::RenderWindow& window)
 
 
 	//choix map
-	Interface::Scroll_Menu sc_map_choice(10, 10, 200, 50, window);
+	Interface::Scroll_Menu sc_map_choice(210, 10, 200, 50, window);
 
 	sc_map_choice.set_bg_type(Interface::Bouton::BG_type::Rect);
 	sc_map_choice.set_background_outline_thickness(2, 2, 2);
@@ -2419,20 +2419,20 @@ void Simulation(sf::RenderWindow& window)
 	}
 
 	// zone saisie
-	Interface::Texte_Entry_Zone nb_four_zone(240, 80, 200, 50, window);
+	Interface::Texte_Entry_Zone nb_four_zone(260, 80, 200, 50, window);
 
-	Interface::Texte_Entry_Zone dissipation_speed_zone(10, 80, 200, 50, window);
-	Interface::Texte_Entry_Zone birth_Food_cost_zone(10, 150, 200, 50, window);
-	Interface::Texte_Entry_Zone birth_Water_cost_zone(240, 150, 200, 50, window);
+	Interface::Texte_Entry_Zone dissipation_speed_zone(740, 80, 200, 50, window);
+	Interface::Texte_Entry_Zone birth_Food_cost_zone(380, 150, 200, 50, window);
+	Interface::Texte_Entry_Zone birth_Water_cost_zone(740, 150, 200, 50, window);
 
-	Interface::Texte_Entry_Zone detection_range_zone(10, 220, 200, 50, window);
-	Interface::Texte_Entry_Zone Pheromone_max_zone(240, 220, 200, 50, window);
-	Interface::Texte_Entry_Zone life_time_zone(10, 290, 200, 50, window);
-	Interface::Texte_Entry_Zone qantity_max_zone(240, 290, 200, 50, window);
+	Interface::Texte_Entry_Zone detection_range_zone(260, 220, 200, 50, window);
+	Interface::Texte_Entry_Zone Pheromone_max_zone(740, 220, 200, 50, window);
+	Interface::Texte_Entry_Zone life_time_zone(260, 290, 200, 50, window);
+	Interface::Texte_Entry_Zone qantity_max_zone(740, 290, 200, 50, window);
 
-	Interface::Texte_Entry_Zone speed_zone(10, 410, 200, 50, window);
-	Interface::Texte_Entry_Zone sand_speed_zone(240, 410, 200, 50, window);
-	Interface::Texte_Entry_Zone water_speed_zone(470, 410, 200, 50, window);
+	Interface::Texte_Entry_Zone speed_zone(10, 420, 200, 50, window);
+	Interface::Texte_Entry_Zone sand_speed_zone(240, 420, 200, 50, window);
+	Interface::Texte_Entry_Zone water_speed_zone(470, 420, 200, 50, window);
 
 	/*//
 	Interface::Texte_Entry_Zone max_angle_deviation_zone(10, 150, 200, 50, window);
@@ -2544,7 +2544,150 @@ void Simulation(sf::RenderWindow& window)
 		water_speed_zone.set_only_nb();
 	}
 
-	std::stringstream convert;
+	//Text
+	sf::Text map_choice_text;
+
+	sf::Text nb_four_text;
+	sf::Text dissipation_speed_text;
+	sf::Text birth_Food_cost_text;
+	sf::Text birth_Water_cost_text;
+
+	sf::Text detection_range_text;
+	sf::Text Pheromone_max_text;
+	sf::Text life_time_text;
+	sf::Text qantity_max_text;
+
+	sf::Text speed_text;
+	sf::Text sand_speed_text;
+	sf::Text water_speed_text;
+
+	{
+		map_choice_text.setString("Choix du terrain: ");
+		map_choice_text.setFont(Ressource::Arial);
+		map_choice_text.setCharacterSize(25);
+		map_choice_text.setFillColor(sf::Color::White);
+		map_choice_text.setPosition(10, 10);
+	}
+
+	{
+		nb_four_text.setString("Nombre de fourmie\nau départ: ");
+		nb_four_text.setFont(Ressource::Arial);
+		nb_four_text.setCharacterSize(25);
+		nb_four_text.setFillColor(sf::Color::White);
+		nb_four_text.setPosition(10, 80);
+
+		dissipation_speed_text.setString("Vitesse de dissipation\ndes phéromones: ");
+		dissipation_speed_text.setFont(Ressource::Arial);
+		dissipation_speed_text.setCharacterSize(25);
+		dissipation_speed_text.setFillColor(sf::Color::White);
+		dissipation_speed_text.setPosition(490, 80);
+
+		birth_Food_cost_text.setString("Couts de naissance: Nourriture: ");
+		birth_Food_cost_text.setFont(Ressource::Arial);
+		birth_Food_cost_text.setCharacterSize(25);
+		birth_Food_cost_text.setFillColor(sf::Color::White);
+		birth_Food_cost_text.setPosition(10, 150);
+
+		birth_Water_cost_text.setString("Eau: ");
+		birth_Water_cost_text.setFont(Ressource::Arial);
+		birth_Water_cost_text.setCharacterSize(25);
+		birth_Water_cost_text.setFillColor(sf::Color::White);
+		birth_Water_cost_text.setPosition(650, 150);
+	}
+
+	{
+		detection_range_text.setString("Rayon de detection: ");
+		detection_range_text.setFont(Ressource::Arial);
+		detection_range_text.setCharacterSize(25);
+		detection_range_text.setFillColor(sf::Color::White);
+		detection_range_text.setPosition(10, 220);
+
+		Pheromone_max_text.setString("Puissance maximale\ndes phéromones: ");
+		Pheromone_max_text.setFont(Ressource::Arial);
+		Pheromone_max_text.setCharacterSize(25);
+		Pheromone_max_text.setFillColor(sf::Color::White);
+		Pheromone_max_text.setPosition(490, 220);
+		
+		life_time_text.setString("Durée de vie: ");
+		life_time_text.setFont(Ressource::Arial);
+		life_time_text.setCharacterSize(25);
+		life_time_text.setFillColor(sf::Color::White);
+		life_time_text.setPosition(10, 290);
+
+		qantity_max_text.setString("Capacité de\ntransport: ");
+		qantity_max_text.setFont(Ressource::Arial);
+		qantity_max_text.setCharacterSize(25);
+		qantity_max_text.setFillColor(sf::Color::White);
+		qantity_max_text.setPosition(490, 290);
+	}
+
+	{
+		speed_text.setString("Vitesse: \nNormal: ");
+		speed_text.setFont(Ressource::Arial);
+		speed_text.setCharacterSize(25);
+		speed_text.setFillColor(sf::Color::White);
+		speed_text.setPosition(10, 360);
+
+		sand_speed_text.setString("Sable: ");
+		sand_speed_text.setFont(Ressource::Arial);
+		sand_speed_text.setCharacterSize(25);
+		sand_speed_text.setFillColor(sf::Color::White);
+		sand_speed_text.setPosition(240, 385);
+
+		water_speed_text.setString("Eau: ");
+		water_speed_text.setFont(Ressource::Arial);
+		water_speed_text.setCharacterSize(25);
+		water_speed_text.setFillColor(sf::Color::White);
+		water_speed_text.setPosition(470, 385);
+	}
+	
+	{
+		std::stringstream convert;
+
+		convert.str("");
+		convert << PS.nb_four;
+		nb_four_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_Fourmiliere.dissipation_speed;
+		dissipation_speed_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_Fourmiliere.birth_Food_cost;
+		birth_Food_cost_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_Fourmiliere.birth_Water_cost;
+		birth_Water_cost_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.detection_range;
+		detection_range_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.Pheromone_max;
+		Pheromone_max_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.life_time;
+		life_time_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.qantity_max;
+		qantity_max_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.speed;
+		speed_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.sand_speed;
+		sand_speed_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.water_speed;
+		water_speed_zone.set_text(convert.str());
+	}
 
 	while (window.isOpen())
 	{
@@ -2613,10 +2756,13 @@ void Simulation(sf::RenderWindow& window)
 
 					PS.map_name = sc_map_choice.get_text();
 
-					if (dissipation_speed_zone.get_text() != "")
+					std::string txt;
+
+					txt = dissipation_speed_zone.get_text();
+					if (txt != "")
 					{
-						convert.str("");
-						convert << dissipation_speed_zone.get_text();
+						std::stringstream convert;
+						convert << txt;
 						float i;
 						convert >> i;
 						PS.parametre_Fourmiliere.dissipation_speed = i;
@@ -2626,10 +2772,11 @@ void Simulation(sf::RenderWindow& window)
 						can_launche = false;
 					}
 
-					if (nb_four_zone.get_text() != "")
+					txt = nb_four_zone.get_text();
+					if (txt != "")
 					{
-						convert.str("");
-						convert << nb_four_zone.get_text();
+						std::stringstream convert;
+						convert << txt;
 						int i;
 						convert >> i;
 						PS.nb_four = i;
@@ -2639,10 +2786,195 @@ void Simulation(sf::RenderWindow& window)
 						can_launche = false;
 					}
 
+					txt = birth_Food_cost_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						int i;
+						convert >> i;
+						PS.parametre_Fourmiliere.birth_Food_cost = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = birth_Water_cost_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						int i;
+						convert >> i;
+						PS.parametre_Fourmiliere.birth_Water_cost = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+
+					txt = detection_range_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.detection_range = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = Pheromone_max_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.Pheromone_max = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = life_time_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.life_time = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = qantity_max_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						int i;
+						convert >> i;
+						PS.parametre_IA.qantity_max = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+
+					txt = speed_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.speed = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = sand_speed_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.sand_speed = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					txt = water_speed_zone.get_text();
+					if (txt != "")
+					{
+						std::stringstream convert;
+						convert << txt;
+						float i;
+						convert >> i;
+						PS.parametre_IA.water_speed = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					/*//
+					PS.parametre_IA.max_angle_deviation = 33.75;
+
+					PS.parametre_IA.precision_angle = 2.8125;
+					PS.parametre_IA.sigma_deviation = 10;
+
+					PS.parametre_IA.type_IA = 1;//*/
+
+
 					if (can_launche)
 					{
 						Simulation(window, PS);
 						Valider.set_position(window.getSize().x - 250, window.getSize().y - 75);
+					}
+
+					{
+						std::stringstream convert;
+
+						convert.str("");
+						convert << PS.nb_four;
+						nb_four_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_Fourmiliere.dissipation_speed;
+						dissipation_speed_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_Fourmiliere.birth_Food_cost;
+						birth_Food_cost_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_Fourmiliere.birth_Water_cost;
+						birth_Water_cost_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.detection_range;
+						detection_range_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.Pheromone_max;
+						Pheromone_max_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.life_time;
+						life_time_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.qantity_max;
+						qantity_max_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.speed;
+						speed_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.sand_speed;
+						sand_speed_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.water_speed;
+						water_speed_zone.set_text(convert.str());
 					}
 				}
 			}
@@ -2698,6 +3030,24 @@ void Simulation(sf::RenderWindow& window)
 		}
 
 		window.draw(sprite);
+
+		//texte
+		window.draw(map_choice_text);
+
+		window.draw(nb_four_text);
+		window.draw(dissipation_speed_text);
+		window.draw(birth_Food_cost_text);
+		window.draw(birth_Water_cost_text);
+
+		window.draw(detection_range_text);
+		window.draw(Pheromone_max_text);
+		window.draw(life_time_text);
+		window.draw(qantity_max_text);
+
+		window.draw(speed_text);
+		window.draw(sand_speed_text);
+		window.draw(water_speed_text);
+
 		Valider.affiche();
 
 		dissipation_speed_zone.affiche();

@@ -351,6 +351,7 @@ namespace Interface
 	void Bouton::set_text(std::string text)
 	{
 		this->text.setString(text);
+		generation_text();
 	};
 
 	void Bouton::set_aligne_text(int aligne)
@@ -1476,7 +1477,7 @@ namespace Interface
 			}
 			scroll_zone.setPosition(rect.left, rect.top + rect.height);
 			scroll_zone.setSize(sf::Vector2f(rect.width, rect.height*scroll_height));
-			scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().x + rect.height, rect.width, rect.height*scroll_height));
+			scroll_zone.setTextureRect(sf::IntRect(scroll_zone.getPosition().x, scroll_zone.getPosition().y, rect.width, rect.height*scroll_height));
 			scroll_zone_RenderTexture.setView(sf::View(sf::FloatRect(0, rect.height*scroll_pos, window.getView().getSize().x, window.getView().getSize().y)));
 
 			scroll_zone_RenderTexture.clear(sf::Color::Transparent);

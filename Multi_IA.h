@@ -105,6 +105,14 @@ struct Parametre_Simulation
 	std::string map_name;
 	int nb_four;
 	Parametre_Fourmiliere parametre_Fourmiliere;
+
+	void operator=(Parametre_Simulation& in)
+	{
+		parametre_IA = in.parametre_IA;
+		map_name = in.map_name;
+		nb_four = in.nb_four;
+		parametre_Fourmiliere = in.parametre_Fourmiliere;
+	};
 };
 
 struct Pheromone
