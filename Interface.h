@@ -140,6 +140,8 @@ namespace Interface
 		float mx = 0, my = 0;
 		bool monol = false;
 
+		bool only_nb = false;
+
 		int max_char = 0;
 
 	public:
@@ -168,6 +170,7 @@ namespace Interface
 		void set_marge(float x = 0, float y = 0);
 		void set_monol(bool is = true);
 		void set_max_char(int nmx = 0);
+		void set_only_nb(bool is = true);
 	};
 
 	class Scroll_Menu : public Texte_Entry_Zone

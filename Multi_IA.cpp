@@ -1432,7 +1432,7 @@ void Fourmie_F2::palce_pheromone()
 	{
 		int cx = x, cy = y;
 
-		Pheromone_list[cx][cy][place].push_back(new PheromonePoint(x, y, fourmiliere.Pheromone_disipation_speed, place, Pheromone_current, fourmiliere2));
+		Pheromone_list[cx][cy][place].push_back(new PheromonePoint(x, y, fourmiliere.parametre_Fourmiliere.dissipation_speed, place, Pheromone_current, fourmiliere2));
 	}
 };
 
@@ -1645,9 +1645,9 @@ void Fourmie_2::analyse()
 };
 
 //Fourmiliere
-Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture), distribution(0.0, (1.0 / 3.0)), generator(std::chrono::system_clock::now().time_since_epoch().count())
+Fourmiliere::Fourmiliere(int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Terrain(Terrain), render(render), texture(texture), distribution(0.0, (1.0 / 3.0)), generator(std::chrono::system_clock::now().time_since_epoch().count())
 {
-	this->Pheromone_disipation_speed = Pheromone_disipation_speed;
+	this->parametre_Fourmiliere = parametre_Fourmiliere;
 
 	organised_search = new int*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
@@ -1721,15 +1721,15 @@ void Fourmiliere::action()
 
 	int new_f = 0;
 
-	while (Food_value >= birth_Food_cost && Water_value >= birth_Water_cost)
+	while (Food_value >= parametre_Fourmiliere.birth_Food_cost && Water_value >= parametre_Fourmiliere.birth_Water_cost)
 	{
 		if ((search_fourmi + food_fourmi + water_fourmi + enemy_fourmi + new_f) >= 2500)
 			break;
 
 		new_f++;
 
-		Food_value -= birth_Food_cost;
-		Water_value -= birth_Water_cost;
+		Food_value -= parametre_Fourmiliere.birth_Food_cost;
+		Water_value -= parametre_Fourmiliere.birth_Water_cost;
 
 		add_fourmie();
 	}
@@ -1898,7 +1898,7 @@ Fourmiliere::~Fourmiliere()
 };
 
 
-Fourmiliere_1::Fourmiliere_1(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, Pheromone_disipation_speed, Terrain, render, texture)
+Fourmiliere_1::Fourmiliere_1(int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, parametre_Fourmiliere, Terrain, render, texture)
 {
 	Pheromone_Table = new CasePheromones<Pheromone>*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
@@ -1907,10 +1907,10 @@ Fourmiliere_1::Fourmiliere_1(int x, int y, Parametre_IA parametre_IA, float Pher
 
 		for (int j = 0; j < Terrain.TY; j++)
 		{
-			Pheromone_Table[i][j][Pheromone::Type::enemy].set_disipation_speed(Pheromone_disipation_speed);
-			Pheromone_Table[i][j][Pheromone::Type::food].set_disipation_speed(Pheromone_disipation_speed);
-			Pheromone_Table[i][j][Pheromone::Type::water].set_disipation_speed(Pheromone_disipation_speed);
-			Pheromone_Table[i][j][Pheromone::Type::home].set_disipation_speed(Pheromone_disipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::enemy].set_disipation_speed(parametre_Fourmiliere.dissipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::food].set_disipation_speed(parametre_Fourmiliere.dissipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::water].set_disipation_speed(parametre_Fourmiliere.dissipation_speed);
+			Pheromone_Table[i][j][Pheromone::Type::home].set_disipation_speed(parametre_Fourmiliere.dissipation_speed);
 		};
 	};
 };
@@ -1949,7 +1949,7 @@ void Fourmiliere_1::add_fourmie(int num_type)
 };
 
 
-Fourmiliere_2::Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, float Pheromone_disipation_speed, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, Pheromone_disipation_speed, Terrain, render, texture)
+Fourmiliere_2::Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, Parametre_Fourmiliere parametre_Fourmiliere, ClassTerrain& Terrain, sf::RenderTarget& render, sf::Texture& texture) : Fourmiliere(x, y, parametre_IA, parametre_Fourmiliere, Terrain, render, texture)
 {
 	Pheromone_list = new CasePheromones<std::list<PheromonePoint*>>*[Terrain.TX];
 	for (int i = 0; i < Terrain.TX; i++)
@@ -1958,7 +1958,7 @@ Fourmiliere_2::Fourmiliere_2(int x, int y, Parametre_IA parametre_IA, float Pher
 
 		for (int j = 0; j < Terrain.TY; j++)
 		{
-			Pheromone_list[i][j].disipation_speed = Pheromone_disipation_speed;
+			Pheromone_list[i][j].disipation_speed = parametre_Fourmiliere.dissipation_speed;
 		};
 	};
 };
@@ -2102,7 +2102,7 @@ void Simulation(sf::RenderWindow& window, Parametre_Simulation& PS)
 		//fin terrain de test //*/
 	}
 
-	Fourmiliere_1 test(pos_base_x, pos_base_y, PS.parametre_IA, PS.dissipation_speed, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
+	Fourmiliere_1 test(pos_base_x, pos_base_y, PS.parametre_IA, PS.parametre_Fourmiliere, ObjTerrain, RenderTexture_AI_Calque_Simulation, Ressource::Fourmie);
 
 	for (int i = 0; i < PS.nb_four; i++)
 	{
@@ -2370,19 +2370,28 @@ void Simulation(sf::RenderWindow& window)
 
 	PS.parametre_IA.detection_range = 2;
 	PS.parametre_IA.Pheromone_max = 40;
-	PS.parametre_IA.speed = 2.5;
-	PS.parametre_IA.sand_speed = 2.5;
-	PS.parametre_IA.water_speed = 2.5;
-	PS.parametre_IA.max_angle_deviation = 33.75;
 	PS.parametre_IA.life_time = 120;
 	PS.parametre_IA.qantity_max = 260;
+
+	PS.parametre_IA.speed = 5;
+	PS.parametre_IA.sand_speed = 5;
+	PS.parametre_IA.water_speed = 2.5;
+
+	PS.parametre_IA.max_angle_deviation = 33.75;
+
 	PS.parametre_IA.precision_angle = 2.8125;
 	PS.parametre_IA.sigma_deviation = 10;
+
 	PS.parametre_IA.type_IA = 1;
 
-	PS.dissipation_speed = 0.5;
+
+	PS.parametre_Fourmiliere.dissipation_speed = 0.5;
+	PS.parametre_Fourmiliere.birth_Food_cost = 1000;
+	PS.parametre_Fourmiliere.birth_Water_cost = 1000;
+
 	PS.nb_four = 250;
 
+	//bouton valider
 	Interface::Bouton Valider(window.getSize().x - 250, window.getSize().y - 75, 200, 50, window, "Valider");
 	Valider.set_bg_type(Interface::Bouton::BG_type::Rect);
 	Valider.set_background_outline_thickness(2, 2, 2);
@@ -2392,20 +2401,150 @@ void Simulation(sf::RenderWindow& window)
 	Valider.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	Valider.set_text_pos_correction_y(-8, -8, -8);
 
-	Interface::Scroll_Menu test_sc(10, 10, 200, 50, window);
 
-	test_sc.set_bg_type(Interface::Bouton::BG_type::Rect);
-	test_sc.set_background_outline_thickness(2, 2, 2);
-	test_sc.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
-	test_sc.set_text_font(&Ressource::Arial);
-	test_sc.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-	test_sc.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
-	test_sc.set_text_pos_correction_y(-8, -8, -8);
+	//choix map
+	Interface::Scroll_Menu sc_map_choice(10, 10, 200, 50, window);
+
+	sc_map_choice.set_bg_type(Interface::Bouton::BG_type::Rect);
+	sc_map_choice.set_background_outline_thickness(2, 2, 2);
+	sc_map_choice.set_text_color(sf::Color::Black, sf::Color::Blue, sf::Color::Black);
+	sc_map_choice.set_text_font(&Ressource::Arial);
+	sc_map_choice.set_background_outline_color(sf::Color::Black, sf::Color::Blue, sf::Color::Red);
+	sc_map_choice.set_background_color(sf::Color::White, sf::Color::White, sf::Color(255, 255, 255, 128));
+	sc_map_choice.set_text_pos_correction_y(-8, -8, -8);
 
 	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 	{
-		test_sc.add_choice(*iterator);
+		sc_map_choice.add_choice(*iterator);
 	}
+
+	// zone saisie
+	Interface::Texte_Entry_Zone nb_four_zone(240, 80, 200, 50, window);
+
+	Interface::Texte_Entry_Zone dissipation_speed_zone(10, 80, 200, 50, window);
+	Interface::Texte_Entry_Zone birth_Food_cost_zone(10, 150, 200, 50, window);
+	Interface::Texte_Entry_Zone birth_Water_cost_zone(240, 150, 200, 50, window);
+
+	Interface::Texte_Entry_Zone detection_range_zone(10, 220, 200, 50, window);
+	Interface::Texte_Entry_Zone Pheromone_max_zone(240, 220, 200, 50, window);
+	Interface::Texte_Entry_Zone life_time_zone(10, 290, 200, 50, window);
+	Interface::Texte_Entry_Zone qantity_max_zone(240, 290, 200, 50, window);
+
+	Interface::Texte_Entry_Zone speed_zone(10, 410, 200, 50, window);
+	Interface::Texte_Entry_Zone sand_speed_zone(240, 410, 200, 50, window);
+	Interface::Texte_Entry_Zone water_speed_zone(470, 410, 200, 50, window);
+
+	/*//
+	Interface::Texte_Entry_Zone max_angle_deviation_zone(10, 150, 200, 50, window);
+	Interface::Texte_Entry_Zone precision_angle_zone(10, 150, 200, 50, window);
+	Interface::Texte_Entry_Zone sigma_deviation_zone(10, 150, 200, 50, window);//*/
+
+	{
+		dissipation_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		dissipation_speed_zone.set_background_outline_thickness(2, 2, 2);
+		dissipation_speed_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		dissipation_speed_zone.set_text_font(&Ressource::Arial);
+		dissipation_speed_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		dissipation_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		dissipation_speed_zone.set_text_pos_correction_y(-8, -8, -8);
+		dissipation_speed_zone.set_only_nb();
+
+		birth_Food_cost_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		birth_Food_cost_zone.set_background_outline_thickness(2, 2, 2);
+		birth_Food_cost_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		birth_Food_cost_zone.set_text_font(&Ressource::Arial);
+		birth_Food_cost_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		birth_Food_cost_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		birth_Food_cost_zone.set_text_pos_correction_y(-8, -8, -8);
+		birth_Food_cost_zone.set_only_nb();
+
+		birth_Water_cost_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		birth_Water_cost_zone.set_background_outline_thickness(2, 2, 2);
+		birth_Water_cost_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		birth_Water_cost_zone.set_text_font(&Ressource::Arial);
+		birth_Water_cost_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		birth_Water_cost_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		birth_Water_cost_zone.set_text_pos_correction_y(-8, -8, -8);
+		birth_Water_cost_zone.set_only_nb();
+
+		nb_four_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		nb_four_zone.set_background_outline_thickness(2, 2, 2);
+		nb_four_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		nb_four_zone.set_text_font(&Ressource::Arial);
+		nb_four_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		nb_four_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		nb_four_zone.set_text_pos_correction_y(-8, -8, -8);
+		nb_four_zone.set_only_nb();
+	}
+
+	{
+		detection_range_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		detection_range_zone.set_background_outline_thickness(2, 2, 2);
+		detection_range_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		detection_range_zone.set_text_font(&Ressource::Arial);
+		detection_range_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		detection_range_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		detection_range_zone.set_text_pos_correction_y(-8, -8, -8);
+		detection_range_zone.set_only_nb();
+
+		Pheromone_max_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		Pheromone_max_zone.set_background_outline_thickness(2, 2, 2);
+		Pheromone_max_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		Pheromone_max_zone.set_text_font(&Ressource::Arial);
+		Pheromone_max_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		Pheromone_max_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		Pheromone_max_zone.set_text_pos_correction_y(-8, -8, -8);
+		Pheromone_max_zone.set_only_nb();
+
+		life_time_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		life_time_zone.set_background_outline_thickness(2, 2, 2);
+		life_time_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		life_time_zone.set_text_font(&Ressource::Arial);
+		life_time_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		life_time_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		life_time_zone.set_text_pos_correction_y(-8, -8, -8);
+		life_time_zone.set_only_nb();
+
+		qantity_max_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		qantity_max_zone.set_background_outline_thickness(2, 2, 2);
+		qantity_max_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		qantity_max_zone.set_text_font(&Ressource::Arial);
+		qantity_max_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		qantity_max_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		qantity_max_zone.set_text_pos_correction_y(-8, -8, -8);
+		qantity_max_zone.set_only_nb();
+	}
+	
+	{
+		speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		speed_zone.set_background_outline_thickness(2, 2, 2);
+		speed_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		speed_zone.set_text_font(&Ressource::Arial);
+		speed_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		speed_zone.set_text_pos_correction_y(-8, -8, -8);
+		speed_zone.set_only_nb();
+
+		sand_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		sand_speed_zone.set_background_outline_thickness(2, 2, 2);
+		sand_speed_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		sand_speed_zone.set_text_font(&Ressource::Arial);
+		sand_speed_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		sand_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		sand_speed_zone.set_text_pos_correction_y(-8, -8, -8);
+		sand_speed_zone.set_only_nb();
+
+		water_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		water_speed_zone.set_background_outline_thickness(2, 2, 2);
+		water_speed_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		water_speed_zone.set_text_font(&Ressource::Arial);
+		water_speed_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		water_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		water_speed_zone.set_text_pos_correction_y(-8, -8, -8);
+		water_speed_zone.set_only_nb();
+	}
+
+	std::stringstream convert;
 
 	while (window.isOpen())
 	{
@@ -2434,25 +2573,116 @@ void Simulation(sf::RenderWindow& window)
 				window.close();
 				break;
 			case sf::Event::MouseMoved:
-				test_sc.get_state(event);
+				dissipation_speed_zone.get_state(event);
+				birth_Food_cost_zone.get_state(event);
+				birth_Water_cost_zone.get_state(event);
+				nb_four_zone.get_state(event);
+
+				detection_range_zone.get_state(event);
+				Pheromone_max_zone.get_state(event);
+				life_time_zone.get_state(event);
+				qantity_max_zone.get_state(event);
+
+				speed_zone.get_state(event);
+				sand_speed_zone.get_state(event);
+				water_speed_zone.get_state(event);
+
+				sc_map_choice.get_state(event);
 				Valider.get_state(event);
 				break;
 			case sf::Event::MouseButtonPressed:
 			{
-				test_sc.get_state(event);
+				dissipation_speed_zone.get_state(event);
+				sc_map_choice.get_state(event);
+				birth_Food_cost_zone.get_state(event);
+				birth_Water_cost_zone.get_state(event);
+				nb_four_zone.get_state(event);
+
+				detection_range_zone.get_state(event);
+				Pheromone_max_zone.get_state(event);
+				life_time_zone.get_state(event);
+				qantity_max_zone.get_state(event);
+
+				speed_zone.get_state(event);
+				sand_speed_zone.get_state(event);
+				water_speed_zone.get_state(event);
+
 				if (Valider.get_state(event) == Interface::Bouton::state::cliking)
 				{
-					PS.map_name = test_sc.get_text();
-					Simulation(window, PS);
+					bool can_launche = true;
+
+					PS.map_name = sc_map_choice.get_text();
+
+					if (dissipation_speed_zone.get_text() != "")
+					{
+						convert.str("");
+						convert << dissipation_speed_zone.get_text();
+						float i;
+						convert >> i;
+						PS.parametre_Fourmiliere.dissipation_speed = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					if (nb_four_zone.get_text() != "")
+					{
+						convert.str("");
+						convert << nb_four_zone.get_text();
+						int i;
+						convert >> i;
+						PS.nb_four = i;
+					}
+					else
+					{
+						can_launche = false;
+					}
+
+					if (can_launche)
+					{
+						Simulation(window, PS);
+						Valider.set_position(window.getSize().x - 250, window.getSize().y - 75);
+					}
 				}
 			}
 			break;
 			case sf::Event::MouseButtonReleased:
-				test_sc.get_state(event);
+				sc_map_choice.get_state(event);
+
+				dissipation_speed_zone.get_state(event);
+				birth_Food_cost_zone.get_state(event);
+				birth_Water_cost_zone.get_state(event);
+				nb_four_zone.get_state(event);
+
+				detection_range_zone.get_state(event);
+				Pheromone_max_zone.get_state(event);
+				life_time_zone.get_state(event);
+				qantity_max_zone.get_state(event);
+
+				speed_zone.get_state(event);
+				sand_speed_zone.get_state(event);
+				water_speed_zone.get_state(event);
+
 				Valider.get_state(event);
 				break;
 			case sf::Event::MouseWheelMoved:
-				test_sc.scroll(event);
+				sc_map_choice.scroll(event);
+				break;
+			case sf::Event::TextEntered:
+				dissipation_speed_zone.entry(event);
+				birth_Food_cost_zone.entry(event);
+				birth_Water_cost_zone.entry(event);
+				nb_four_zone.entry(event);
+
+				detection_range_zone.entry(event);
+				Pheromone_max_zone.entry(event);
+				life_time_zone.entry(event);
+				qantity_max_zone.entry(event);
+
+				speed_zone.entry(event);
+				sand_speed_zone.entry(event);
+				water_speed_zone.entry(event);
 				break;
 			default:
 				break;
@@ -2469,7 +2699,22 @@ void Simulation(sf::RenderWindow& window)
 
 		window.draw(sprite);
 		Valider.affiche();
-		test_sc.affiche();
+
+		dissipation_speed_zone.affiche();
+		birth_Food_cost_zone.affiche();
+		birth_Water_cost_zone.affiche();
+		nb_four_zone.affiche();
+
+		detection_range_zone.affiche();
+		Pheromone_max_zone.affiche();
+		life_time_zone.affiche();
+		qantity_max_zone.affiche();
+
+		speed_zone.affiche();
+		sand_speed_zone.affiche();
+		water_speed_zone.affiche();
+
+		sc_map_choice.affiche();
 		window.display();
 	}
 }
