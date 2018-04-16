@@ -98,6 +98,8 @@ namespace Interface
 
 		void set_bg_type(BG_type T);
 
+		sf::FloatRect& get_rect();
+
 		virtual void set_size(float w, float h);
 		virtual void set_size(sf::Vector2f size);
 

@@ -3,8 +3,6 @@
 
 void Edition(sf::RenderWindow& window, std::string Nom)
 {
-a:
-
 	bool HaveChange = true;
 
 	sf::RenderTexture RTextureSol;
@@ -214,7 +212,9 @@ a:
 	bool temp = false;
 
 	sf::Time elapsed1;
-	
+
+a:
+
 	while (window.isOpen() && !Sauvegarde)
 	{
 		window.clear();

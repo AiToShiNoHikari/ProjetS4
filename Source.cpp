@@ -18,59 +18,6 @@ std::list<std::string> Ressource::ListTerrain;
 
 sf::Font Ressource::Arial;
 
-/*void test(sf::RenderWindow& window)
-{
-	Interface::Scroll_Menu test_sc(10, 10, 200, 50, window, true);
-
-	test_sc.set_bg_type(Interface::Bouton::BG_type::Rect);
-	test_sc.set_background_outline_thickness(2, 2, 2);
-	test_sc.set_text_color(sf::Color::White, sf::Color::Red, sf::Color::White);
-	test_sc.set_text_font(&Ressource::Arial);
-	test_sc.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
-	test_sc.set_background_color(sf::Color::Blue, sf::Color::Black, sf::Color(255, 255, 255, 128));
-	test_sc.set_text_pos_correction_y(-8, -8, -8);
-
-	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
-	{
-		test_sc.add_choice(*iterator);
-	}
-
-	while (window.isOpen())
-	{
-		window.clear();
-
-		sf::Event event;
-
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case sf::Event::Closed:
-				window.close();
-				break;
-			case sf::Event::MouseMoved:
-				test_sc.get_state(event);
-				break;
-			case sf::Event::MouseButtonPressed:
-			{
-				test_sc.get_state(event);
-			}
-			break;
-			case sf::Event::MouseButtonReleased:
-				test_sc.get_state(event);
-				break;
-			case sf::Event::MouseWheelMoved:
-				test_sc.scroll(event);
-				break;
-			default:
-				break;
-			}
-		}
-
-		test_sc.affiche();
-		window.display();
-	}
-}*/
 
 void ChoixMap(sf::RenderWindow& window)
 {
@@ -80,15 +27,16 @@ void ChoixMap(sf::RenderWindow& window)
 	
 	std::list<Interface::Bouton*> BoutonNomMap;
 	
+	int NX = 0;
+	int NY = 0;
 
-	int Val = 0;
 	for (auto iterator = Ressource::ListTerrain.begin(); iterator != Ressource::ListTerrain.end(); iterator++)
 	{
 #ifdef _DEBUG
-		std::cout << *iterator << std::endl;
+		std::cout << NX << " - " << NY << std::endl;
 #endif
 
-		Interface::Bouton* b = new Interface::Bouton(((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4))*Val + 100, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, *iterator);
+		Interface::Bouton* b = new Interface::Bouton(0,0, 200, 50, window, *iterator);
 
 		b->set_bg_type(Interface::Bouton::BG_type::Rect);
 		b->set_background_outline_thickness(2, 2, 2);
@@ -98,14 +46,28 @@ void ChoixMap(sf::RenderWindow& window)
 		b->set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		b->set_text_pos_correction_y(-8, -8, -8);
 
+		b->set_position(250 * NX + 50, 100 * NY + 50);
+
+		sf::Vector2f PosStart(b->get_rect().left, b->get_rect().top);
+		sf::Vector2f PosEnd(b->get_rect().left + b->get_rect().width, b->get_rect().top + b->get_rect().height);
+		sf::FloatRect WindowsRect(0, 0, window.getSize().x, window.getSize().y);
+		
+		if (!WindowsRect.contains(PosStart) || !WindowsRect.contains(PosEnd))
+		{
+			NX = 0;
+			NY++;
+
+			b->set_position(250 * NX + 50, 100 * NY + 50);
+		}
+
+		b->set_position(250 * NX + 50, 100 * NY + 50);
+
 		BoutonNomMap.push_back(b);
-		Val++;
+		NX++;
 	}
 
 	while (window.isOpen())
 	{
-		window.clear();
-
 		sf::Event event;
 
 		while (window.pollEvent(event))
@@ -114,6 +76,56 @@ void ChoixMap(sf::RenderWindow& window)
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;			
+			case sf::Event::Resized:
+				{
+					window.setSize(sf::Vector2u(event.size.width < 800 ? 800 : event.size.width, event.size.height < 600 ? 600 : event.size.height));
+
+					// on met à jour la vue, avec la nouvelle taille de la fenêtre
+					{
+						sf::FloatRect visibleArea;
+						visibleArea = sf::FloatRect(0, 0, window.getSize().x, window.getSize().y);
+						window.setView(sf::View(visibleArea));
+					}
+
+#ifdef _DEBUG
+					std::cout << window.getSize().x << " - " << window.getSize().y << std::endl;
+#endif
+
+					NY = 0;
+					NX = 0;
+
+					for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+					{
+						(*iterator)->set_position(250 * NX + 50, 100 * NY + 50);
+
+						sf::Vector2f PosStart((*iterator)->get_rect().left, (*iterator)->get_rect().top);
+						sf::Vector2f PosEnd((*iterator)->get_rect().left + (*iterator)->get_rect().width, (*iterator)->get_rect().top + (*iterator)->get_rect().height);
+						sf::FloatRect WindowsRect(0, 0, window.getSize().x, window.getSize().y);
+
+#ifdef _DEBUG
+						std::cout << WindowsRect.contains(PosStart) << " - " << WindowsRect.contains(PosEnd) << " - " << (*iterator)->get_rect().left << " - " << (*iterator)->get_rect().top << " - " << NX << " - " << NY << std::endl;
+#endif
+
+						if (!WindowsRect.contains(PosStart) || !WindowsRect.contains(PosEnd))
+						{
+							NX = 0;
+							NY++;
+
+							(*iterator)->set_position(250 * NX + 50, 100 * NY + 50);
+						}
+
+						NX++;
+
+#ifdef _DEBUG
+						std::cout << (*iterator)->get_rect().left << " - " << (*iterator)->get_rect().top << " - " << NX << " - " << NY << std::endl;
+#endif
+					}
+
+#ifdef _DEBUG
+					std::cout << "----------------------------------" << std::endl;
+#endif
+				}
 				break;
 			case sf::Event::MouseMoved:
 
@@ -134,6 +146,35 @@ void ChoixMap(sf::RenderWindow& window)
 						iterator;
 
 						Edition(window, *iterator);
+						NY = 0;
+						NX = 0;
+
+						for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
+						{
+							(*iterator)->set_position(250 * NX + 50, 100 * NY + 50);
+
+							sf::Vector2f PosStart((*iterator)->get_rect().left, (*iterator)->get_rect().top);
+							sf::Vector2f PosEnd((*iterator)->get_rect().left + (*iterator)->get_rect().width, (*iterator)->get_rect().top + (*iterator)->get_rect().height);
+							sf::FloatRect WindowsRect(0, 0, window.getSize().x, window.getSize().y);
+
+#ifdef _DEBUG
+							std::cout << WindowsRect.contains(PosStart) << " - " << WindowsRect.contains(PosEnd) << " - " << (*iterator)->get_rect().left << " - " << (*iterator)->get_rect().top << " - " << NX << " - " << NY << std::endl;
+#endif
+
+							if (!WindowsRect.contains(PosStart) || !WindowsRect.contains(PosEnd))
+							{
+								NX = 0;
+								NY++;
+
+								(*iterator)->set_position(250 * NX + 50, 100 * NY + 50);
+							}
+
+							NX++;
+
+#ifdef _DEBUG
+							std::cout << (*iterator)->get_rect().left << " - " << (*iterator)->get_rect().top << " - " << NX << " - " << NY << std::endl;
+#endif
+						}
 					}
 
 					iterator++;
@@ -157,6 +198,8 @@ void ChoixMap(sf::RenderWindow& window)
 			}
 		}
 
+		window.clear();
+
 		window.draw(sprite);
 		for (auto iterator = BoutonNomMap.begin(); iterator != BoutonNomMap.end(); iterator++)
 		{
@@ -178,7 +221,7 @@ void ChoixOption(sf::RenderWindow& window)
 	sprite.setTexture(Ressource::FondMenu);
 	sprite.setPosition(0, 0);
 	
-	Interface::Bouton CM((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4), sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Charger map");
+	Interface::Bouton CM((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50, 200, 50, window, "Charger map");
 	CM.set_bg_type(Interface::Bouton::BG_type::Rect);
 	CM.set_background_outline_thickness(2, 2, 2);
 	CM.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
@@ -187,7 +230,7 @@ void ChoixOption(sf::RenderWindow& window)
 	CM.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	CM.set_text_pos_correction_y(-8, -8, -8);
 
-	Interface::Bouton NM((sf::VideoMode::getDesktopMode().width / 2) + (sf::VideoMode::getDesktopMode().width / 4) - 200, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Nouvelle map");
+	Interface::Bouton NM((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50, 200, 50, window, "Nouvelle map");
 	NM.set_bg_type(Interface::Bouton::BG_type::Rect);
 	NM.set_background_outline_thickness(2, 2, 2);
 	NM.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
@@ -208,6 +251,20 @@ void ChoixOption(sf::RenderWindow& window)
 			{
 			case sf::Event::Closed:
 				window.close();
+				break; 
+			case sf::Event::Resized:
+				{
+					window.setSize(sf::Vector2u(event.size.width < 800 ? 800 : event.size.width, event.size.height < 600 ? 600 : event.size.height));
+
+					// on met à jour la vue, avec la nouvelle taille de la fenêtre
+					{
+						sf::FloatRect visibleArea;
+						visibleArea = sf::FloatRect(0, 0, event.size.width, event.size.height);
+						window.setView(sf::View(visibleArea));
+					}
+					CM.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+					NM.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50);
+				}
 				break;
 			case sf::Event::MouseMoved:
 				CM.get_state(event);
@@ -218,10 +275,14 @@ void ChoixOption(sf::RenderWindow& window)
 				if (CM.get_state(event) == Interface::Bouton::cliking)
 				{
 					ChoixMap(window);
+					CM.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+					NM.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50);
 				}
 				if (NM.get_state(event) == Interface::Bouton::cliking)
 				{
 					Edition(window, "");
+					CM.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+					NM.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50);
 				}
 			}
 			break;
@@ -249,13 +310,13 @@ void ChoixOption(sf::RenderWindow& window)
 void Menu(sf::RenderWindow& window)
 {
 	sf::Text titre("Fourmis Simulator", Ressource::Arial);
-	titre.setPosition((sf::VideoMode::getDesktopMode().width / 2 - 340), 50);
+	titre.setPosition((window.getSize().x / 2 - 340), 50);
 	titre.setCharacterSize(80);
 	titre.setStyle(sf::Text::Bold);
 	titre.setFillColor(sf::Color::White);
 
 
-	Interface::Bouton BSimulation((sf::VideoMode::getDesktopMode().width / 2) - (sf::VideoMode::getDesktopMode().width / 4), sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Simulation");
+	Interface::Bouton BSimulation((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50, 200, 50, window, "Simulation");
 	BSimulation.set_bg_type(Interface::Bouton::BG_type::Rect);
 	BSimulation.set_background_outline_thickness(2, 2, 2);
 	BSimulation.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
@@ -264,7 +325,7 @@ void Menu(sf::RenderWindow& window)
 	BSimulation.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	BSimulation.set_text_pos_correction_y(-8, -8, -8);
 
-	Interface::Bouton BEdition((sf::VideoMode::getDesktopMode().width / 2) + (sf::VideoMode::getDesktopMode().width / 4) - 200, sf::VideoMode::getDesktopMode().height / 2 - 50, 200, 50, window, "Edition");
+	Interface::Bouton BEdition((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50, 200, 50, window, "Edition");
 	BEdition.set_bg_type(Interface::Bouton::BG_type::Rect);
 	BEdition.set_background_outline_thickness(2, 2, 2);
 	BEdition.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
@@ -293,6 +354,21 @@ void Menu(sf::RenderWindow& window)
 			case sf::Event::Closed:
 				window.close();
 				break;
+			case sf::Event::Resized:
+			{
+				window.setSize(sf::Vector2u(event.size.width < 800 ? 800 : event.size.width, event.size.height < 600 ? 600 : event.size.height));
+
+				// on met à jour la vue, avec la nouvelle taille de la fenêtre
+				{
+					sf::FloatRect visibleArea;
+					visibleArea = sf::FloatRect(0, 0, event.size.width, event.size.height);
+					window.setView(sf::View(visibleArea));
+				}
+				BSimulation.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+				BEdition.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50); 
+				titre.setPosition((window.getSize().x / 2 - 340), 50);
+			}
+			break;
 			case sf::Event::KeyReleased:
 				if (event.key.code == sf::Keyboard::Escape)
 				{
@@ -330,10 +406,16 @@ void Menu(sf::RenderWindow& window)
 		case 1:
 			Simulation(window);
 			Fenetre = 0;
+			BSimulation.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+			BEdition.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50);
+			titre.setPosition((window.getSize().x / 2 - 340), 50);
 			break;
 		case 2:
 			ChoixOption(window);
 			Fenetre = 0;
+			BSimulation.set_position((window.getSize().x / 2) - (window.getSize().x / 4), window.getSize().y / 2 - 50);
+			BEdition.set_position((window.getSize().x / 2) + (window.getSize().x / 4) - 200, window.getSize().y / 2 - 50);
+			titre.setPosition((window.getSize().x / 2 - 340), 50);
 			break;
 		}
 
@@ -467,7 +549,8 @@ void main()
 
 	srand(time(NULL));
 
-	sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "ProjetSemestre4");
+	sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height-70), "ProjetSemestre4");
+	window.setPosition(sf::Vector2i(-10, 0));
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 

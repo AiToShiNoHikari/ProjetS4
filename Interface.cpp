@@ -285,6 +285,11 @@ namespace Interface
 		delete(background);
 	}
 
+	sf::FloatRect& Bouton::get_rect()
+	{
+		return rect;
+	};
+
 	void Bouton::set_bg_type(BG_type T)
 	{
 		if (T != bg_type)
