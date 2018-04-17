@@ -132,11 +132,37 @@ void Fourmie::change_dest()
 			break;
 		case CaseTerrain::Eau:
 			contenue = water;
-			qantity = parametre_IA.qantity_max;
+			if (Terrain.Terrain[case_x][case_y].Value > parametre_IA.qantity_max)
+			{
+				qantity = parametre_IA.qantity_max;
+				Terrain.Terrain[case_x][case_y].Value -= parametre_IA.qantity_max;
+			}
+			else
+			{
+				qantity = Terrain.Terrain[case_x][case_y].Value;
+				Terrain.Terrain[case_x][case_y].Value = 0;
+				Terrain.Terrain[case_x][case_y].Type = CaseTerrain::TypeTerrain::Terre;
+				
+				Terrain.MAJTexture(case_x - 2, case_y - 2, case_x + 2, case_y + 2);
+				Terrain.HaveChange = true;
+			}
 			break;
 		case CaseTerrain::Nourriture:
 			contenue = food;
-			qantity = parametre_IA.qantity_max;
+			if (Terrain.Terrain[case_x][case_y].Value > parametre_IA.qantity_max)
+			{
+				qantity = parametre_IA.qantity_max;
+				Terrain.Terrain[case_x][case_y].Value -= parametre_IA.qantity_max;
+			}
+			else
+			{
+				qantity = Terrain.Terrain[case_x][case_y].Value;
+				Terrain.Terrain[case_x][case_y].Value = 0;
+				Terrain.Terrain[case_x][case_y].Type = CaseTerrain::TypeTerrain::Terre;
+
+				Terrain.MAJTexture(case_x - 2, case_y - 2, case_x + 2, case_y + 2);
+				Terrain.HaveChange = true;
+			}
 			break;
 		default:
 			contenue = none;
@@ -2311,7 +2337,7 @@ void Simulation(sf::RenderWindow& window, Parametre_Simulation& PS)
 			}
 		}
 
-		if (HaveChange)
+		if (HaveChange || ObjTerrain.HaveChange)
 		{
 
 			sf::Vector2f position;
@@ -2336,6 +2362,7 @@ void Simulation(sf::RenderWindow& window, Parametre_Simulation& PS)
 			Texture_BG_Simulation = RenderTexture_BG_Simulation.getTexture();
 
 			HaveChange = false;
+			ObjTerrain.HaveChange = false;
 
 			Sprite_BG_Simulation.setTexture(Texture_BG_Simulation);
 
@@ -2666,7 +2693,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 
 	{
-		nb_four_text.setString("Nombre de fourmie\nau départ: ");
+		nb_four_text.setString("Nombre de fourmi\nau départ: ");
 		nb_four_text.setFont(Ressource::Arial);
 		nb_four_text.setCharacterSize(25);
 		nb_four_text.setFillColor(sf::Color::White);
@@ -2678,7 +2705,7 @@ void Simulation(sf::RenderWindow& window)
 		dissipation_speed_text.setFillColor(sf::Color::White);
 		dissipation_speed_text.setPosition(490, 80);
 
-		birth_Food_cost_text.setString("Couts de naissance: Nourriture: ");
+		birth_Food_cost_text.setString("Coûts de naissance: Nourriture: ");
 		birth_Food_cost_text.setFont(Ressource::Arial);
 		birth_Food_cost_text.setCharacterSize(25);
 		birth_Food_cost_text.setFillColor(sf::Color::White);
@@ -2692,7 +2719,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 
 	{
-		detection_range_text.setString("Rayon de detection: ");
+		detection_range_text.setString("Rayon de détection: ");
 		detection_range_text.setFont(Ressource::Arial);
 		detection_range_text.setCharacterSize(25);
 		detection_range_text.setFillColor(sf::Color::White);
@@ -2718,7 +2745,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 
 	{
-		speed_text.setString("Vitesse: \nNormal: ");
+		speed_text.setString("Vitesse: \nNormale: ");
 		speed_text.setFont(Ressource::Arial);
 		speed_text.setCharacterSize(25);
 		speed_text.setFillColor(sf::Color::White);
@@ -2738,7 +2765,7 @@ void Simulation(sf::RenderWindow& window)
 	}
 
 	{
-		max_angle_deviation_text.setString("Deviation\nmaximal: ");
+		max_angle_deviation_text.setString("Deviation\nmaximale: ");
 		max_angle_deviation_text.setFont(Ressource::Arial);
 		max_angle_deviation_text.setCharacterSize(25);
 		max_angle_deviation_text.setFillColor(sf::Color::White);
@@ -2750,7 +2777,7 @@ void Simulation(sf::RenderWindow& window)
 		precision_angle_text.setFillColor(sf::Color::White);
 		precision_angle_text.setPosition(355, 560);
 
-		sigma_deviation_text.setString("Ecart type\nde probabilité: ");
+		sigma_deviation_text.setString("Ecart type de\nprobabilité: ");
 		sigma_deviation_text.setFont(Ressource::Arial);
 		sigma_deviation_text.setCharacterSize(25);
 		sigma_deviation_text.setFillColor(sf::Color::White);

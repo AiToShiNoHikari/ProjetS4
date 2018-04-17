@@ -374,6 +374,7 @@ public:
 	{
 		//std::thread life([this]() {this->action(); });
 		//life.detach();
+		Sprite.setFillColor(sf::Color::Blue);
 	};
 };
 
@@ -388,6 +389,7 @@ public:
 	{
 		//std::thread life([this]() {this->action(); });
 		//life.detach();
+		Sprite.setFillColor(sf::Color::Red);
 	};
 };
 

@@ -42,6 +42,8 @@ class ClassTerrain {
 	sf::RectangleShape** SprtTerrain = NULL;
 
 public:
+	bool HaveChange = false;
+
 	CaseTerrain** Terrain = NULL;
 
 	ClassTerrain(int x, int y, sf::RenderTarget& Render);
