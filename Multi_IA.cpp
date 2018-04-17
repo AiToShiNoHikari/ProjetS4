@@ -2373,16 +2373,16 @@ void Simulation(sf::RenderWindow& window)
 	PS.parametre_IA.life_time = 120;
 	PS.parametre_IA.qantity_max = 260;
 
-	PS.parametre_IA.speed = 5;
-	PS.parametre_IA.sand_speed = 5;
-	PS.parametre_IA.water_speed = 2.5;
+	PS.parametre_IA.speed = 2.5;
+	PS.parametre_IA.sand_speed = 1;
+	PS.parametre_IA.water_speed = 1.5;
 
 	PS.parametre_IA.max_angle_deviation = 33.75;
 
 	PS.parametre_IA.precision_angle = 2.8125;
 	PS.parametre_IA.sigma_deviation = 10;
 
-	PS.parametre_IA.type_IA = 1;
+	PS.parametre_IA.type_IA = 0;
 
 
 	PS.parametre_Fourmiliere.dissipation_speed = 0.5;
@@ -2400,6 +2400,8 @@ void Simulation(sf::RenderWindow& window)
 	Valider.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
 	Valider.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 	Valider.set_text_pos_correction_y(-8, -8, -8);
+	Valider.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+	Valider.set_text_outline_thickness(2, 2, 2);
 
 
 	//choix map
@@ -2434,10 +2436,9 @@ void Simulation(sf::RenderWindow& window)
 	Interface::Texte_Entry_Zone sand_speed_zone(240, 420, 200, 50, window);
 	Interface::Texte_Entry_Zone water_speed_zone(470, 420, 200, 50, window);
 
-	/*//
-	Interface::Texte_Entry_Zone max_angle_deviation_zone(10, 150, 200, 50, window);
-	Interface::Texte_Entry_Zone precision_angle_zone(10, 150, 200, 50, window);
-	Interface::Texte_Entry_Zone sigma_deviation_zone(10, 150, 200, 50, window);//*/
+	Interface::Texte_Entry_Zone max_angle_deviation_zone(125, 560, 200, 50, window);
+	Interface::Texte_Entry_Zone precision_angle_zone(480, 560, 200, 50, window);
+	Interface::Texte_Entry_Zone sigma_deviation_zone(875, 560, 200, 50, window);
 
 	{
 		dissipation_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
@@ -2448,6 +2449,8 @@ void Simulation(sf::RenderWindow& window)
 		dissipation_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		dissipation_speed_zone.set_text_pos_correction_y(-8, -8, -8);
 		dissipation_speed_zone.set_only_nb();
+		dissipation_speed_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		dissipation_speed_zone.set_text_outline_thickness(2, 2, 2);
 
 		birth_Food_cost_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		birth_Food_cost_zone.set_background_outline_thickness(2, 2, 2);
@@ -2457,6 +2460,8 @@ void Simulation(sf::RenderWindow& window)
 		birth_Food_cost_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		birth_Food_cost_zone.set_text_pos_correction_y(-8, -8, -8);
 		birth_Food_cost_zone.set_only_nb();
+		birth_Food_cost_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		birth_Food_cost_zone.set_text_outline_thickness(2, 2, 2);
 
 		birth_Water_cost_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		birth_Water_cost_zone.set_background_outline_thickness(2, 2, 2);
@@ -2466,6 +2471,8 @@ void Simulation(sf::RenderWindow& window)
 		birth_Water_cost_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		birth_Water_cost_zone.set_text_pos_correction_y(-8, -8, -8);
 		birth_Water_cost_zone.set_only_nb();
+		birth_Water_cost_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		birth_Water_cost_zone.set_text_outline_thickness(2, 2, 2);
 
 		nb_four_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		nb_four_zone.set_background_outline_thickness(2, 2, 2);
@@ -2475,6 +2482,8 @@ void Simulation(sf::RenderWindow& window)
 		nb_four_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		nb_four_zone.set_text_pos_correction_y(-8, -8, -8);
 		nb_four_zone.set_only_nb();
+		nb_four_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		nb_four_zone.set_text_outline_thickness(2, 2, 2);
 	}
 
 	{
@@ -2486,6 +2495,8 @@ void Simulation(sf::RenderWindow& window)
 		detection_range_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		detection_range_zone.set_text_pos_correction_y(-8, -8, -8);
 		detection_range_zone.set_only_nb();
+		detection_range_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		detection_range_zone.set_text_outline_thickness(2, 2, 2);
 
 		Pheromone_max_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		Pheromone_max_zone.set_background_outline_thickness(2, 2, 2);
@@ -2495,6 +2506,8 @@ void Simulation(sf::RenderWindow& window)
 		Pheromone_max_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		Pheromone_max_zone.set_text_pos_correction_y(-8, -8, -8);
 		Pheromone_max_zone.set_only_nb();
+		Pheromone_max_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		Pheromone_max_zone.set_text_outline_thickness(2, 2, 2);
 
 		life_time_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		life_time_zone.set_background_outline_thickness(2, 2, 2);
@@ -2504,6 +2517,8 @@ void Simulation(sf::RenderWindow& window)
 		life_time_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		life_time_zone.set_text_pos_correction_y(-8, -8, -8);
 		life_time_zone.set_only_nb();
+		life_time_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		life_time_zone.set_text_outline_thickness(2, 2, 2);
 
 		qantity_max_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		qantity_max_zone.set_background_outline_thickness(2, 2, 2);
@@ -2513,6 +2528,8 @@ void Simulation(sf::RenderWindow& window)
 		qantity_max_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		qantity_max_zone.set_text_pos_correction_y(-8, -8, -8);
 		qantity_max_zone.set_only_nb();
+		qantity_max_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		qantity_max_zone.set_text_outline_thickness(2, 2, 2);
 	}
 	
 	{
@@ -2524,6 +2541,8 @@ void Simulation(sf::RenderWindow& window)
 		speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		speed_zone.set_text_pos_correction_y(-8, -8, -8);
 		speed_zone.set_only_nb();
+		speed_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		speed_zone.set_text_outline_thickness(2, 2, 2);
 
 		sand_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		sand_speed_zone.set_background_outline_thickness(2, 2, 2);
@@ -2533,6 +2552,8 @@ void Simulation(sf::RenderWindow& window)
 		sand_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		sand_speed_zone.set_text_pos_correction_y(-8, -8, -8);
 		sand_speed_zone.set_only_nb();
+		sand_speed_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		sand_speed_zone.set_text_outline_thickness(2, 2, 2);
 
 		water_speed_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
 		water_speed_zone.set_background_outline_thickness(2, 2, 2);
@@ -2542,7 +2563,78 @@ void Simulation(sf::RenderWindow& window)
 		water_speed_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 		water_speed_zone.set_text_pos_correction_y(-8, -8, -8);
 		water_speed_zone.set_only_nb();
+		water_speed_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		water_speed_zone.set_text_outline_thickness(2, 2, 2);
 	}
+	
+	{
+		max_angle_deviation_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		max_angle_deviation_zone.set_background_outline_thickness(2, 2, 2);
+		max_angle_deviation_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		max_angle_deviation_zone.set_text_font(&Ressource::Arial);
+		max_angle_deviation_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		max_angle_deviation_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		max_angle_deviation_zone.set_text_pos_correction_y(-8, -8, -8);
+		max_angle_deviation_zone.set_only_nb();
+		max_angle_deviation_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		max_angle_deviation_zone.set_text_outline_thickness(2, 2, 2);
+
+		precision_angle_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		precision_angle_zone.set_background_outline_thickness(2, 2, 2);
+		precision_angle_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		precision_angle_zone.set_text_font(&Ressource::Arial);
+		precision_angle_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		precision_angle_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		precision_angle_zone.set_text_pos_correction_y(-8, -8, -8);
+		precision_angle_zone.set_only_nb();
+		precision_angle_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		precision_angle_zone.set_text_outline_thickness(2, 2, 2);
+
+		sigma_deviation_zone.set_bg_type(Interface::Bouton::BG_type::Rect);
+		sigma_deviation_zone.set_background_outline_thickness(2, 2, 2);
+		sigma_deviation_zone.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+		sigma_deviation_zone.set_text_font(&Ressource::Arial);
+		sigma_deviation_zone.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+		sigma_deviation_zone.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+		sigma_deviation_zone.set_text_pos_correction_y(-8, -8, -8);
+		sigma_deviation_zone.set_only_nb();
+		sigma_deviation_zone.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+		sigma_deviation_zone.set_text_outline_thickness(2, 2, 2);
+	}
+
+	//type IA
+	sf::Text Type_IA_text;
+	{
+		switch (PS.parametre_IA.type_IA)
+		{
+		case 0:
+			Type_IA_text.setString("Les deux\ntypes d'IA.");
+			break;
+		case 1:
+			Type_IA_text.setString("IA de type 1.");
+			break;
+		case 2:
+			Type_IA_text.setString("IA de type 2.");
+			break;
+		}
+
+		Type_IA_text.setFont(Ressource::Arial);
+		Type_IA_text.setCharacterSize(25);
+		Type_IA_text.setFillColor(sf::Color::White);
+		Type_IA_text.setPosition(10, 490);
+	}
+
+	Interface::Bouton Type_IA_btn(240, 490, 200, 50, window, "Changer");
+
+	Type_IA_btn.set_bg_type(Interface::Bouton::BG_type::Rect);
+	Type_IA_btn.set_background_outline_thickness(2, 2, 2);
+	Type_IA_btn.set_text_color(sf::Color::Black, sf::Color::Black, sf::Color::Black);
+	Type_IA_btn.set_text_font(&Ressource::Arial);
+	Type_IA_btn.set_background_outline_color(sf::Color::White, sf::Color::Blue, sf::Color::Red);
+	Type_IA_btn.set_background_color(sf::Color::Transparent, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+	Type_IA_btn.set_text_pos_correction_y(-8, -8, -8);
+	Type_IA_btn.set_text_outline_color(sf::Color::White, sf::Color::White, sf::Color::White);
+	Type_IA_btn.set_text_outline_thickness(2, 2, 2);
 
 	//Text
 	sf::Text map_choice_text;
@@ -2560,6 +2652,10 @@ void Simulation(sf::RenderWindow& window)
 	sf::Text speed_text;
 	sf::Text sand_speed_text;
 	sf::Text water_speed_text;
+
+	sf::Text max_angle_deviation_text;
+	sf::Text precision_angle_text;
+	sf::Text sigma_deviation_text;
 
 	{
 		map_choice_text.setString("Choix du terrain: ");
@@ -2640,6 +2736,26 @@ void Simulation(sf::RenderWindow& window)
 		water_speed_text.setFillColor(sf::Color::White);
 		water_speed_text.setPosition(470, 385);
 	}
+
+	{
+		max_angle_deviation_text.setString("Deviation\nmaximal: ");
+		max_angle_deviation_text.setFont(Ressource::Arial);
+		max_angle_deviation_text.setCharacterSize(25);
+		max_angle_deviation_text.setFillColor(sf::Color::White);
+		max_angle_deviation_text.setPosition(10, 560);
+
+		precision_angle_text.setString("Precision\nde l'angle: ");
+		precision_angle_text.setFont(Ressource::Arial);
+		precision_angle_text.setCharacterSize(25);
+		precision_angle_text.setFillColor(sf::Color::White);
+		precision_angle_text.setPosition(355, 560);
+
+		sigma_deviation_text.setString("Ecart type\nde probabilité: ");
+		sigma_deviation_text.setFont(Ressource::Arial);
+		sigma_deviation_text.setCharacterSize(25);
+		sigma_deviation_text.setFillColor(sf::Color::White);
+		sigma_deviation_text.setPosition(700, 560);
+	}
 	
 	{
 		std::stringstream convert;
@@ -2687,6 +2803,18 @@ void Simulation(sf::RenderWindow& window)
 		convert.str("");
 		convert << PS.parametre_IA.water_speed;
 		water_speed_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.max_angle_deviation;
+		max_angle_deviation_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.precision_angle;
+		precision_angle_zone.set_text(convert.str());
+
+		convert.str("");
+		convert << PS.parametre_IA.sigma_deviation;
+		sigma_deviation_zone.set_text(convert.str());
 	}
 
 	while (window.isOpen())
@@ -2730,8 +2858,21 @@ void Simulation(sf::RenderWindow& window)
 				sand_speed_zone.get_state(event);
 				water_speed_zone.get_state(event);
 
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+				{
+					max_angle_deviation_zone.get_state(event);
+				}
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+				{
+					precision_angle_zone.get_state(event);
+					sigma_deviation_zone.get_state(event);
+				}
+
 				sc_map_choice.get_state(event);
+
 				Valider.get_state(event);
+				Type_IA_btn.get_state(event);
 				break;
 			case sf::Event::MouseButtonPressed:
 			{
@@ -2749,6 +2890,17 @@ void Simulation(sf::RenderWindow& window)
 				speed_zone.get_state(event);
 				sand_speed_zone.get_state(event);
 				water_speed_zone.get_state(event);
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+				{
+					max_angle_deviation_zone.get_state(event);
+				}
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+				{
+					precision_angle_zone.get_state(event);
+					sigma_deviation_zone.get_state(event);
+				}
 
 				if (Valider.get_state(event) == Interface::Bouton::state::cliking)
 				{
@@ -2914,14 +3066,54 @@ void Simulation(sf::RenderWindow& window)
 						can_launche = false;
 					}
 
-					/*//
-					PS.parametre_IA.max_angle_deviation = 33.75;
 
-					PS.parametre_IA.precision_angle = 2.8125;
-					PS.parametre_IA.sigma_deviation = 10;
+					if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+					{
+						txt = max_angle_deviation_zone.get_text();
+						if (txt != "")
+						{
+							std::stringstream convert;
+							convert << txt;
+							float i;
+							convert >> i;
+							PS.parametre_IA.max_angle_deviation = i;
+						}
+						else
+						{
+							can_launche = false;
+						}
+					}
 
-					PS.parametre_IA.type_IA = 1;//*/
+					if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+					{
+						txt = precision_angle_zone.get_text();
+						if (txt != "")
+						{
+							std::stringstream convert;
+							convert << txt;
+							float i;
+							convert >> i;
+							PS.parametre_IA.precision_angle = i;
+						}
+						else
+						{
+							can_launche = false;
+						}
 
+						txt = sigma_deviation_zone.get_text();
+						if (txt != "")
+						{
+							std::stringstream convert;
+							convert << txt;
+							float i;
+							convert >> i;
+							PS.parametre_IA.sigma_deviation = i;
+						}
+						else
+						{
+							can_launche = false;
+						}
+					}
 
 					if (can_launche)
 					{
@@ -2975,6 +3167,36 @@ void Simulation(sf::RenderWindow& window)
 						convert.str("");
 						convert << PS.parametre_IA.water_speed;
 						water_speed_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.max_angle_deviation;
+						max_angle_deviation_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.precision_angle;
+						precision_angle_zone.set_text(convert.str());
+
+						convert.str("");
+						convert << PS.parametre_IA.sigma_deviation;
+						sigma_deviation_zone.set_text(convert.str());
+					}
+				}
+
+				if (Type_IA_btn.get_state(event) == Interface::Bouton::state::cliking)
+				{
+					PS.parametre_IA.type_IA = (PS.parametre_IA.type_IA + 1) % 3;
+
+					switch (PS.parametre_IA.type_IA)
+					{
+					case 0:
+						Type_IA_text.setString("Les deux\ntypes d'IA.");
+						break;
+					case 1:
+						Type_IA_text.setString("IA de type 1.");
+						break;
+					case 2:
+						Type_IA_text.setString("IA de type 2.");
+						break;
 					}
 				}
 			}
@@ -2996,6 +3218,18 @@ void Simulation(sf::RenderWindow& window)
 				sand_speed_zone.get_state(event);
 				water_speed_zone.get_state(event);
 
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+				{
+					max_angle_deviation_zone.get_state(event);
+				}
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+				{
+					precision_angle_zone.get_state(event);
+					sigma_deviation_zone.get_state(event);
+				}
+
+				Type_IA_btn.get_state(event);
 				Valider.get_state(event);
 				break;
 			case sf::Event::MouseWheelMoved:
@@ -3015,6 +3249,17 @@ void Simulation(sf::RenderWindow& window)
 				speed_zone.entry(event);
 				sand_speed_zone.entry(event);
 				water_speed_zone.entry(event);
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+				{
+					max_angle_deviation_zone.entry(event);
+				}
+
+				if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+				{
+					precision_angle_zone.entry(event);
+					sigma_deviation_zone.entry(event);
+				}
 				break;
 			default:
 				break;
@@ -3048,7 +3293,10 @@ void Simulation(sf::RenderWindow& window)
 		window.draw(sand_speed_text);
 		window.draw(water_speed_text);
 
+		window.draw(Type_IA_text);
+
 		Valider.affiche();
+		Type_IA_btn.affiche();
 
 		dissipation_speed_zone.affiche();
 		birth_Food_cost_zone.affiche();
@@ -3063,6 +3311,22 @@ void Simulation(sf::RenderWindow& window)
 		speed_zone.affiche();
 		sand_speed_zone.affiche();
 		water_speed_zone.affiche();
+		
+		if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 1)
+		{
+			window.draw(max_angle_deviation_text);
+
+			max_angle_deviation_zone.affiche();
+		}
+
+		if (PS.parametre_IA.type_IA == 0 || PS.parametre_IA.type_IA == 2)
+		{
+			window.draw(precision_angle_text);
+			window.draw(sigma_deviation_text);
+
+			precision_angle_zone.affiche();
+			sigma_deviation_zone.affiche();
+		}
 
 		sc_map_choice.affiche();
 		window.display();
